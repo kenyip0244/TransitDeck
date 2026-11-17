@@ -708,7 +708,7 @@
 
         <div class="p-5 space-y-4">
           <p class="text-xs sm:text-sm text-muted leading-relaxed">
-            輸入你或朋友的公開 YouTube 頻道 <span class="font-mono text-cream">@Handle</span>（例如 <span class="font-mono text-cream">@szptf</span>）或 <span class="font-mono text-cream">UC...</span> 頻道 ID。系統會自動讀取頻道過往全部公開影片及其真實發佈日期並直接儲存入影片庫。
+            輸入你或朋友的公開 YouTube 頻道 <span class="font-mono text-cream">@Handle</span>（例如 <span class="font-mono text-cream">@szptf</span>）或 <span class="font-mono text-cream">UC...</span> 頻道 ID。系統會自動讀取頻道過往全部公開影片及其發佈日期並直接儲存入影片庫。
           </p>
 
           <div class="flex flex-col sm:flex-row gap-2.5">
@@ -2112,7 +2112,7 @@
     });
 
     // =========================================================================
-    // 14. YOUTUBE FULL ARCHIVE FETCH WITH EXACT PUBLISH DATES
+    // 14. YOUTUBE FAST ARCHIVE FETCH (RSS + JINA PLAYLIST SCRAPER, NO 403 SPAM)
     // =========================================================================
     function openYtModal() {
       const savedChannel = localStorage.getItem(YT_CHANNEL_STORAGE_KEY) || '';
@@ -2199,14 +2199,17 @@
       if (!rawText) return '';
       const str = String(rawText).trim();
 
+      // 1. ISO date (e.g. 2026-10-04T12:30:00+00:00)
       const isoMatch = str.match(/(\d{4}-\d{2}-\d{2})/);
       if (isoMatch) return isoMatch[1];
 
+      // 2. Chinese exact date (e.g. 2026年10月4日)
       const zhExact = str.match(/(\d{4})\s*年\s*(\d{1,2})\s*月\s*(\d{1,2})\s*日/);
       if (zhExact) {
         return `${zhExact[1]}-${zhExact[2].padStart(2, '0')}-${zhExact[3].padStart(2, '0')}`;
       }
 
+      // 3. Relative time calculation (Traditional Chinese & English)
       const now = new Date();
       const relMatch = str.match(/(\d+)\s*(秒|分鐘|小時|天|日|週|星期|個?月|年|second|minute|hour|day|week|month|year)s?\s*(前|ago)/i);
       if (relMatch) {
@@ -2225,21 +2228,6 @@
         return d.toISOString().split('T')[0];
       }
 
-      return '';
-    }
-
-    // Fetch exact YYYY-MM-DD publish date from individual video watch page meta tag
-    async function fetchExactVideoPublishDate(videoId) {
-      try {
-        const watchUrl = `https://www.youtube.com/watch?v=${videoId}`;
-        const html = await fetchTextWithCorsFallback(watchUrl);
-        if (html) {
-          const m = html.match(/"publishDate":"(\d{4}-\d{2}-\d{2})"/) ||
-                    html.match(/"uploadDate":"(\d{4}-\d{2}-\d{2})"/) ||
-                    html.match(/itemprop="datePublished"\s+content="(\d{4}-\d{2}-\d{2})"/);
-          if (m) return m[1];
-        }
-      } catch {}
       return '';
     }
 
@@ -2270,7 +2258,7 @@
         }
       }
 
-      // Step 1: Fetch Official XML RSS first (provides exact YYYY-MM-DD publish dates for latest 15 videos)
+      // Step 1: Official XML RSS (exact YYYY-MM-DD publish dates for latest 15 videos)
       const rssUrl = `https://www.youtube.com/feeds/videos.xml?channel_id=${channelId}`;
       try {
         const xmlText = await fetchTextWithCorsFallback(rssUrl);
@@ -2292,103 +2280,64 @@
         }
       } catch {}
 
-      // Step 2: Fetch Full Uploads Playlist via YouTube InnerTube API
+      // Step 2: Jina Reader full playlist markdown scraper (single fast request, zero 403 errors)
       try {
-        const browseEndpoint = 'https://www.youtube.com/youtubei/v1/browse?prettyPrint=false';
-        const proxies = [
-          (u) => `https://corsproxy.io/?${encodeURIComponent(u)}`,
-          (u) => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(u)}`
-        ];
-        for (const buildProxy of proxies) {
-          try {
-            const res = await fetch(buildProxy(browseEndpoint), {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                context: {
-                  client: { clientName: 'WEB', clientVersion: '2.20260101.00.00', hl: 'zh-HK', gl: 'HK' }
-                },
-                browseId: `VL${uploadsPlaylistId}`
-              })
-            });
-            if (res.ok) {
-              const json = await res.json();
-              const headerOwner = json?.header?.playlistHeaderRenderer?.ownerText?.runs?.[0]?.text ||
-                                  json?.metadata?.playlistMetadataRenderer?.title?.replace(/^Uploads from\s+/i, '');
-              if (headerOwner) localStorage.setItem(YT_CHANNEL_NAME_KEY, headerOwner.trim());
-
-              const walk = (node, depth = 0) => {
-                if (!node || typeof node !== 'object' || depth > 25) return;
-                if (node.playlistVideoRenderer?.videoId) {
-                  const r = node.playlistVideoRenderer;
-                  const t = r.title?.runs?.map(x => x.text).join('') || r.title?.simpleText || '';
-                  const infoRuns = (r.videoInfo?.runs || []).map(x => x.text).join(' ');
-                  const parsedRelOrExact = parseYouTubePublishDate(infoRuns);
-                  const isExact = /\d{4}年/.test(infoRuns);
-                  upsertVideoItem(r.videoId, t, parsedRelOrExact, isExact);
-                  return;
-                }
-                if (Array.isArray(node)) node.forEach(x => walk(x, depth + 1));
-                else Object.keys(node).forEach(k => walk(node[k], depth + 1));
-              };
-              walk(json);
-              if (videoMap.size > 15) break;
+        const jinaRes = await fetch(`https://r.jina.ai/${playlistUrl}`);
+        if (jinaRes.ok) {
+          const mdText = await jinaRes.text();
+          const titleMatch = mdText.match(/^Title:\s*(.+)$/m);
+          if (titleMatch) {
+            const cleanChannel = titleMatch[1].replace(/^Uploads from\s+/i, '').replace(/\s*-\s*YouTube$/i, '').trim();
+            if (cleanChannel && !cleanChannel.includes('Playlist')) {
+              localStorage.setItem(YT_CHANNEL_NAME_KEY, cleanChannel);
             }
-          } catch {}
+          }
+          const lines = mdText.split('\n');
+          for (let i = 0; i < lines.length; i++) {
+            const m = lines[i].match(/\[([^\]]{3,150})\]\(https?:\/\/(?:www\.)?youtube\.com\/watch\?v=([\w-]{11})[^)]*\)/);
+            if (m) {
+              const rawTitle = m[1].replace(/!\[.*?\]\(.*?\)/g, '').trim();
+              if (rawTitle && !/^\d+:\d+$/.test(rawTitle) && rawTitle !== 'Watch later' && rawTitle !== 'Add to queue') {
+                const contextChunk = [
+                  lines[i],
+                  lines[i + 1] || '',
+                  lines[i + 2] || '',
+                  lines[i + 3] || '',
+                  lines[i + 4] || ''
+                ].join(' ');
+                const nearbyDate = parseYouTubePublishDate(contextChunk);
+                upsertVideoItem(m[2], rawTitle, nearbyDate, false);
+              }
+            }
+          }
         }
       } catch {}
 
-      // Step 3: Jina Reader fallback if InnerTube returned fewer videos
-      if (videoMap.size <= 15) {
+      // Step 3: rss2json fallback if both above failed
+      if (videoMap.size === 0) {
         try {
-          const jinaRes = await fetch(`https://r.jina.ai/${playlistUrl}`);
-          if (jinaRes.ok) {
-            const mdText = await jinaRes.text();
-            const titleMatch = mdText.match(/^Title:\s*(.+)$/m);
-            if (titleMatch) {
-              const cleanChannel = titleMatch[1].replace(/^Uploads from\s+/i, '').replace(/\s*-\s*YouTube$/i, '').trim();
-              if (cleanChannel && !cleanChannel.includes('Playlist')) {
-                localStorage.setItem(YT_CHANNEL_NAME_KEY, cleanChannel);
-              }
-            }
-            const lines = mdText.split('\n');
-            for (let i = 0; i < lines.length; i++) {
-              const m = lines[i].match(/\[([^\]]{3,150})\]\(https?:\/\/(?:www\.)?youtube\.com\/watch\?v=([\w-]{11})[^)]*\)/);
-              if (m) {
-                const rawTitle = m[1].replace(/!\[.*?\]\(.*?\)/g, '').trim();
-                if (rawTitle && !/^\d+:\d+$/.test(rawTitle) && rawTitle !== 'Watch later' && rawTitle !== 'Add to queue') {
-                  const contextChunk = [lines[i], lines[i + 1] || '', lines[i + 2] || ''].join(' ');
-                  const nearbyDate = parseYouTubePublishDate(contextChunk);
-                  upsertVideoItem(m[2], rawTitle, nearbyDate, false);
-                }
-              }
+          const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`;
+          const res = await fetch(apiUrl);
+          if (res.ok) {
+            const data = await res.json();
+            if (data.status === 'ok' && Array.isArray(data.items) && data.items.length > 0) {
+              const channelTitle = data.feed?.title || data.items[0]?.author;
+              if (channelTitle) localStorage.setItem(YT_CHANNEL_NAME_KEY, channelTitle);
+              data.items.forEach(item => {
+                const vidMatch = (item.guid || item.link || '').match(/(?:yt:video:|v=|\/)([\w-]{11})/);
+                const videoId = vidMatch ? vidMatch[1] : '';
+                upsertVideoItem(videoId, item.title, parseYouTubePublishDate(item.pubDate), true);
+              });
             }
           }
         } catch {}
       }
 
       if (videoMap.size === 0) {
-        throw new Error('暫時無法讀取該頻道清單，請確認該頻道有公開影片並直接貼上 UC 開頭 ID 再試');
+        throw new Error('暫時無法讀取該頻道清單，請稍後再試');
       }
 
-      // Step 4: Fill exact publish dates for older videos missing dates (batched in parallel)
-      const list = Array.from(videoMap.values());
-      const missingDateItems = list.filter(v => !v.published);
-      if (missingDateItems.length > 0) {
-        const batchSize = 5;
-        for (let i = 0; i < missingDateItems.length; i += batchSize) {
-          const batch = missingDateItems.slice(i, i + batchSize);
-          await Promise.all(batch.map(async (item) => {
-            const exact = await fetchExactVideoPublishDate(item.videoId);
-            if (exact) {
-              item.published = exact;
-              item.isExactDate = true;
-            }
-          }));
-        }
-      }
-
-      return list;
+      return Array.from(videoMap.values());
     }
 
     function detectTransitMetadataFromTitle(title) {
@@ -2417,7 +2366,7 @@
 
       if (!silent) {
         statusBox.classList.remove('hidden');
-        statusBox.textContent = '正在讀取頻道所有公開影片及其真實 YouTube 發佈日期...';
+        statusBox.textContent = '正在讀取頻道所有公開影片及其發佈日期...';
         resultsList.innerHTML = '';
       }
 
@@ -2440,7 +2389,6 @@
         );
 
         if (existingClip) {
-          // Automatically fix existing clips whose date defaulted to today's sync date
           if (video.published && existingClip.date !== video.published && (existingClip.date === todayStr || !existingClip.date)) {
             await persistClip({
               ...existingClip,
