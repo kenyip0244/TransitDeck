@@ -1,0 +1,2851 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TransitDeck 封面生成器 — 香港五大巴士公司前面展望影片封面</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=M+PLUS+1p:ital,wght@0,400;0,700;0,800;0,900;1,700;1,900&family=M+PLUS+Rounded+1c:ital,wght@0,400;0,700;0,800;0,900;1,700;1,900&family=Noto+Sans+JP:ital,wght@0,400;0,700;0,900;1,700;1,900&family=Noto+Sans+TC:ital,wght@0,400;0,700;0,900;1,700;1,900&family=RocknRoll+One&family=Zen+Kaku+Gothic+New:ital,wght@0,400;0,700;0,900;1,700;1,900&family=VT323&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg-base: #0c0e14;
+      --bg-panel: #161922;
+      --bg-card: #202432;
+      --bg-input: #11131b;
+      --accent: #ffd100;
+      --accent-red: #d91a2a;
+      --accent-blue: #0055a5;
+      --text-main: #f3f6fc;
+      --text-muted: #9aa5b8;
+      --border: #2e3547;
+      --radius-sm: 6px;
+      --radius: 12px;
+      --shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    }
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", "Noto Sans JP", sans-serif;
+      background-color: var(--bg-base);
+      color: var(--text-main);
+      line-height: 1.5;
+      padding: 16px 20px 24px;
+      min-height: 100vh;
+    }
+
+    /* 頂部與 TransitDeck 片倉導航列 */
+    .top-nav-strip {
+      max-width: 1680px;
+      margin: 0 auto 16px;
+      background: var(--bg-panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: #fff;
+      font-weight: 800;
+      font-size: 16px;
+    }
+
+    .nav-brand-icon {
+      width: 30px;
+      height: 30px;
+      border-radius: 7px;
+      background: #E8A817;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 5px;
+    }
+
+    .nav-brand-icon span {
+      display: block;
+      width: 100%;
+      height: 7px;
+      background: #0A0B0D;
+      border-radius: 2px;
+    }
+
+    .linked-clip-pill {
+      display: none;
+      align-items: center;
+      gap: 8px;
+      background: rgba(232, 168, 23, 0.14);
+      border: 1px solid rgba(232, 168, 23, 0.45);
+      color: #ffd100;
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .linked-clip-pill.active {
+      display: inline-flex;
+    }
+
+    .nav-back-btn {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      text-decoration: none;
+      padding: 7px 14px;
+      border-radius: 8px;
+      font-size: 12.5px;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s;
+    }
+
+    .nav-back-btn:hover {
+      border-color: #ffd100;
+      color: #ffd100;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 18px;
+    }
+
+    header h1 {
+      font-size: 24px;
+      font-weight: 900;
+      color: #fff;
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    header h1 .badge-citybus {
+      background: linear-gradient(135deg, #ffd100, #ffaa00);
+      color: #004080;
+      font-size: 13px;
+      padding: 3px 10px;
+      border-radius: 6px;
+      font-weight: 900;
+      letter-spacing: 1px;
+    }
+
+    header p {
+      color: var(--text-muted);
+      font-size: 13px;
+      margin-top: 4px;
+    }
+
+    .main-layout {
+      max-width: 1680px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 540px;
+      gap: 20px;
+      align-items: start;
+    }
+
+    @media (max-width: 1180px) {
+      .main-layout {
+        grid-template-columns: 1fr;
+      }
+      .preview-col {
+        position: static !important;
+      }
+    }
+
+    .preview-col {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      position: sticky;
+      top: 12px;
+      z-index: 20;
+    }
+
+    .quick-edit-bar {
+      background: var(--bg-panel);
+      border: 1.5px solid #ffd100;
+      border-radius: var(--radius);
+      padding: 12px 14px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .quick-edit-title {
+      font-size: 12.5px;
+      font-weight: 900;
+      color: #ffd100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .quick-edit-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 8px;
+    }
+
+    .quick-edit-route-row {
+      display: grid;
+      grid-template-columns: 1.1fr 1.2fr 68px 1.2fr 2fr;
+      gap: 8px;
+      align-items: end;
+    }
+
+    @media (max-width: 900px) {
+      .quick-edit-grid, .quick-edit-route-row {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    .company-tabs {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 8px;
+    }
+
+    .company-tab-btn {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .company-tab-btn:hover {
+      color: var(--text-main);
+      border-color: #ffd100;
+    }
+
+    .company-tab-btn.active {
+      background: #ffd100;
+      color: #0c1c2e;
+      border-color: #ffd100;
+    }
+
+    .preset-tab-panel {
+      display: none;
+    }
+
+    .preset-tab-panel.active {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(165px, 1fr));
+      gap: 8px;
+      max-height: 210px;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+
+    .canvas-inline-editor {
+      position: absolute;
+      display: none;
+      z-index: 50;
+      background: rgba(15, 18, 28, 0.96);
+      border: 2px solid #ffd100;
+      border-radius: 8px;
+      padding: 8px 10px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+      min-width: 280px;
+      backdrop-filter: blur(8px);
+    }
+
+    .canvas-inline-editor label {
+      color: #ffd100;
+      font-size: 11px;
+      margin-bottom: 4px;
+      display: block;
+    }
+
+    .canvas-inline-editor input {
+      font-size: 14px;
+      font-weight: 700;
+      padding: 6px 8px;
+    }
+
+    .canvas-container {
+      background: #000;
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: crosshair;
+      user-select: none;
+      touch-action: none;
+    }
+
+    canvas {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+
+    .canvas-hint {
+      position: absolute;
+      bottom: 10px;
+      right: 12px;
+      background: rgba(0, 0, 0, 0.65);
+      backdrop-filter: blur(4px);
+      color: #ffd700;
+      border: 1px solid rgba(255, 215, 0, 0.35);
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 700;
+      pointer-events: none;
+      z-index: 10;
+      opacity: 0.85;
+      transition: opacity 0.2s;
+    }
+    .canvas-container:hover .canvas-hint {
+      opacity: 0.2;
+    }
+
+    .action-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 12px 16px;
+      border-radius: var(--radius-sm);
+      font-weight: 700;
+      font-size: 13.5px;
+      cursor: pointer;
+      border: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      user-select: none;
+    }
+
+    .btn-sync-deck {
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: #042f2e;
+      font-weight: 900;
+      flex: 1.6;
+    }
+
+    .btn-sync-deck:hover {
+      filter: brightness(1.08);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 16px rgba(16, 185, 129, 0.4);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #ffd100, #ff9900);
+      color: #0d233a;
+      font-weight: 900;
+      flex: 1.2;
+    }
+
+    .btn-primary:hover {
+      filter: brightness(1.1);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(255, 209, 0, 0.4);
+    }
+
+    .btn-secondary {
+      background: var(--bg-card);
+      color: var(--text-main);
+      border: 1px solid var(--border);
+      flex: 0.9;
+    }
+
+    .btn-secondary:hover {
+      background: #2b3144;
+      border-color: #ffd100;
+    }
+
+    .presets-container {
+      background: var(--bg-panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .presets-title {
+      font-size: 13px;
+      font-weight: 800;
+      color: #ffd100;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .layout-switcher {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+
+    .layout-btn {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      padding: 8px 6px;
+      border-radius: var(--radius-sm);
+      font-size: 11.5px;
+      font-weight: 700;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .layout-btn:hover {
+      border-color: #ffd100;
+      background: #2b3144;
+    }
+
+    .layout-btn.active {
+      background: #ffd100;
+      color: #0c1c2e;
+      border-color: #ffd100;
+      box-shadow: 0 0 10px rgba(255, 209, 0, 0.4);
+    }
+
+    .preset-chip {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      padding: 10px 12px;
+      border-radius: var(--radius-sm);
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      transition: all 0.2s ease;
+      text-align: left;
+    }
+
+    .preset-chip:hover {
+      border-color: #ffd100;
+      background: #272d3f;
+      transform: translateY(-2px);
+    }
+
+    .preset-chip-header {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .preset-bar {
+      width: 14px;
+      height: 14px;
+      border-radius: 4px;
+      flex-shrink: 0;
+      border: 1px solid rgba(255,255,255,0.3);
+    }
+
+    .preset-desc {
+      font-size: 10px;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .quick-company-bar {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      background: rgba(10, 14, 23, 0.78);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 7px;
+      padding: 6px 8px;
+      margin-bottom: 2px;
+    }
+
+    .quick-company-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 11px;
+      font-weight: 800;
+      color: #e2e8f0;
+    }
+
+    .quick-company-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+
+    .quick-theme-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 7px;
+      font-size: 11px;
+      font-weight: 800;
+      border-radius: 5px;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      background: #161d2a;
+      color: #f0f4f8;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .quick-theme-chip:hover {
+      border-color: #ffd100;
+      background: #232f46;
+      transform: translateY(-1px);
+    }
+
+    .quick-theme-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      display: inline-block;
+      flex-shrink: 0;
+    }
+
+    .service-company-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin-bottom: 6px;
+      padding-bottom: 5px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .service-tab-btn {
+      padding: 3px 8px;
+      font-size: 11px;
+      font-weight: 800;
+      border-radius: 5px;
+      border: 1px solid var(--border);
+      background: #0d121b;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .service-tab-btn:hover {
+      color: #fff;
+      border-color: #4a5568;
+    }
+
+    .service-tab-btn.active {
+      background: rgba(255, 209, 0, 0.16);
+      color: #ffd100;
+      border-color: #ffd100;
+    }
+
+    .controls-col {
+      background: var(--bg-panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .section-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .section-header {
+      font-size: 13.5px;
+      font-weight: 800;
+      color: #ffd100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding-bottom: 7px;
+    }
+
+    .section-header .sub-tag {
+      font-size: 11px;
+      color: #38bdf8;
+      font-weight: 600;
+      background: rgba(56, 189, 248, 0.12);
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .form-row-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 8px;
+    }
+
+    label {
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--text-muted);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    label span.val-hint {
+      color: #ffd100;
+      font-weight: normal;
+      font-size: 11px;
+    }
+
+    input[type="text"], select {
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      padding: 8px 10px;
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      outline: none;
+      transition: all 0.2s;
+      width: 100%;
+    }
+
+    input[type="text"]:focus, select:focus {
+      border-color: #ffd100;
+      box-shadow: 0 0 0 2px rgba(255, 209, 0, 0.2);
+    }
+
+    input[type="color"] {
+      -webkit-appearance: none;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      width: 100%;
+      height: 36px;
+      cursor: pointer;
+      background: var(--bg-input);
+      padding: 2px 4px;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      height: 6px;
+      accent-color: #ffd100;
+      background: var(--bg-input);
+      border-radius: 3px;
+      outline: none;
+    }
+
+    .style-toggles {
+      display: inline-flex;
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+      gap: 2px;
+      padding: 2px;
+    }
+
+    .style-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      padding: 4px 10px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      border-radius: 4px;
+      transition: all 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .style-btn:hover {
+      color: var(--text-main);
+      background: #22293a;
+    }
+
+    .style-btn.active {
+      background: #ffd100;
+      color: #0c1c2e;
+    }
+
+    .pos-btn-group {
+      display: flex;
+      gap: 6px;
+      margin-top: 2px;
+      flex-wrap: wrap;
+    }
+
+    .btn-xs {
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      padding: 4px 9px;
+      border-radius: 4px;
+      font-size: 11px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .btn-xs:hover {
+      color: var(--text-main);
+      border-color: #ffd100;
+      background: #202636;
+    }
+
+    .logo-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .logo-chip-btn {
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 11.5px;
+      font-weight: bold;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: all 0.15s ease;
+    }
+
+    .logo-chip-btn:hover {
+      border-color: #ffd100;
+      background: #232a3b;
+      color: #ffd100;
+    }
+
+    .type-tags-container {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-top: 4px;
+    }
+
+    .type-tag-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .type-tag-btn {
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      color: #e2e8f0;
+      padding: 4px 9px;
+      border-radius: 14px;
+      font-size: 11.5px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: all 0.15s ease;
+      user-select: none;
+    }
+
+    .type-tag-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+      border-color: #ffd100;
+    }
+
+    .tag-color-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .upload-zone {
+      border: 2px dashed var(--border);
+      border-radius: var(--radius-sm);
+      padding: 14px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: var(--bg-input);
+    }
+
+    .upload-zone:hover, .upload-zone.dragover {
+      border-color: #ffd100;
+      background: rgba(255, 209, 0, 0.06);
+    }
+
+    .upload-zone svg {
+      margin-bottom: 4px;
+    }
+
+    .upload-zone .up-title {
+      font-weight: 700;
+      font-size: 12.5px;
+      color: var(--text-main);
+    }
+
+    .upload-zone .up-subtitle {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .deck-quickbar {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+      margin-top: 4px;
+    }
+
+    .deck-btn {
+      flex: 1;
+      padding: 5px 8px;
+      border-radius: 5px;
+      border: 1px solid var(--border);
+      background: var(--bg-input);
+      color: #cbd5e1;
+      font-size: 11.5px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .deck-btn:hover {
+      border-color: #ffd100;
+      color: #ffd100;
+      background: #1e2434;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #1e293b;
+      color: #fff;
+      border: 1px solid #ffd100;
+      border-radius: 8px;
+      padding: 10px 18px;
+      font-size: 13px;
+      font-weight: 600;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+      display: none;
+      z-index: 999;
+      animation: slideUp 0.3s ease;
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 頂部與 TransitDeck 影片庫互通導航列 -->
+  <nav class="top-nav-strip">
+    <a href="./app.html" class="nav-brand">
+      <span class="nav-brand-icon"><span></span><span></span></span>
+      <span>TransitDeck · 封面工作室</span>
+    </a>
+
+    <div id="linkedClipIndicator" class="linked-clip-pill">
+      <span>🔗 正在為影片庫紀錄製作封面：</span>
+      <span id="linkedClipLabel">---</span>
+    </div>
+
+    <a href="./app.html" class="nav-back-btn">
+      <span>← 返回 TransitDeck 影片庫</span>
+    </a>
+  </nav>
+
+  <header>
+    <h1>
+      <span>香港巴士全明星 (城巴・九巴・龍運・嶼巴・港鐵巴士) 影片封面生成器</span>
+      <span class="badge-citybus">1920 × 1080 FHD</span>
+    </h1>
+    <p>💡 支援全港五大專營巴士：<b>九巴 KMB • 龍運 LWB • 城巴 Citybus • 嶼巴 NLB • 港鐵巴士 MTR Bus</b> | 製作完成可直接一鍵存回 TransitDeck 影片庫</p>
+  </header>
+
+  <div class="main-layout">
+    
+    <!-- 左側：畫布即時預覽與「看圖即時改字」面板 -->
+    <div class="preview-col">
+      <div class="canvas-container" id="canvasContainer">
+        <canvas id="thumbCanvas" width="1920" height="1080"></canvas>
+        <div class="canvas-hint">🖱️ 可直接拖曳元素 • 雙擊畫布文字可即時改字</div>
+        <div class="canvas-inline-editor" id="inlineEditor">
+          <label id="inlineEditorLabel">修改文字</label>
+          <input type="text" id="inlineEditorInput">
+        </div>
+      </div>
+
+      <!-- 畫布正下方：看圖即時改字快捷面板 -->
+      <div class="quick-edit-bar">
+        <div class="quick-edit-title">
+          <span>⚡ 看圖即時改字與轉色區（輸入即同步更新封面圖，亦可雙擊畫布文字修改）</span>
+          <div style="display:flex; gap:5px;">
+            <button type="button" class="btn-xs" onclick="injectDeck('上層展望')">🏙️ 上層展望</button>
+            <button type="button" class="btn-xs" onclick="injectDeck('下層展望')">🚍 下層展望</button>
+            <button type="button" class="btn-xs" onclick="injectDeck('前面展望')">🎥 前面展望</button>
+          </div>
+        </div>
+
+        <div class="quick-company-bar">
+          <div class="quick-company-header">
+            <span>🎨 一鍵切換五大巴士公司配色＋字頭（保留目前路線號碼與起訖站）：</span>
+            <span style="font-size:10px; color:#9aa5b8; font-weight:normal;">支援 九巴 • 龍運 • 城巴 • 新巴 • 嶼巴 • 港鐵 • 九鐵</span>
+          </div>
+          <div class="quick-company-chips">
+            <button type="button" class="quick-theme-chip" onclick="applyCompanyThemeOnly('ctb_1979')">
+              <span class="quick-theme-dot" style="background:#f3e5ab; border:2px solid #5c1d24;"></span>城巴1979
+            </button>
+            <button type="button" class="quick-theme-chip" onclick="applyCompanyThemeOnly('ctb_cityflyer')">
+              <span class="quick-theme-dot" style="background:#ffd100; border:2px solid #d91a2a;"></span>城巴快線
+            </button>
+            <button type="button" class="quick-theme-chip" onclick="applyCompanyThemeOnly('ctb_blue')">
+              <span class="quick-theme-dot" style="background:#ffd200; border:2px solid #003876;"></span>城巴黃藍
+            </button>
+            <button type="button" class="quick-theme-chip" onclick="applyCompanyThemeOnly('nwfb_wave')">
+              <span class="quick-theme-dot" style="background:#ffffff; border:2px solid #009b3a;"></span>新巴綠橙
+            </button>
+            <button type="button" class="quick-theme-chip" onclick="applyCompanyThemeOnly('kmb_red')">
+              <span class="quick-theme-dot" style="background:#ffffff; border:2px solid #c8102e;"></span>九巴紅巴
+            </button>
+            <button type="button" class="quick-theme-chip" onclick="applyCompanyThemeOnly('kmb_gold')">
+              <span class="quick-theme-dot" style="background:#f5d77f; border:2px solid #4a2e0b;"></span>九巴金巴
+            </button>
+            <button type="button" class="quick-theme-chip" onclick="applyCompanyThemeOnly('kmb_ev')">
+              <span class="quick-theme-dot" style="background:#ffffff; border:2px solid #2e7d32;"></span>九巴電巴
+            </button>
+            <button type="button" class="quick-theme-chip" onclick="applyCompanyThemeOnly('kmb_hotdog')">
+              <span class="quick-theme-dot" style="background:#f0e68c; border:2px solid #8b0000;"></span>九巴熱狗
+            </button>
+            <button type="button" class="quick-theme-chip" onclick="applyCompanyThemeOnly('kmb_white')">
+              <span class="quick-theme-dot" style="background:#ffffff; border:2px solid #990000;"></span>九巴白板
+            </button>
+            <button type="button" class="quick-theme-chip" onclick="applyCompanyThemeOnly('lwb_orange')">
+              <span class="quick-theme-dot" style="background:#ffffff; border:2px solid #ea5b0c;"></span>龍運橙巴
+            </button>
+            <button type="button" class="quick-theme-chip" onclick="applyCompanyThemeOnly('lwb_night')">
+              <span class="quick-theme-dot" style="background:#ff9900; border:2px solid #111111;"></span>龍運NA線
+            </button>
+            <button type="button" class="quick-theme-chip" onclick="applyCompanyThemeOnly('nlb_green')">
+              <span class="quick-theme-dot" style="background:#ffffff; border:2px solid #008037;"></span>嶼巴翠綠
+            </button>
+            <button type="button" class="quick-theme-chip" onclick="applyCompanyThemeOnly('nlb_port')">
+              <span class="quick-theme-dot" style="background:#ffd200; border:2px solid #0055a5;"></span>嶼巴口岸
+            </button>
+            <button type="button" class="quick-theme-chip" onclick="applyCompanyThemeOnly('mtr_bus')">
+              <span class="quick-theme-dot" style="background:#ffffff; border:2px solid #0055a5;"></span>港鐵巴士
+            </button>
+            <button type="button" class="quick-theme-chip" onclick="applyCompanyThemeOnly('mtr_wave')">
+              <span class="quick-theme-dot" style="background:#ffd100; border:2px solid #4a154b;"></span>港鐵紫黃
+            </button>
+            <button type="button" class="quick-theme-chip" onclick="applyCompanyThemeOnly('kcr_retro')">
+              <span class="quick-theme-dot" style="background:#ffffff; border:2px solid #c8102e;"></span>九鐵經典
+            </button>
+          </div>
+        </div>
+
+        <div class="quick-edit-grid">
+          <div class="form-group">
+            <label>① 頂部文字 (`XXX線上/下層展望•經XXX`)</label>
+            <input type="text" id="quickTopText" value="城巴B14線下層展望•經大欖隧道•中九龍繞道•啟德體育園" oninput="syncQuickText('topText', this.value)">
+          </div>
+          <div class="form-group">
+            <label>② 右上角路線標題 (`XXX路線`)</label>
+            <input type="text" id="quickRouteTitle" value="城巴B14路線" oninput="syncQuickText('routeTitle', this.value)">
+          </div>
+        </div>
+
+        <div class="quick-edit-route-row">
+          <div class="form-group">
+            <label>③ 左下車種標籤</label>
+            <input type="text" id="quickServiceType" value="皇崗專線" oninput="syncQuickText('serviceType', this.value)">
+          </div>
+          <div class="form-group">
+            <label>④ 起點站 (Origin)</label>
+            <input type="text" id="quickStationOrigin" value="皇崗口岸" oninput="syncQuickText('stationOrigin', this.value)">
+          </div>
+          <div class="form-group">
+            <label>方向</label>
+            <select id="quickRouteArrow" onchange="syncQuickText('routeArrow', this.value)">
+              <option value="➔" selected>➔</option>
+              <option value="→">→</option>
+              <option value="➡">➡</option>
+              <option value="＝">＝</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>⑤ 訖點站 (Dest)</label>
+            <input type="text" id="quickStationDest" value="啟德世運道" oninput="syncQuickText('stationDest', this.value)">
+          </div>
+          <div class="form-group">
+            <label>⑥ 底部車型 / 車牌描述</label>
+            <input type="text" id="quickBottomText" value="Enviro500 MMC 12.8M (6493 / VB 9800) • CITY BUSES EST. 1979" oninput="syncQuickText('bottomText', this.value)">
+          </div>
+        </div>
+      </div>
+
+      <!-- 操作按鈕列：一鍵存回 TransitDeck 影片庫 + 下載 PNG + 複製剪貼簿 -->
+      <div class="action-row">
+        <button class="btn btn-sync-deck" id="saveToTransitDeckBtn">
+          <span>💾 儲存封面並返回 TransitDeck 影片庫</span>
+        </button>
+        <button class="btn btn-primary" id="downloadPngBtn">
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+          下載 1080P PNG
+        </button>
+        <button class="btn btn-secondary" id="copyClipboardBtn">
+          複製圖片
+        </button>
+        <button class="btn btn-secondary" id="resetBtn">重設範本</button>
+      </div>
+    </div>
+
+    <!-- 右側：自訂控制面板 -->
+    <div class="controls-col">
+
+      <!-- 0. 巴士公司塗裝與路線範本庫 -->
+      <div class="presets-container">
+        <div class="presets-title">
+          <span>🎨 一鍵套用巴士塗裝與路線範本</span>
+          <span style="font-size:11px; color:#9aa5b8; font-weight:normal;">點擊分類切換</span>
+        </div>
+
+        <div class="company-tabs">
+          <button type="button" class="company-tab-btn active" onclick="switchCompanyTab('tab_citybus', this, 'ctb')">🟡 城巴塗裝 (8)</button>
+          <button type="button" class="company-tab-btn" onclick="switchCompanyTab('tab_trunk', this, 'ctb')">⭐ 城巴主幹線 (12)</button>
+          <button type="button" class="company-tab-btn" onclick="switchCompanyTab('tab_kmb', this, 'kmb')">🔴 九巴 KMB (9)</button>
+          <button type="button" class="company-tab-btn" onclick="switchCompanyTab('tab_lwb', this, 'lwb')">🟠 龍運 LWB (6)</button>
+          <button type="button" class="company-tab-btn" onclick="switchCompanyTab('tab_nlb', this, 'nlb')">🟢 嶼巴 NLB (6)</button>
+          <button type="button" class="company-tab-btn" onclick="switchCompanyTab('tab_mtr', this, 'mtr')">🔵 港鐵 / 九鐵 (6)</button>
+        </div>
+
+        <div class="preset-tab-panel active" id="tab_citybus">
+          <button class="preset-chip" onclick="applyPreset('founder_1979')">
+            <div class="preset-chip-header">
+              <span class="preset-bar" style="background: linear-gradient(135deg, #f3e5ab 60%, #5c1d24 60%);"></span>
+              <span>1979 創辦米黃棗紅 (B14)</span>
+            </div>
+            <div class="preset-desc">B14 / 6493 皇崗口岸➔啟德世運道</div>
+          </button>
+          <button class="preset-chip" onclick="applyPreset('cityflyer')">
+            <div class="preset-chip-header">
+              <span class="preset-bar" style="background: linear-gradient(135deg, #ffd100 50%, #d91a2a 50%);"></span>
+              <span>Cityflyer 機場快線 (A29)</span>
+            </div>
+            <div class="preset-desc">A29 / 6840 機場➔將軍澳(寶琳)</div>
+          </button>
+          <button class="preset-chip" onclick="applyPreset('pacman')">
+            <div class="preset-chip-header">
+              <span class="preset-bar" style="background: linear-gradient(135deg, #ffd100 50%, #e21b23 50%);"></span>
+              <span>經典「大食鬼」塗裝 (43R)</span>
+            </div>
+            <div class="preset-desc">43R / 9150 堅尼地城站➔西寧街</div>
+          </button>
+          <button class="preset-chip" onclick="applyPreset('classic_stripes')">
+            <div class="preset-chip-header">
+              <span class="preset-bar" style="background: linear-gradient(135deg, #ffd200 40%, #e31b23 40%, #e31b23 60%, #004b97 60%);"></span>
+              <span>經典黃帶紅白藍 (73)</span>
+            </div>
+            <div class="preset-desc">73 / 9149 數碼港➔赤柱市場</div>
+          </button>
+          <button class="preset-chip" onclick="applyPreset('anniversary_40')">
+            <div class="preset-chip-header">
+              <span class="preset-bar" style="background: linear-gradient(135deg, #ffd200 45%, #ff6600 45%, #ff6600 65%, #00338d 65%);"></span>
+              <span>40載你同行 1979復刻 (307)</span>
+            </div>
+            <div class="preset-desc">307 / 6495 大埔中心➔中環碼頭</div>
+          </button>
+          <button class="preset-chip" onclick="applyPreset('modern_yellow_blue')">
+            <div class="preset-chip-header">
+              <span class="preset-bar" style="background: linear-gradient(135deg, #ffd200 65%, #0072ce 65%);"></span>
+              <span>當代簡約黃藍 (606)</span>
+            </div>
+            <div class="preset-desc">606 / 8538 小西灣➔彩雲</div>
+          </button>
+          <button class="preset-chip" onclick="applyPreset('new_rebrand')">
+            <div class="preset-chip-header">
+              <span class="preset-bar" style="background: linear-gradient(135deg, #ffd200 45%, #e50012 45%, #e50012 55%, #0055a5 55%);"></span>
+              <span>新品牌動感黃藍 (788)</span>
+            </div>
+            <div class="preset-desc">788 / 8570 小西灣➔中環</div>
+          </button>
+          <button class="preset-chip" onclick="applyPreset('nwfb_wave')">
+            <div class="preset-chip-header">
+              <span class="preset-bar" style="background: linear-gradient(135deg, #ffffff 40%, #009b3a 40%, #009b3a 55%, #ff7300 55%);"></span>
+              <span>新巴經典波浪白綠橙 (8)</span>
+            </div>
+            <div class="preset-desc">8 / 6100 杏花邨➔灣仔北</div>
+          </button>
+        </div>
+
+        <div class="preset-tab-panel" id="tab_trunk">
+          <button class="preset-chip" onclick="applyPreset('trunk_2a')"><div class="preset-chip-header"><span class="preset-bar" style="background:#003876;"></span><span>2A 英皇道線</span></div><div class="preset-desc">耀東邨 ➔ 會展站</div></button>
+          <button class="preset-chip" onclick="applyPreset('trunk_4')"><div class="preset-chip-header"><span class="preset-bar" style="background:#003876;"></span><span>4 薄扶林線</span></div><div class="preset-desc">黃竹坑 ➔ 中環(交易廣場)</div></button>
+          <button class="preset-chip" onclick="applyPreset('trunk_38')"><div class="preset-chip-header"><span class="preset-bar" style="background:#003876;"></span><span>38 南區線</span></div><div class="preset-desc">置富花園 ➔ 北角碼頭</div></button>
+          <button class="preset-chip" onclick="applyPreset('trunk_82')"><div class="preset-chip-header"><span class="preset-bar" style="background:#003876;"></span><span>82 東區線</span></div><div class="preset-desc">小西灣(藍灣半島) ➔ 北角碼頭</div></button>
+          <button class="preset-chip" onclick="applyPreset('trunk_20')"><div class="preset-chip-header"><span class="preset-bar" style="background:#003876;"></span><span>20 窩打老道線</span></div><div class="preset-desc">啟德(沐安街) ➔ 長沙灣(海達)</div></button>
+          <button class="preset-chip" onclick="applyPreset('trunk_20a')"><div class="preset-chip-header"><span class="preset-bar" style="background:#003876;"></span><span>20A 彌敦道線</span></div><div class="preset-desc">高鐵西九龍站 ➔ 啟德郵輪碼頭</div></button>
+          <button class="preset-chip" onclick="applyPreset('trunk_701')"><div class="preset-chip-header"><span class="preset-bar" style="background:#003876;"></span><span>701 西九龍線</span></div><div class="preset-desc">海麗邨 ➔ 旺角</div></button>
+          <button class="preset-chip" onclick="applyPreset('trunk_50')"><div class="preset-chip-header"><span class="preset-bar" style="background:#003876;"></span><span>50 屯門線</span></div><div class="preset-desc">屯門(菁田及和田) ➔ 尖沙咀</div></button>
+          <button class="preset-chip" onclick="applyPreset('trunk_56')"><div class="preset-chip-header"><span class="preset-bar" style="background:#003876;"></span><span>56 新界北環線</span></div><div class="preset-desc">屯門(和田及菁田) ➔ 上水</div></button>
+          <button class="preset-chip" onclick="applyPreset('trunk_79x')"><div class="preset-chip-header"><span class="preset-bar" style="background:#003876;"></span><span>79X 皇后山線</span></div><div class="preset-desc">粉嶺皇后山 ➔ 長沙灣</div></button>
+          <button class="preset-chip" onclick="applyPreset('trunk_793')"><div class="preset-chip-header"><span class="preset-bar" style="background:#003876;"></span><span>793 九龍東西線</span></div><div class="preset-desc">將軍澳工業邨 ➔ 蘇屋</div></button>
+          <button class="preset-chip" onclick="applyPreset('trunk_798')"><div class="preset-chip-header"><span class="preset-bar" style="background:#003876;"></span><span>798 將沙線</span></div><div class="preset-desc">調景嶺站 ➔ 火炭(駿洋邨)</div></button>
+        </div>
+
+        <div class="preset-tab-panel" id="tab_kmb">
+          <button class="preset-chip" onclick="applyPreset('kmb_960')"><div class="preset-chip-header"><span class="preset-bar" style="background:linear-gradient(135deg, #c8102e 60%, #ffffff 60%);"></span><span>城市脈搏紅巴 (960)</span></div><div class="preset-desc">屯門(建生) ➔ 灣仔北</div></button>
+          <button class="preset-chip" onclick="applyPreset('kmb_968')"><div class="preset-chip-header"><span class="preset-bar" style="background:linear-gradient(135deg, #c8102e 55%, #007a33 55%);"></span><span>西隧皇牌綠豬紙 (968)</span></div><div class="preset-desc">元朗(西) ➔ 銅鑼灣(天后)</div></button>
+          <button class="preset-chip" onclick="applyPreset('kmb_1a')"><div class="preset-chip-header"><span class="preset-bar" style="background:linear-gradient(135deg, #f5d77f 60%, #4a2e0b 60%);"></span><span>千禧香檳金巴 (1A)</span></div><div class="preset-desc">尖沙咀碼頭 ➔ 中秀茂坪</div></button>
+          <button class="preset-chip" onclick="applyPreset('kmb_b1')"><div class="preset-chip-header"><span class="preset-bar" style="background:linear-gradient(135deg, #ffd100 50%, #c8102e 50%);"></span><span>落馬洲口岸線 (B1)</span></div><div class="preset-desc">天水圍(天慈) ➔ 落馬洲站</div></button>
+          <button class="preset-chip" onclick="applyPreset('kmb_b9')"><div class="preset-chip-header"><span class="preset-bar" style="background:linear-gradient(135deg, #ffdd00 50%, #8b0000 50%);"></span><span>香園圍口岸線 (B9)</span></div><div class="preset-desc">屯門站 ➔ 香園圍口岸</div></button>
+          <button class="preset-chip" onclick="applyPreset('kmb_290a')"><div class="preset-chip-header"><span class="preset-bar" style="background:linear-gradient(135deg, #4caf50 55%, #1b5e20 55%);"></span><span>電光綠純電巴 (290A)</span></div><div class="preset-desc">將軍澳(彩明) ➔ 荃灣西站</div></button>
+          <button class="preset-chip" onclick="applyPreset('kmb_hotdog')"><div class="preset-chip-header"><span class="preset-bar" style="background:linear-gradient(135deg, #f0e68c 50%, #8b0000 50%);"></span><span>經典熱狗塗裝 (16)</span></div><div class="preset-desc">藍田(廣田邨) ➔ 旺角(柏景灣)</div></button>
+          <button class="preset-chip" onclick="applyPreset('kmb_white')"><div class="preset-chip-header"><span class="preset-bar" style="background:linear-gradient(135deg, #ffffff 65%, #c8102e 65%);"></span><span>九巴經典白板 (6C)</span></div><div class="preset-desc">美孚 ➔ 九龍城碼頭</div></button>
+          <button class="preset-chip" onclick="applyPreset('kmb_p960')"><div class="preset-chip-header"><span class="preset-bar" style="background:linear-gradient(135deg, #ffd700 45%, #1a1a1a 45%);"></span><span>星級尊線黑金 (P960)</span></div><div class="preset-desc">屯門(兆康站) ➔ 灣仔北</div></button>
+        </div>
+
+        <div class="preset-tab-panel" id="tab_lwb">
+          <button class="preset-chip" onclick="applyPreset('lwb_a31')"><div class="preset-chip-header"><span class="preset-bar" style="background:linear-gradient(135deg, #ea5b0c 60%, #ffffff 60%);"></span><span>陽光橙白塗裝 (A31)</span></div><div class="preset-desc">荃灣(如心廣場) ➔ 機場</div></button>
+          <button class="preset-chip" onclick="applyPreset('lwb_a41')"><div class="preset-chip-header"><span class="preset-bar" style="background:linear-gradient(135deg, #ff8800 50%, #b33c00 50%);"></span><span>初代飛龍橙金 (A41)</span></div><div class="preset-desc">沙田(碩門邨) ➔ 機場</div></button>
+          <button class="preset-chip" onclick="applyPreset('lwb_e36')"><div class="preset-chip-header"><span class="preset-bar" style="background:linear-gradient(135deg, #ffd100 50%, #ea5b0c 50%);"></span><span>北大嶼山對外線 (E36)</span></div><div class="preset-desc">元朗(八鄉路) ➔ 機場(西岸路)</div></button>
+          <button class="preset-chip" onclick="applyPreset('lwb_s1')"><div class="preset-chip-header"><span class="preset-bar" style="background:linear-gradient(135deg, #00a3e0 50%, #ea5b0c 50%);"></span><span>機場穿梭巴士 (S1)</span></div><div class="preset-desc">東涌站 ➔ 機場博覽館</div></button>
+          <button class="preset-chip" onclick="applyPreset('lwb_na33')"><div class="preset-chip-header"><span class="preset-bar" style="background:#111111; border:1px solid #ff7700;"></span><span>深宵特快黑橙 (NA33)</span></div><div class="preset-desc">國泰城 ➔ 屯門(富泰)</div></button>
+          <button class="preset-chip" onclick="applyPreset('lwb_r33')"><div class="preset-chip-header"><span class="preset-bar" style="background:linear-gradient(135deg, #e6007e 50%, #4a154b 50%);"></span><span>迪士尼專線 (R33)</span></div><div class="preset-desc">屯門站 ➔ 迪士尼樂園</div></button>
+        </div>
+
+        <div class="preset-tab-panel" id="tab_nlb">
+          <button class="preset-chip" onclick="applyPreset('nlb_11')"><div class="preset-chip-header"><span class="preset-bar" style="background:linear-gradient(135deg, #008037 60%, #ffffff 60%);"></span><span>嶼南綠白塗裝 (11)</span></div><div class="preset-desc">東涌站 ➔ 大澳</div></button>
+          <button class="preset-chip" onclick="applyPreset('nlb_3m')"><div class="preset-chip-header"><span class="preset-bar" style="background:#008037;"></span><span>東涌道過山線 (3M)</span></div><div class="preset-desc">梅窩碼頭 ➔ 東涌站</div></button>
+          <button class="preset-chip" onclick="applyPreset('nlb_23')"><div class="preset-chip-header"><span class="preset-bar" style="background:linear-gradient(135deg, #ffd100 50%, #008037 50%);"></span><span>昂坪寶蓮寺線 (23)</span></div><div class="preset-desc">東涌達東路 ➔ 昂坪</div></button>
+          <button class="preset-chip" onclick="applyPreset('nlb_b6')"><div class="preset-chip-header"><span class="preset-bar" style="background:linear-gradient(135deg, #0055a5 60%, #008037 60%);"></span><span>大橋口岸藍綠 (B6)</span></div><div class="preset-desc">滿東邨 ➔ 港珠澳大橋口岸</div></button>
+          <button class="preset-chip" onclick="applyPreset('nlb_b2p')"><div class="preset-chip-header"><span class="preset-bar" style="background:linear-gradient(135deg, #ffd200 50%, #003876 50%);"></span><span>深圳灣口岸線 (B2P)</span></div><div class="preset-desc">天慈邨 ➔ 深圳灣口岸</div></button>
+          <button class="preset-chip" onclick="applyPreset('nlb_1')"><div class="preset-chip-header"><span class="preset-bar" style="background:linear-gradient(135deg, #76ff03 50%, #004d25 50%);"></span><span>梅窩大澳幹線 (1)</span></div><div class="preset-desc">梅窩碼頭 ➔ 大澳</div></button>
+        </div>
+
+        <div class="preset-tab-panel" id="tab_mtr">
+          <button class="preset-chip" onclick="applyPreset('mtr_k52')"><div class="preset-chip-header"><span class="preset-bar" style="background:linear-gradient(135deg, #ffffff 45%, #001f4d 45%, #001f4d 75%, #e60012 75%);"></span><span>港鐵新塗裝 (K52)</span></div><div class="preset-desc">屯門站 ➔ 龍鼓灘</div></button>
+          <button class="preset-chip" onclick="applyPreset('mtr_k65')"><div class="preset-chip-header"><span class="preset-bar" style="background:#0055a5;"></span><span>流浮山接駁線 (K65)</span></div><div class="preset-desc">元朗站 ➔ 流浮山</div></button>
+          <button class="preset-chip" onclick="applyPreset('mtr_k76')"><div class="preset-chip-header"><span class="preset-bar" style="background:#0055a5;"></span><span>天水圍接駁線 (K76)</span></div><div class="preset-desc">天恆 ➔ 天水圍站</div></button>
+          <button class="preset-chip" onclick="applyPreset('mtr_k12')"><div class="preset-chip-header"><span class="preset-bar" style="background:linear-gradient(135deg, #66ccff 50%, #002244 50%);"></span><span>大埔東鐵接駁 (K12)</span></div><div class="preset-desc">大埔墟站 ➔ 八號花園</div></button>
+          <button class="preset-chip" onclick="applyPreset('mtr_k73')"><div class="preset-chip-header"><span class="preset-bar" style="background:linear-gradient(135deg, #ffd100 50%, #4a154b 50%);"></span><span>港鐵黃紫波浪 (K73)</span></div><div class="preset-desc">天恆 ➔ 元朗(西)</div></button>
+          <button class="preset-chip" onclick="applyPreset('kcr_retro_506')"><div class="preset-chip-header"><span class="preset-bar" style="background:linear-gradient(135deg, #003366 55%, #c8102e 55%);"></span><span>九鐵經典塗裝 (506)</span></div><div class="preset-desc">屯門碼頭 ➔ 兆麟</div></button>
+        </div>
+
+        <div class="presets-title" style="margin-top:4px;">📐 選擇封面排版風格 (Layout Styles)</div>
+        <div class="layout-switcher">
+          <button class="layout-btn" id="btnLayoutClassic" onclick="setLayoutMode('classic')">
+            <span>🔲 經典雙橫條</span>
+            <span style="font-size:10px; color:var(--text-muted);">頂底色條標題</span>
+          </button>
+          <button class="layout-btn active" id="btnLayoutModern" onclick="setLayoutMode('modern')">
+            <span>✨ 現代全幅沉浸</span>
+            <span style="font-size:10px; color:var(--text-muted);">無遮擋微暗角</span>
+          </button>
+          <button class="layout-btn" id="btnLayoutLed" onclick="setLayoutMode('led')">
+            <span>📟 巴士電牌 LED</span>
+            <span style="font-size:10px; color:var(--text-muted);">發光矩陣框</span>
+          </button>
+          <button class="layout-btn" id="btnLayoutSidebar" onclick="setLayoutMode('sidebar')">
+            <span>📑 側邊站牌欄</span>
+            <span style="font-size:10px; color:var(--text-muted);">垂直導覽風格</span>
+          </button>
+        </div>
+      </div>
+      
+      <!-- 1. 頂部資訊條設置 -->
+      <div class="section-card">
+        <div class="section-header">
+          <span>🏷️ 1. 頂部特徵條（文字標準格式）</span>
+          <span class="sub-tag">標準格式</span>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>畫質標籤 (Badge)</label>
+            <input type="text" id="topBadge" value="1080P 60fps" placeholder="例如: 1080P 60fps / 4K 60fps">
+          </div>
+          <div class="form-group">
+            <label>標籤字色 / 框色</label>
+            <input type="color" id="topBadgeColor" value="#ffd100">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>頂部文字標準（格式：XXX上/下層展望•經XXX•XXX）</label>
+          <input type="text" id="topText" value="Cityflyer 上層展望 • 經黃大仙 • 鑽石山 • 九龍灣 • 觀塘 • 坑口">
+          <div class="deck-quickbar">
+            <span style="font-size:11px; color:#9aa5b8; font-weight:700;">快速插入：</span>
+            <button type="button" class="deck-btn" onclick="injectDeck('上層展望')">🏙️ 上層展望</button>
+            <button type="button" class="deck-btn" onclick="injectDeck('下層展望')">🚍 下層展望</button>
+            <button type="button" class="deck-btn" onclick="injectDeck('前面展望')">🎥 前面展望</button>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>字體粗細 (Weight)</label>
+            <select id="topTextWeight">
+              <option value="900" selected>900 (極粗 Extra Black)</option>
+              <option value="800">800 (特粗 Heavy)</option>
+              <option value="700">700 (粗體 Bold)</option>
+              <option value="400">400 (正常 Regular)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>文字樣式 (Style)</label>
+            <div class="style-toggles">
+              <button type="button" class="style-btn" id="btnTopItalic" onclick="toggleStyle('topTextItalic', 'btnTopItalic')">
+                <i>I</i> 斜體
+              </button>
+              <input type="hidden" id="topTextItalic" value="0">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>頂部色條底色</label>
+            <input type="color" id="topBarColor" value="#d91a2a">
+          </div>
+          <div class="form-group">
+            <label>頂部條透明度</label>
+            <input type="range" id="topBarOpacity" min="0.4" max="1" step="0.05" value="0.95">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>文字水平位移 (X) <span class="val-hint" id="valTopOffsetX">0px</span></label>
+            <input type="range" id="topTextOffsetX" min="-500" max="500" step="2" value="0">
+          </div>
+          <div class="form-group">
+            <label>文字垂直位移 (Y) <span class="val-hint" id="valTopOffsetY">0px</span></label>
+            <input type="range" id="topTextOffsetY" min="-60" max="60" step="1" value="0">
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. 公司 Logo 設置 -->
+      <div class="section-card">
+        <div class="section-header">
+          <span>🏢 2. 各大巴士公司 Logo 標誌</span>
+          <span class="sub-tag">可拖曳</span>
+        </div>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label>顯示 Logo</label>
+            <select id="logoEnabled">
+              <option value="1">開啟 Logo</option>
+              <option value="0" selected>關閉 Logo</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Logo 尺寸 <span class="val-hint" id="valLogoSize">170px</span></label>
+            <input type="range" id="logoSize" min="40" max="350" value="170">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>全港各大專營巴士公司 Logo</label>
+          <div class="logo-chips">
+            <button type="button" class="logo-chip-btn" onclick="selectPresetLogo('kmb_red')">🔴 九巴 KMB (紅底白字)</button>
+            <button type="button" class="logo-chip-btn" onclick="selectPresetLogo('kmb_gold')">🪙 九巴 KMB (尊尚黑金)</button>
+            <button type="button" class="logo-chip-btn" onclick="selectPresetLogo('lwb_orange')">🟠 龍運巴士 LWB</button>
+            <button type="button" class="logo-chip-btn" onclick="selectPresetLogo('nlb_green')">🟢 嶼巴 NLB</button>
+            <button type="button" class="logo-chip-btn" onclick="selectPresetLogo('mtr_bus')">🔵 港鐵巴士 MTR</button>
+            <button type="button" class="logo-chip-btn" onclick="selectPresetLogo('kcr_retro')">🚆 九鐵巴士 KCR</button>
+            <button type="button" class="logo-chip-btn" onclick="selectPresetLogo('cityflyer')">✈️ 城巴 Cityflyer</button>
+            <button type="button" class="logo-chip-btn" onclick="selectPresetLogo('citybus_pacman')">🟡 城巴大食鬼</button>
+            <button type="button" class="logo-chip-btn" onclick="selectPresetLogo('citybus_classic')">🔵 城巴經典黃藍紅白</button>
+            <button type="button" class="logo-chip-btn" onclick="selectPresetLogo('citybus_40th')">🔶 城巴 1979 復刻</button>
+            <button type="button" class="logo-chip-btn" onclick="selectPresetLogo('citybus_rebrand')">🔴 全新城巴小寫 c</button>
+            <button type="button" class="logo-chip-btn" onclick="selectPresetLogo('nwfb')">🟠 新巴波浪 Logo</button>
+          </div>
+        </div>
+
+        <div class="upload-zone" id="logoUploadZone" style="padding:10px;">
+          <input type="file" id="logoInput" accept="image/*" style="display:none;">
+          <div class="up-title">📁 上傳自訂 Logo 圖片 (支援透明 PNG/SVG)</div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Logo 水平位置 (X) <span class="val-hint" id="valLogoOffsetX">0px</span></label>
+            <input type="range" id="logoOffsetX" min="-1800" max="1800" step="2" value="0">
+          </div>
+          <div class="form-group">
+            <label>Logo 垂直位置 (Y) <span class="val-hint" id="valLogoOffsetY">0px</span></label>
+            <input type="range" id="logoOffsetY" min="-900" max="900" step="2" value="0">
+          </div>
+        </div>
+        <div class="pos-btn-group">
+          <button class="btn-xs" onclick="alignLogo('topRight')">右上角</button>
+          <button class="btn-xs" onclick="alignLogo('topLeft')">左上角</button>
+          <button class="btn-xs" onclick="alignLogo('bottomRight')">右下角</button>
+          <button class="btn-xs" onclick="resetPos('logoOffsetX', 'logoOffsetY')">重設位置</button>
+        </div>
+      </div>
+
+      <!-- 3. 背景圖片設置 -->
+      <div class="section-card">
+        <div class="section-header">
+          <span>📷 3. 背景巴士圖片 (Background Image)</span>
+          <span class="sub-tag">可拖曳</span>
+        </div>
+        <div class="upload-zone" id="uploadZone">
+          <input type="file" id="imageInput" accept="image/*" style="display:none;">
+          <svg width="26" height="26" fill="none" stroke="#ffd100" stroke-width="2" viewBox="0 0 24 24"><path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+          <div class="up-title">點擊上傳 / 拖曳圖片 / 直接 Ctrl+V 貼上</div>
+          <div class="up-subtitle">支援 JPG, PNG, WEBP 高清截圖</div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>圖片縮放 <span class="val-hint" id="valScale">1.0x</span></label>
+            <input type="range" id="imgScale" min="0.3" max="3" step="0.01" value="1">
+          </div>
+          <div class="form-group">
+            <label>遮罩 / 暗角濃度 <span class="val-hint" id="valVignette">15%</span></label>
+            <input type="range" id="vignetteOpacity" min="0" max="0.7" step="0.05" value="0.15">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>水平位置 (X) <span class="val-hint" id="valOffsetX">0px</span></label>
+            <input type="range" id="imgOffsetX" min="-1000" max="1000" step="2" value="0">
+          </div>
+          <div class="form-group">
+            <label>垂直位置 (Y) <span class="val-hint" id="valOffsetY">0px</span></label>
+            <input type="range" id="imgOffsetY" min="-1000" max="1000" step="2" value="0">
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. 路線名稱 (右上角) -->
+      <div class="section-card">
+        <div class="section-header">
+          <span>🚆 4. 路線主標題 (Top Right Title)</span>
+          <span class="sub-tag">字體與描邊</span>
+        </div>
+        
+        <div class="form-group">
+          <label>路線名稱 / 標題文字</label>
+          <input type="text" id="routeTitle" value="城巴 Cityflyer A29" placeholder="例如: 城巴 Cityflyer A29 或 城巴 43R">
+        </div>
+
+        <div class="form-group">
+          <label>副標題 / 經由 (可選)</label>
+          <input type="text" id="routeSubTitle" value="" placeholder="例如: 紅磡海底隧道特快線">
+        </div>
+
+        <div class="form-row-3">
+          <div class="form-group">
+            <label>字型選擇</label>
+            <select id="routeFont">
+              <option value="'Dela Gothic One', sans-serif" selected>Dela Gothic (重磅日系/巴士)</option>
+              <option value="'Noto Sans TC', sans-serif">Noto Sans TC (繁體黑體)</option>
+              <option value="'Zen Kaku Gothic New', sans-serif">Zen Kaku Gothic (極黑體)</option>
+              <option value="'M PLUS Rounded 1c', sans-serif">M PLUS 圓黑體</option>
+              <option value="'VT323', monospace">LED 電牌點陣字</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>主字色</label>
+            <input type="color" id="routeTextColor" value="#ffd100">
+          </div>
+          <div class="form-group">
+            <label>外框描邊色</label>
+            <input type="color" id="routeStrokeColor" value="#b30006">
+          </div>
+        </div>
+
+        <div class="type-tags-container" style="margin-top:2px;">
+          <div class="type-category-label" style="font-size:11px; color:#ffd100; font-weight:800;">🎨 各大巴士公司標題字色＋外框描邊快速套用：</div>
+          <div class="type-tag-list">
+            <button type="button" class="type-tag-btn" onclick="setTitleColors('#f3e5ab', '#5c1d24', '城巴1979忌廉棗紅')"><span class="tag-color-dot" style="background:#f3e5ab; border:2px solid #5c1d24;"></span>城巴忌廉棗紅</button>
+            <button type="button" class="type-tag-btn" onclick="setTitleColors('#ffd100', '#b30006', '城巴黃字紅框')"><span class="tag-color-dot" style="background:#ffd100; border:2px solid #b30006;"></span>城巴黃字紅框</button>
+            <button type="button" class="type-tag-btn" onclick="setTitleColors('#ffd200', '#003876', '城巴黃字藍框')"><span class="tag-color-dot" style="background:#ffd200; border:2px solid #003876;"></span>城巴黃字藍框</button>
+            <button type="button" class="type-tag-btn" onclick="setTitleColors('#ffffff', '#009b3a', '新巴白字綠框')"><span class="tag-color-dot" style="background:#ffffff; border:2px solid #009b3a;"></span>新巴白字綠框</button>
+            <button type="button" class="type-tag-btn" onclick="setTitleColors('#ffffff', '#c8102e', '九巴白字紅框')"><span class="tag-color-dot" style="background:#ffffff; border:2px solid #c8102e;"></span>九巴白字紅框</button>
+            <button type="button" class="type-tag-btn" onclick="setTitleColors('#f5d77f', '#4a2e0b', '九巴香檳金字')"><span class="tag-color-dot" style="background:#f5d77f; border:2px solid #4a2e0b;"></span>九巴香檳金字</button>
+            <button type="button" class="type-tag-btn" onclick="setTitleColors('#ffffff', '#1b5e20', '九巴電巴綠框')"><span class="tag-color-dot" style="background:#ffffff; border:2px solid #1b5e20;"></span>九巴電巴綠框</button>
+            <button type="button" class="type-tag-btn" onclick="setTitleColors('#f0e68c', '#8b0000', '九巴熱狗米紅')"><span class="tag-color-dot" style="background:#f0e68c; border:2px solid #8b0000;"></span>九巴熱狗米紅</button>
+            <button type="button" class="type-tag-btn" onclick="setTitleColors('#ffffff', '#c2410c', '龍運白字橙框')"><span class="tag-color-dot" style="background:#ffffff; border:2px solid #c2410c;"></span>龍運白字橙框</button>
+            <button type="button" class="type-tag-btn" onclick="setTitleColors('#ff9900', '#111111', '龍運深宵橙黑')"><span class="tag-color-dot" style="background:#ff9900; border:2px solid #111111;"></span>龍運深宵橙黑</button>
+            <button type="button" class="type-tag-btn" onclick="setTitleColors('#ffffff', '#008037', '嶼巴白字綠框')"><span class="tag-color-dot" style="background:#ffffff; border:2px solid #008037;"></span>嶼巴白字綠框</button>
+            <button type="button" class="type-tag-btn" onclick="setTitleColors('#ffd200', '#0055a5', '嶼巴口岸黃藍')"><span class="tag-color-dot" style="background:#ffd200; border:2px solid #0055a5;"></span>嶼巴口岸黃藍</button>
+            <button type="button" class="type-tag-btn" onclick="setTitleColors('#ffffff', '#0055a5', '港鐵白字藍框')"><span class="tag-color-dot" style="background:#ffffff; border:2px solid #0055a5;"></span>港鐵白字藍框</button>
+            <button type="button" class="type-tag-btn" onclick="setTitleColors('#ffffff', '#c8102e', '九鐵白字紅框')"><span class="tag-color-dot" style="background:#ffffff; border:2px solid #003366;"></span>九鐵懷舊紅藍</button>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>字體大小 <span class="val-hint" id="valRouteFontSize">92px</span></label>
+            <input type="range" id="routeFontSize" min="40" max="150" value="92">
+          </div>
+          <div class="form-group">
+            <label>斜體傾斜度 <span class="val-hint" id="valRouteSlant">-6°</span></label>
+            <input type="range" id="routeSlant" min="-25" max="15" step="1" value="-6">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>水平位置 (X 位移) <span class="val-hint" id="valRouteOffsetX">0px</span></label>
+            <input type="range" id="routeOffsetX" min="-1200" max="600" step="2" value="0">
+          </div>
+          <div class="form-group">
+            <label>垂直位置 (Y 位移) <span class="val-hint" id="valRouteOffsetY">0px</span></label>
+            <input type="range" id="routeOffsetY" min="-300" max="800" step="2" value="0">
+          </div>
+        </div>
+      </div>
+
+      <!-- 5. 核心起訖站 & 車種別 -->
+      <div class="section-card">
+        <div class="section-header">
+          <span>📍 5. 車種別與起訖站 (Main Route)</span>
+          <span class="sub-tag">自適應縮放</span>
+        </div>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label>車種別 / 標籤文字</label>
+            <input type="text" id="serviceType" value="城巴機場快線">
+          </div>
+          <div class="form-group">
+            <label>車種填色</label>
+            <input type="color" id="serviceColor" value="#ffd100">
+          </div>
+        </div>
+
+        <div class="type-tags-container">
+          <div class="type-category-label" style="font-size:11px; color:#ffd100; font-weight:800;">🏷️ 全港五大巴士公司官方路線豬紙顏色標準：</div>
+          <div class="service-company-tabs">
+            <button type="button" class="service-tab-btn active" id="srvTab_all" onclick="filterServiceTags('all')">🌐 全部公司</button>
+            <button type="button" class="service-tab-btn" id="srvTab_kmb" onclick="filterServiceTags('kmb')">🔴 九巴 KMB</button>
+            <button type="button" class="service-tab-btn" id="srvTab_lwb" onclick="filterServiceTags('lwb')">🟠 龍運 LWB</button>
+            <button type="button" class="service-tab-btn" id="srvTab_ctb" onclick="filterServiceTags('ctb')">🟡 城巴 / 新巴</button>
+            <button type="button" class="service-tab-btn" id="srvTab_nlb" onclick="filterServiceTags('nlb')">🟢 嶼巴 NLB</button>
+            <button type="button" class="service-tab-btn" id="srvTab_mtr" onclick="filterServiceTags('mtr')">🔵 港鐵 / 九鐵</button>
+          </div>
+
+          <div class="type-tag-list" id="serviceTagList">
+            <button type="button" class="type-tag-btn" data-company="kmb" onclick="setServiceTag('九巴常規路線', '#c8102e', '#ffd100', '#ffffff', '#c8102e')"><span class="tag-color-dot" style="background:#c8102e; border:1px solid #fff;"></span>🔴 九巴紅底白字</button>
+            <button type="button" class="type-tag-btn" data-company="kmb" onclick="setServiceTag('西隧過海特快', '#007a33', '#ffd100', '#ffffff', '#007a33')"><span class="tag-color-dot" style="background:#007a33; border:1px solid #fff;"></span>🟢 九巴西隧綠底</button>
+            <button type="button" class="type-tag-btn" data-company="kmb" onclick="setServiceTag('紅隧/東隧過海', '#e60012', '#ffffff', '#ffd100', '#b30006')"><span class="tag-color-dot" style="background:#e60012; border:1px solid #ffd100;"></span>🔴 九巴過海紅底</button>
+            <button type="button" class="type-tag-btn" data-company="kmb" onclick="setServiceTag('九巴特快路線', '#0055a5', '#ffd100', '#ffffff', '#0055a5')"><span class="tag-color-dot" style="background:#0055a5; border:1px solid #fff;"></span>🔵 九巴特快藍底</button>
+            <button type="button" class="type-tag-btn" data-company="kmb" onclick="setServiceTag('千禧香檳金巴', '#c5a059', '#ffd100', '#f5d77f', '#4a2e0b')"><span class="tag-color-dot" style="background:#c5a059; border:1px solid #4a2e0b;"></span>🪙 九巴香檳金巴</button>
+            <button type="button" class="type-tag-btn" data-company="kmb" onclick="setServiceTag('口岸接駁專線', '#c8102e', '#ffd100', '#ffd100', '#8b0000')"><span class="tag-color-dot" style="background:#ffd100; border:2px solid #c8102e;"></span>🟡 九巴口岸專線</button>
+            <button type="button" class="type-tag-btn" data-company="kmb" onclick="setServiceTag('新能源純電巴', '#2e7d32', '#ffd100', '#ffffff', '#1b5e20')"><span class="tag-color-dot" style="background:#2e7d32; border:1px solid #76ff03;"></span>🟢 九巴電光翠綠</button>
+            <button type="button" class="type-tag-btn" data-company="kmb" onclick="setServiceTag('傳奇熱狗巴士', '#8b0000', '#f0e68c', '#f0e68c', '#8b0000')"><span class="tag-color-dot" style="background:#f0e68c; border:2px solid #8b0000;"></span>🔥 九巴經典熱狗</button>
+            <button type="button" class="type-tag-btn" data-company="kmb" onclick="setServiceTag('經典白板冷氣', '#990000', '#ffffff', '#ffffff', '#990000')"><span class="tag-color-dot" style="background:#ffffff; border:2px solid #c8102e;"></span>🤍 九巴白板冷氣</button>
+            <button type="button" class="type-tag-btn" data-company="kmb" onclick="setServiceTag('星級尊線 P線', '#c5a059', '#ffd700', '#ffd700', '#1a1a1a')"><span class="tag-color-dot" style="background:#1a1a1a; border:1px solid #ffd700;"></span>🖤 九巴星級尊線</button>
+
+            <button type="button" class="type-tag-btn" data-company="lwb" onclick="setServiceTag('龍運機場快線', '#ea5b0c', '#ffd100', '#ffffff', '#c2410c')"><span class="tag-color-dot" style="background:#ea5b0c; border:1px solid #fff;"></span>🟠 龍運陽光橙底</button>
+            <button type="button" class="type-tag-btn" data-company="lwb" onclick="setServiceTag('北大嶼山對外線', '#ea5b0c', '#ffd100', '#ffd100', '#b33c00')"><span class="tag-color-dot" style="background:#ffd100; border:2px solid #ea5b0c;"></span>🟡 龍運黃字橙框</button>
+            <button type="button" class="type-tag-btn" data-company="lwb" onclick="setServiceTag('機場穿梭巴士', '#00a3e0', '#ffd100', '#ffffff', '#004b97')"><span class="tag-color-dot" style="background:#00a3e0; border:1px solid #fff;"></span>🔵 龍運穿梭天藍</button>
+            <button type="button" class="type-tag-btn" data-company="lwb" onclick="setServiceTag('深宵機場特快', '#ff7700', '#ffd100', '#ff9900', '#111111')"><span class="tag-color-dot" style="background:#111111; border:1px solid #ff7700;"></span>🖤 龍運深宵黑橙</button>
+            <button type="button" class="type-tag-btn" data-company="lwb" onclick="setServiceTag('迪士尼樂園專線', '#e6007e', '#ffd100', '#ffffff', '#662d91')"><span class="tag-color-dot" style="background:#e6007e; border:1px solid #fff;"></span>🟣 龍運迪士尼線</button>
+
+            <button type="button" class="type-tag-btn" data-company="ctb" onclick="setServiceTag('皇崗專線', '#5c1d24', '#ffd100', '#f3e5ab', '#5c1d24')"><span class="tag-color-dot" style="background:#5c1d24; border:1px solid #f3e5ab;"></span>🟤 城巴1979復刻</button>
+            <button type="button" class="type-tag-btn" data-company="ctb" onclick="setServiceTag('紅隧/東隧過海', '#d91a2a', '#ffffff', '#ffffff', '#9e0b0f')"><span class="tag-color-dot" style="background:#d91a2a; border:1px solid #fff;"></span>🔴 城巴紅底白字</button>
+            <button type="button" class="type-tag-btn" data-company="ctb" onclick="setServiceTag('西隧過海線', '#008037', '#ffffff', '#ffffff', '#004d25')"><span class="tag-color-dot" style="background:#008037; border:1px solid #fff;"></span>🟢 城巴綠底白字</button>
+            <button type="button" class="type-tag-btn" data-company="ctb" onclick="setServiceTag('日間市區/特快', '#003876', '#ffffff', '#ffd200', '#003876')"><span class="tag-color-dot" style="background:#003876; border:1px solid #fff;"></span>🔵 城巴深藍底字</button>
+            <button type="button" class="type-tag-btn" data-company="ctb" onclick="setServiceTag('城巴普通線', '#ffd100', '#000000', '#ffd100', '#003876')"><span class="tag-color-dot" style="background:#ffd100; border:1px solid #000;"></span>🟡 城巴黃底黑字</button>
+            <button type="button" class="type-tag-btn" data-company="ctb" onclick="setServiceTag('城巴機場快線', '#9e0b0f', '#ffd100', '#ffd100', '#9e0b0f')"><span class="tag-color-dot" style="background:#9e0b0f; border:1px solid #ffd100;"></span>✈️ 城巴深紅金字</button>
+            <button type="button" class="type-tag-btn" data-company="ctb" onclick="setServiceTag('口岸專線', '#d91a2a', '#ffcc00', '#ffd100', '#9e0b0f')"><span class="tag-color-dot" style="background:#d91a2a; border:1px solid #ffcc00;"></span>🟠 城巴紅底黃字</button>
+            <button type="button" class="type-tag-btn" data-company="ctb" onclick="setServiceTag('山頂探索號', '#00a3e0', '#ffffff', '#ffffff', '#003876')"><span class="tag-color-dot" style="background:#00a3e0; border:1px solid #fff;"></span>🩵 城巴淺藍白字</button>
+            <button type="button" class="type-tag-btn" data-company="ctb" onclick="setServiceTag('迪士尼樂園線', '#72c7e7', '#002d62', '#72c7e7', '#002d62')"><span class="tag-color-dot" style="background:#72c7e7; border:1px solid #002d62;"></span>🏰 城巴淺藍深藍</button>
+            <button type="button" class="type-tag-btn" data-company="ctb" onclick="setServiceTag('通宵巴士線', '#111111', '#ffcc00', '#ffcc00', '#111111')"><span class="tag-color-dot" style="background:#111111; border:1px solid #ffcc00;"></span>🌙 城巴黑底黃字</button>
+            <button type="button" class="type-tag-btn" data-company="ctb" onclick="setServiceTag('觀光城巴 H1/H2', '#00a651', '#ffffff', '#ffffff', '#006837')"><span class="tag-color-dot" style="background:#00a651;"></span>🟢 觀光城巴翠綠</button>
+            <button type="button" class="type-tag-btn" data-company="ctb" onclick="setServiceTag('新巴經典路線', '#009b3a', '#ff7300', '#ffffff', '#009b3a')"><span class="tag-color-dot" style="background:#009b3a; border:1px solid #ff7300;"></span>🟠 新巴波浪綠橙</button>
+
+            <button type="button" class="type-tag-btn" data-company="nlb" onclick="setServiceTag('大嶼山郊遊線', '#008037', '#ffd100', '#ffffff', '#004d25')"><span class="tag-color-dot" style="background:#008037; border:1px solid #fff;"></span>🟢 嶼巴翠綠白字</button>
+            <button type="button" class="type-tag-btn" data-company="nlb" onclick="setServiceTag('昂坪寶蓮寺線', '#008037', '#ffd100', '#ffd100', '#004d25')"><span class="tag-color-dot" style="background:#ffd100; border:2px solid #008037;"></span>🟡 嶼巴昂坪金綠</button>
+            <button type="button" class="type-tag-btn" data-company="nlb" onclick="setServiceTag('大橋口岸專線', '#0055a5', '#ffd100', '#ffd200', '#003876')"><span class="tag-color-dot" style="background:#0055a5; border:1px solid #ffd200;"></span>🔵 嶼巴口岸藍黃</button>
+            <button type="button" class="type-tag-btn" data-company="nlb" onclick="setServiceTag('深圳灣口岸線', '#003876', '#ffcc00', '#ffcc00', '#002244')"><span class="tag-color-dot" style="background:#003876; border:1px solid #ffcc00;"></span>🔵 嶼巴深圳灣線</button>
+            <button type="button" class="type-tag-btn" data-company="nlb" onclick="setServiceTag('東涌區內線', '#2e7d32', '#ffffff', '#ffffff', '#006837')"><span class="tag-color-dot" style="background:#2e7d32; border:1px solid #fff;"></span>🟢 嶼巴東涌區內</button>
+
+            <button type="button" class="type-tag-btn" data-company="mtr" onclick="setServiceTag('屯馬/輕鐵接駁', '#0055a5', '#ffd100', '#ffffff', '#001f4d')"><span class="tag-color-dot" style="background:#0055a5; border:1px solid #e60012;"></span>🔵 港鐵新塗裝藍白紅</button>
+            <button type="button" class="type-tag-btn" data-company="mtr" onclick="setServiceTag('輕鐵接駁專線', '#0055a5', '#ffd100', '#ffd100', '#003366')"><span class="tag-color-dot" style="background:#ffd100; border:2px solid #0055a5;"></span>🟡 港鐵黃字藍框</button>
+            <button type="button" class="type-tag-btn" data-company="mtr" onclick="setServiceTag('東鐵接駁巴士', '#003366', '#66ccff', '#66ccff', '#001f4d')"><span class="tag-color-dot" style="background:#66ccff; border:2px solid #003366;"></span>🩵 港鐵東鐵接駁</button>
+            <button type="button" class="type-tag-btn" data-company="mtr" onclick="setServiceTag('新界西波浪塗裝', '#4a154b', '#ffd100', '#ffd100', '#4a154b')"><span class="tag-color-dot" style="background:#4a154b; border:1px solid #ffd100;"></span>🟣 港鐵紫黃波浪</button>
+            <button type="button" class="type-tag-btn" data-company="mtr" onclick="setServiceTag('九鐵接駁巴士', '#c8102e', '#ffd100', '#ffffff', '#c8102e')"><span class="tag-color-dot" style="background:#003366; border:1px solid #c8102e;"></span>🚆 九鐵經典藍紅</button>
+          </div>
+        </div>
+
+        <div class="form-row-3" style="margin-top:6px;">
+          <div class="form-group">
+            <label>起點站 (Origin)</label>
+            <input type="text" id="stationOrigin" value="機場">
+          </div>
+          <div class="form-group">
+            <label>箭頭符號</label>
+            <select id="routeArrow">
+              <option value="➔" selected>➔ (粗黑箭頭)</option>
+              <option value="→">→ (細箭頭)</option>
+              <option value="➡">➡ (實心箭頭)</option>
+              <option value="＝">＝ (雙向)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>訖點站 (Dest)</label>
+            <input type="text" id="stationDest" value="將軍澳 (寶琳)">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>站名字體</label>
+            <select id="stationFont">
+              <option value="'Noto Sans TC', sans-serif" selected>Noto Sans TC (繁體黑體)</option>
+              <option value="'Dela Gothic One', sans-serif">Dela Gothic (重磅日系/巴士)</option>
+              <option value="'Zen Kaku Gothic New', sans-serif">Zen Kaku Gothic (極黑體)</option>
+              <option value="'M PLUS Rounded 1c', sans-serif">M PLUS 圓黑體</option>
+              <option value="'VT323', monospace">LED 電牌點陣字</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>站名字體大小 <span class="val-hint" id="valStationFontSize">110px</span></label>
+            <input type="range" id="stationFontSize" min="50" max="160" value="110">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>站名傾斜度 <span class="val-hint" id="valStationSlant">-6°</span></label>
+            <input type="range" id="stationSlant" min="-25" max="15" step="1" value="-6">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>水平位置 (X 位移) <span class="val-hint" id="valMainRouteOffsetX">20px</span></label>
+            <input type="range" id="mainRouteOffsetX" min="-600" max="1200" step="2" value="20">
+          </div>
+          <div class="form-group">
+            <label>垂直位置 (Y 位移) <span class="val-hint" id="valMainRouteOffsetY">0px</span></label>
+            <input type="range" id="mainRouteOffsetY" min="-800" max="300" step="2" value="0">
+          </div>
+        </div>
+      </div>
+
+      <!-- 6. 底部車型與數據條 -->
+      <div class="section-card">
+        <div class="section-header">
+          <span>ℹ️ 6. 底部數據條 (Bottom Stats Bar)</span>
+          <span class="sub-tag">塗裝底色</span>
+        </div>
+        
+        <div class="form-group">
+          <label>車型 / 途經站數 / 行車數據</label>
+          <input type="text" id="bottomText" value="Alexander Dennis Enviro500 12.8M Coach (6840)">
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>底部條底色</label>
+            <input type="color" id="bottomBarColor" value="#d91a2a">
+          </div>
+          <div class="form-group">
+            <label>基準字體大小 <span class="val-hint" id="valBottomFontSize">42px</span></label>
+            <input type="range" id="bottomFontSize" min="20" max="60" value="42">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>文字水平位移 (X) <span class="val-hint" id="valBottomOffsetX">0px</span></label>
+            <input type="range" id="bottomOffsetX" min="-500" max="1000" step="2" value="0">
+          </div>
+          <div class="form-group">
+            <label>文字垂直位移 (Y) <span class="val-hint" id="valBottomOffsetY">0px</span></label>
+            <input type="range" id="bottomOffsetY" min="-50" max="50" step="1" value="0">
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div id="toast" class="toast"></div>
+
+  <script>
+    const canvas = document.getElementById('thumbCanvas');
+    const ctx = canvas.getContext('2d');
+
+    let bgImage = null;
+    let logoImage = null;
+    let currentLayoutMode = 'modern';
+    let linkedClipContext = null; // Stores incoming TransitDeck clip metadata
+
+    const presetLogos = {
+      kmb_red: `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 65"><rect width="200" height="65" rx="10" fill="%23c8102e"/><text x="100" y="46" fill="%23ffffff" font-family="Arial,sans-serif" font-weight="900" font-size="38" text-anchor="middle" letter-spacing="3">KMB</text></svg>`,
+      kmb_gold: `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 65"><rect width="200" height="65" rx="10" fill="%231a1a1a"/><rect x="4" y="4" width="192" height="57" rx="8" fill="none" stroke="%23c5a059" stroke-width="3"/><text x="100" y="46" fill="%23c5a059" font-family="Arial,sans-serif" font-weight="900" font-size="38" text-anchor="middle" letter-spacing="3">KMB</text></svg>`,
+      lwb_orange: `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 65"><rect width="220" height="65" rx="10" fill="%23ea5b0c"/><text x="85" y="46" fill="%23ffffff" font-family="Arial,sans-serif" font-weight="900" font-size="36" text-anchor="middle" letter-spacing="2">LWB</text><text x="175" y="46" fill="%23ffd100" font-family="Arial,sans-serif" font-weight="900" font-size="28" text-anchor="middle">✈️</text></svg>`,
+      nlb_green: `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 65"><rect width="200" height="65" rx="10" fill="%23008037"/><text x="100" y="46" fill="%23ffffff" font-family="Arial,sans-serif" font-weight="900" font-size="36" text-anchor="middle" letter-spacing="2">NLB</text></svg>`,
+      mtr_bus: `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 65"><rect width="240" height="65" rx="10" fill="%230055a5"/><circle cx="40" cy="32.5" r="18" fill="none" stroke="%23ffffff" stroke-width="4.5"/><path d="M28 32.5 L52 32.5 M40 20.5 L40 44.5" stroke="%23ffffff" stroke-width="4.5" stroke-linecap="round"/><text x="145" y="45" fill="%23ffffff" font-family="Arial,sans-serif" font-weight="900" font-size="24" text-anchor="middle">港鐵巴士</text></svg>`,
+      kcr_retro: `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 65"><rect width="220" height="65" rx="10" fill="%23003366"/><text x="110" y="46" fill="%23c8102e" font-family="Arial,sans-serif" font-weight="900" font-size="38" text-anchor="middle" letter-spacing="4">KCR</text></svg>`,
+      cityflyer: `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 70"><rect width="240" height="70" rx="10" fill="%23d91a2a"/><text x="120" y="38" fill="%23ffd100" font-family="'Brush Script MT', 'Arial', cursive, sans-serif" font-weight="900" font-size="34" text-anchor="middle" font-style="italic">Cityflyer</text><text x="120" y="58" fill="%23ffffff" font-family="Arial,sans-serif" font-weight="900" font-size="16" text-anchor="middle" letter-spacing="3">城巴機場快線</text></svg>`,
+      citybus_pacman: `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 70"><rect width="240" height="70" rx="10" fill="%23ffd100"/><circle cx="45" cy="35" r="24" fill="%23e21b23"/><polygon points="45,35 69,20 69,50" fill="%23ffd100"/><text x="145" y="46" fill="%23e21b23" font-family="Arial,sans-serif" font-weight="900" font-size="30" text-anchor="middle">Citybus</text></svg>`,
+      citybus_classic: `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 65"><rect width="220" height="65" rx="10" fill="%23ffd100"/><path d="M12 32.5 L45 14 L45 51 Z" fill="%23d91a2a"/><text x="130" y="44" fill="%230055a5" font-family="Arial,sans-serif" font-weight="900" font-size="28" text-anchor="middle">CITYBUS</text></svg>`,
+      citybus_40th: `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 250 70"><rect width="250" height="70" rx="10" fill="%23ffd200"/><polygon points="40,15 65,35 40,55 15,35" fill="%23ff6600"/><polygon points="40,23 53,35 40,47 27,35" fill="%23ffd200"/><text x="150" y="42" fill="%2300338d" font-family="Arial,sans-serif" font-weight="900" font-size="24" text-anchor="middle">Citybus 城巴</text><text x="150" y="58" fill="%2300338d" font-family="Arial,sans-serif" font-weight="700" font-size="12" text-anchor="middle" letter-spacing="1">EST. 1979</text></svg>`,
+      citybus_rebrand: `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 65"><rect width="220" height="65" rx="10" fill="%230055a5"/><circle cx="42" cy="32.5" r="20" fill="%23e50012"/><text x="42" y="44" fill="%23ffffff" font-family="Arial,sans-serif" font-weight="900" font-size="32" text-anchor="middle">c</text><text x="125" y="42" fill="%23ffd100" font-family="Arial,sans-serif" font-weight="900" font-size="26" text-anchor="middle">城巴</text></svg>`,
+      nwfb: `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 65"><rect width="220" height="65" rx="10" fill="%23ff7300"/><path d="M15 45 Q 40 10 65 45 T 115 45" fill="none" stroke="%23009b3a" stroke-width="8" stroke-linecap="round"/><circle cx="65" cy="35" r="14" fill="%23ffffff"/><text x="65" y="43" fill="%23ff7300" font-family="Arial,sans-serif" font-weight="900" font-size="18" text-anchor="middle">1</text><text x="155" y="44" fill="%23ffffff" font-family="Arial,sans-serif" font-weight="900" font-size="28" text-anchor="middle">新巴</text></svg>`
+    };
+
+    const hitBoxes = {};
+    let isDragging = false;
+    let dragTarget = null;
+    let startMousePos = { x: 0, y: 0 };
+    let startElementPos = { x: 0, y: 0 };
+
+    const presets = {
+      cityflyer: {
+        logo: 'cityflyer', topBadge: "1080P 60fps", topBadgeColor: "#ffd100",
+        topText: "城巴A29線上層展望•經黃大仙•鑽石山•九龍灣•觀塘•坑口", topTextWeight: "900", topTextItalic: "0", topBarColor: "#d91a2a", topTextOffsetX: 0, topTextOffsetY: 0,
+        routeTitle: "城巴A29路線", routeSubTitle: "", routeFont: "'Dela Gothic One', sans-serif", routeTextColor: "#ffd100", routeStrokeColor: "#b30006", routeFontSize: 92, routeSlant: -6, routeOffsetX: 0, routeOffsetY: 0,
+        serviceType: "機場快線", serviceColor: "#d91a2a", stationOrigin: "機場", routeArrow: "➔", stationDest: "將軍澳(寶琳)", stationFont: "'Noto Sans TC', sans-serif", stationFontSize: 110, stationSlant: -6, mainRouteOffsetX: 10, mainRouteOffsetY: 0,
+        bottomText: "Alexander Dennis Enviro500 12.8M Coach (6840)", bottomBarColor: "#d91a2a", bottomFontSize: 40, bottomOffsetX: 0, bottomOffsetY: 0
+      },
+      pacman: {
+        logo: 'citybus_pacman', topBadge: "1080P 60fps", topBadgeColor: "#ffd100",
+        topText: "城巴43R線下層展望•經西營盤•堅尼地城站•西寧街", topTextWeight: "900", topTextItalic: "0", topBarColor: "#e21b23", topTextOffsetX: 0, topTextOffsetY: 0,
+        routeTitle: "城巴43R路線", routeSubTitle: "", routeFont: "'Dela Gothic One', sans-serif", routeTextColor: "#ffd100", routeStrokeColor: "#e21b23", routeFontSize: 92, routeSlant: -6, routeOffsetX: 0, routeOffsetY: 0,
+        serviceType: "港島常規", serviceColor: "#e21b23", stationOrigin: "堅尼地城站", routeArrow: "➔", stationDest: "西寧街", stationFont: "'Noto Sans TC', sans-serif", stationFontSize: 110, stationSlant: -6, mainRouteOffsetX: 10, mainRouteOffsetY: 0,
+        bottomText: "Alexander Dennis Enviro500 MMC 12.8M (9150 / WJ 6188)", bottomBarColor: "#e21b23", bottomFontSize: 40, bottomOffsetX: 0, bottomOffsetY: 0
+      },
+      classic_stripes: {
+        logo: 'citybus_classic', topBadge: "1080P 60fps", topBadgeColor: "#ffd100",
+        topText: "城巴73線下層展望•經黃竹坑•深水灣•淺水灣•赤柱", topTextWeight: "900", topTextItalic: "0", topBarColor: "#004b97", topTextOffsetX: 0, topTextOffsetY: 0,
+        routeTitle: "城巴73路線", routeSubTitle: "", routeFont: "'Dela Gothic One', sans-serif", routeTextColor: "#ffd200", routeStrokeColor: "#004b97", routeFontSize: 92, routeSlant: -6, routeOffsetX: 0, routeOffsetY: 0,
+        serviceType: "南區路線", serviceColor: "#e31b23", stationOrigin: "數碼港", routeArrow: "➔", stationDest: "赤柱市場", stationFont: "'Noto Sans TC', sans-serif", stationFontSize: 110, stationSlant: -6, mainRouteOffsetX: 10, mainRouteOffsetY: 0,
+        bottomText: "Alexander Dennis Enviro500 MMC 12.8M (9149 / EM 6616)", bottomBarColor: "#004b97", bottomFontSize: 40, bottomOffsetX: 0, bottomOffsetY: 0
+      },
+      anniversary_40: {
+        logo: 'citybus_40th', topBadge: "1080P 60fps", topBadgeColor: "#ffd100",
+        topText: "城巴307線上層展望•經大埔中心•大老山隧道•東區海底隧道•中環", topTextWeight: "900", topTextItalic: "0", topBarColor: "#00338d", topTextOffsetX: 0, topTextOffsetY: 0,
+        routeTitle: "城巴307路線", routeSubTitle: "", routeFont: "'Dela Gothic One', sans-serif", routeTextColor: "#ffd200", routeStrokeColor: "#ff6600", routeFontSize: 92, routeSlant: -6, routeOffsetX: 0, routeOffsetY: 0,
+        serviceType: "東隧特快", serviceColor: "#ff6600", stationOrigin: "大埔中心", routeArrow: "➔", stationDest: "中環碼頭", stationFont: "'Noto Sans TC', sans-serif", stationFontSize: 110, stationSlant: -6, mainRouteOffsetX: 10, mainRouteOffsetY: 0,
+        bottomText: "Enviro500 MMC 12.8M (6495 / VD 980) • 40載你同行復刻塗裝", bottomBarColor: "#00338d", bottomFontSize: 40, bottomOffsetX: 0, bottomOffsetY: 0
+      },
+      founder_1979: {
+        logo: 'citybus_40th', topBadge: "1080P 60fps", topBadgeColor: "#ffd100",
+        topText: "城巴B14線下層展望•經大欖隧道•中九龍繞道•啟德體育園", topTextWeight: "900", topTextItalic: "0", topBarColor: "#5c1d24", topTextOffsetX: 0, topTextOffsetY: 0,
+        routeTitle: "城巴B14路線", routeSubTitle: "", routeFont: "'Noto Sans TC', sans-serif", routeTextColor: "#f3e5ab", routeStrokeColor: "#4a151b", routeFontSize: 90, routeSlant: -5, routeOffsetX: 0, routeOffsetY: 0,
+        serviceType: "皇崗專線", serviceColor: "#5c1d24", stationOrigin: "皇崗口岸", routeArrow: "➔", stationDest: "啟德世運道", stationFont: "'Noto Sans TC', sans-serif", stationFontSize: 108, stationSlant: -5, mainRouteOffsetX: 10, mainRouteOffsetY: 0,
+        bottomText: "Enviro500 MMC 12.8M (6493 / VB 9800) • CITY BUSES EST. 1979", bottomBarColor: "#5c1d24", bottomFontSize: 40, bottomOffsetX: 0, bottomOffsetY: 0
+      },
+      modern_yellow_blue: {
+        logo: 'citybus_classic', topBadge: "1080P 60fps", topBadgeColor: "#ffd100",
+        topText: "城巴606線上層展望•經耀東邨•東區海底隧道•九龍灣•彩雲", topTextWeight: "900", topTextItalic: "0", topBarColor: "#0072ce", topTextOffsetX: 0, topTextOffsetY: 0,
+        routeTitle: "城巴606路線", routeSubTitle: "", routeFont: "'Dela Gothic One', sans-serif", routeTextColor: "#ffd200", routeStrokeColor: "#0072ce", routeFontSize: 92, routeSlant: -6, routeOffsetX: 0, routeOffsetY: 0,
+        serviceType: "東隧過海", serviceColor: "#0072ce", stationOrigin: "小西灣(藍灣半島)", routeArrow: "➔", stationDest: "彩雲", stationFont: "'Noto Sans TC', sans-serif", stationFontSize: 108, stationSlant: -6, mainRouteOffsetX: 10, mainRouteOffsetY: 0,
+        bottomText: "Alexander Dennis Enviro500 MMC 12M (8538 / VN 5149)", bottomBarColor: "#0072ce", bottomFontSize: 40, bottomOffsetX: 0, bottomOffsetY: 0
+      },
+      new_rebrand: {
+        logo: 'citybus_rebrand', topBadge: "1080P 60fps", topBadgeColor: "#ffd100",
+        topText: "城巴788線下層展望•經柴灣工廠區•東區走廊•告士打道•中環", topTextWeight: "900", topTextItalic: "0", topBarColor: "#0055a5", topTextOffsetX: 0, topTextOffsetY: 0,
+        routeTitle: "城巴788路線", routeSubTitle: "", routeFont: "'Dela Gothic One', sans-serif", routeTextColor: "#ffffff", routeStrokeColor: "#0055a5", routeFontSize: 92, routeSlant: -6, routeOffsetX: 0, routeOffsetY: 0,
+        serviceType: "東廊特快", serviceColor: "#e50012", stationOrigin: "小西灣(藍灣半島)", routeArrow: "➔", stationDest: "中環(港澳碼頭)", stationFont: "'Noto Sans TC', sans-serif", stationFontSize: 105, stationSlant: -6, mainRouteOffsetX: 10, mainRouteOffsetY: 0,
+        bottomText: "Alexander Dennis Enviro500 MMC 12M (8570 / VM 3845)", bottomBarColor: "#0055a5", bottomFontSize: 40, bottomOffsetX: 0, bottomOffsetY: 0
+      },
+      nwfb_wave: {
+        logo: 'nwfb', topBadge: "1080P 60fps", topBadgeColor: "#ffd100",
+        topText: "新巴8號線上層展望•經筲箕灣•太古城•北角•銅鑼灣•灣仔北", topTextWeight: "900", topTextItalic: "0", topBarColor: "#ff7300", topTextOffsetX: 0, topTextOffsetY: 0,
+        routeTitle: "新巴8號路線", routeSubTitle: "", routeFont: "'Dela Gothic One', sans-serif", routeTextColor: "#ffffff", routeStrokeColor: "#009b3a", routeFontSize: 92, routeSlant: -6, routeOffsetX: 0, routeOffsetY: 0,
+        serviceType: "港島特快", serviceColor: "#009b3a", stationOrigin: "杏花邨", routeArrow: "➔", stationDest: "灣仔北", stationFont: "'Noto Sans TC', sans-serif", stationFontSize: 112, stationSlant: -6, mainRouteOffsetX: 10, mainRouteOffsetY: 0,
+        bottomText: "Alexander Dennis Enviro500 12M (6100 / UM 722) • 新巴波浪塗裝", bottomBarColor: "#009b3a", bottomFontSize: 40, bottomOffsetX: 0, bottomOffsetY: 0
+      },
+      trunk_2a: { logo: 'citybus_rebrand', topBadge: "1080P 60fps", topBadgeColor: "#ffd100", topText: "城巴2A線上層展望•經西灣河•鰂魚涌•炮台山•銅鑼灣•灣仔", topTextWeight: "900", topTextItalic: "0", topBarColor: "#003876", topTextOffsetX: 0, topTextOffsetY: 0, routeTitle: "城巴2A路線", routeSubTitle: "", routeFont: "'Dela Gothic One', sans-serif", routeTextColor: "#ffffff", routeStrokeColor: "#003876", routeFontSize: 92, routeSlant: -6, routeOffsetX: 0, routeOffsetY: 0, serviceType: "英皇道線", serviceColor: "#003876", stationOrigin: "耀東邨", routeArrow: "➔", stationDest: "會展站", stationFont: "'Noto Sans TC', sans-serif", stationFontSize: 110, stationSlant: -6, mainRouteOffsetX: 10, mainRouteOffsetY: 0, bottomText: "Alexander Dennis Enviro500 MMC 12M • King's Road Line", bottomBarColor: "#003876", bottomFontSize: 40, bottomOffsetX: 0, bottomOffsetY: 0 },
+      trunk_4: { logo: 'citybus_classic', topBadge: "1080P 60fps", topBadgeColor: "#ffd100", topText: "城巴4號線下層展望•經華富邨•瑪麗醫院•香港大學•西營盤•中環", topTextWeight: "900", topTextItalic: "0", topBarColor: "#003876", topTextOffsetX: 0, topTextOffsetY: 0, routeTitle: "城巴4號路線", routeSubTitle: "", routeFont: "'Dela Gothic One', sans-serif", routeTextColor: "#ffd100", routeStrokeColor: "#003876", routeFontSize: 92, routeSlant: -6, routeOffsetX: 0, routeOffsetY: 0, serviceType: "薄扶林線", serviceColor: "#003876", stationOrigin: "黃竹坑", routeArrow: "➔", stationDest: "中環(交易廣場)", stationFont: "'Noto Sans TC', sans-serif", stationFontSize: 108, stationSlant: -6, mainRouteOffsetX: 10, mainRouteOffsetY: 0, bottomText: "Alexander Dennis Enviro500 MMC 12M • Pok Fu Lam Line", bottomBarColor: "#003876", bottomFontSize: 40, bottomOffsetX: 0, bottomOffsetY: 0 },
+      trunk_38: { logo: 'citybus_rebrand', topBadge: "1080P 60fps", topBadgeColor: "#ffd100", topText: "城巴38線上層展望•經香港仔•黃竹坑•香港仔隧道•銅鑼灣•北角", topTextWeight: "900", topTextItalic: "0", topBarColor: "#003876", topTextOffsetX: 0, topTextOffsetY: 0, routeTitle: "城巴38路線", routeSubTitle: "", routeFont: "'Dela Gothic One', sans-serif", routeTextColor: "#ffffff", routeStrokeColor: "#003876", routeFontSize: 92, routeSlant: -6, routeOffsetX: 0, routeOffsetY: 0, serviceType: "南區幹線", serviceColor: "#003876", stationOrigin: "置富花園", routeArrow: "➔", stationDest: "北角碼頭", stationFont: "'Noto Sans TC', sans-serif", stationFontSize: 110, stationSlant: -6, mainRouteOffsetX: 10, mainRouteOffsetY: 0, bottomText: "Alexander Dennis Enviro500 MMC 12M • Southern Line", bottomBarColor: "#003876", bottomFontSize: 40, bottomOffsetX: 0, bottomOffsetY: 0 },
+      trunk_82: { logo: 'citybus_classic', topBadge: "1080P 60fps", topBadgeColor: "#ffd100", topText: "城巴82線上層展望•經柴灣道•筲箕灣•西灣河•太古城•鰂魚涌", topTextWeight: "900", topTextItalic: "0", topBarColor: "#003876", topTextOffsetX: 0, topTextOffsetY: 0, routeTitle: "城巴82路線", routeSubTitle: "", routeFont: "'Dela Gothic One', sans-serif", routeTextColor: "#ffd100", routeStrokeColor: "#003876", routeFontSize: 92, routeSlant: -6, routeOffsetX: 0, routeOffsetY: 0, serviceType: "東區幹線", serviceColor: "#003876", stationOrigin: "小西灣(藍灣半島)", routeArrow: "➔", stationDest: "北角碼頭", stationFont: "'Noto Sans TC', sans-serif", stationFontSize: 105, stationSlant: -6, mainRouteOffsetX: 10, mainRouteOffsetY: 0, bottomText: "Alexander Dennis Enviro500 MMC 12M • Eastern Line", bottomBarColor: "#003876", bottomFontSize: 40, bottomOffsetX: 0, bottomOffsetY: 0 },
+      trunk_20: { logo: 'citybus_rebrand', topBadge: "1080P 60fps", topBadgeColor: "#ffd100", topText: "城巴20線上層展望•經啟德•九龍城•窩打老道•油麻地•大角咀", topTextWeight: "900", topTextItalic: "0", topBarColor: "#003876", topTextOffsetX: 0, topTextOffsetY: 0, routeTitle: "城巴20路線", routeSubTitle: "", routeFont: "'Dela Gothic One', sans-serif", routeTextColor: "#ffffff", routeStrokeColor: "#003876", routeFontSize: 92, routeSlant: -6, routeOffsetX: 0, routeOffsetY: 0, serviceType: "窩打老道線", serviceColor: "#003876", stationOrigin: "啟德(沐安街)", routeArrow: "➔", stationDest: "長沙灣(海達)", stationFont: "'Noto Sans TC', sans-serif", stationFontSize: 108, stationSlant: -6, mainRouteOffsetX: 10, mainRouteOffsetY: 0, bottomText: "Alexander Dennis Enviro500 MMC 12.8M • Waterloo Road Line", bottomBarColor: "#003876", bottomFontSize: 40, bottomOffsetX: 0, bottomOffsetY: 0 },
+      trunk_20a: { logo: 'citybus_rebrand', topBadge: "1080P 60fps", topBadgeColor: "#ffd100", topText: "城巴20A線上層展望•經尖沙咀•油麻地•旺角•九龍城•啟德", topTextWeight: "900", topTextItalic: "0", topBarColor: "#003876", topTextOffsetX: 0, topTextOffsetY: 0, routeTitle: "城巴20A路線", routeSubTitle: "", routeFont: "'Dela Gothic One', sans-serif", routeTextColor: "#ffd100", routeStrokeColor: "#003876", routeFontSize: 92, routeSlant: -6, routeOffsetX: 0, routeOffsetY: 0, serviceType: "彌敦道線", serviceColor: "#003876", stationOrigin: "高鐵西九龍站", routeArrow: "➔", stationDest: "啟德郵輪碼頭", stationFont: "'Noto Sans TC', sans-serif", stationFontSize: 105, stationSlant: -6, mainRouteOffsetX: 10, mainRouteOffsetY: 0, bottomText: "Alexander Dennis Enviro500 MMC 12.8M • Nathan Road Line", bottomBarColor: "#003876", bottomFontSize: 40, bottomOffsetX: 0, bottomOffsetY: 0 },
+      trunk_701: { logo: 'citybus_rebrand', topBadge: "1080P 60fps", topBadgeColor: "#ffd100", topText: "城巴701線下層展望•經南昌站•深水埗•旺角•海麗邨", topTextWeight: "900", topTextItalic: "0", topBarColor: "#003876", topTextOffsetX: 0, topTextOffsetY: 0, routeTitle: "城巴701路線", routeSubTitle: "", routeFont: "'Dela Gothic One', sans-serif", routeTextColor: "#ffffff", routeStrokeColor: "#003876", routeFontSize: 92, routeSlant: -6, routeOffsetX: 0, routeOffsetY: 0, serviceType: "西九龍線", serviceColor: "#003876", stationOrigin: "海麗邨", routeArrow: "➔", stationDest: "旺角", stationFont: "'Noto Sans TC', sans-serif", stationFontSize: 110, stationSlant: -6, mainRouteOffsetX: 10, mainRouteOffsetY: 0, bottomText: "Alexander Dennis Enviro500 MMC 12.8M • West Kowloon Line", bottomBarColor: "#003876", bottomFontSize: 40, bottomOffsetX: 0, bottomOffsetY: 0 },
+      trunk_50: { logo: 'citybus_rebrand', topBadge: "1080P 60fps", topBadgeColor: "#ffd100", topText: "城巴50線上層展望•經屯門公路•西九龍走廊•旺角•尖沙咀", topTextWeight: "900", topTextItalic: "0", topBarColor: "#003876", topTextOffsetX: 0, topTextOffsetY: 0, routeTitle: "城巴50路線", routeSubTitle: "", routeFont: "'Dela Gothic One', sans-serif", routeTextColor: "#ffd100", routeStrokeColor: "#003876", routeFontSize: 92, routeSlant: -6, routeOffsetX: 0, routeOffsetY: 0, serviceType: "屯門幹線", serviceColor: "#003876", stationOrigin: "屯門(菁田及和田)", routeArrow: "➔", stationDest: "尖沙咀(九龍站)", stationFont: "'Noto Sans TC', sans-serif", stationFontSize: 102, stationSlant: -6, mainRouteOffsetX: 10, mainRouteOffsetY: 0, bottomText: "Alexander Dennis Enviro500 MMC 12.8M • Tuen Mun Line", bottomBarColor: "#003876", bottomFontSize: 40, bottomOffsetX: 0, bottomOffsetY: 0 },
+      trunk_56: { logo: 'citybus_rebrand', topBadge: "1080P 60fps", topBadgeColor: "#ffd100", topText: "城巴56線上層展望•經元朗公路•新田公路•上水站•天平邨", topTextWeight: "900", topTextItalic: "0", topBarColor: "#003876", topTextOffsetX: 0, topTextOffsetY: 0, routeTitle: "城巴56路線", routeSubTitle: "", routeFont: "'Dela Gothic One', sans-serif", routeTextColor: "#ffffff", routeStrokeColor: "#003876", routeFontSize: 92, routeSlant: -6, routeOffsetX: 0, routeOffsetY: 0, serviceType: "北環幹線", serviceColor: "#003876", stationOrigin: "屯門(和田及菁田)", routeArrow: "➔", stationDest: "上水(天平邨)", stationFont: "'Noto Sans TC', sans-serif", stationFontSize: 105, stationSlant: -6, mainRouteOffsetX: 10, mainRouteOffsetY: 0, bottomText: "Alexander Dennis Enviro500 MMC 12.8M • Northern Link", bottomBarColor: "#003876", bottomFontSize: 40, bottomOffsetX: 0, bottomOffsetY: 0 },
+      trunk_79x: { logo: 'citybus_rebrand', topBadge: "1080P 60fps", topBadgeColor: "#ffd100", topText: "城巴79X線上層展望•經粉嶺公路•吐露港公路•青沙公路•長沙灣", topTextWeight: "900", topTextItalic: "0", topBarColor: "#003876", topTextOffsetX: 0, topTextOffsetY: 0, routeTitle: "城巴79X路線", routeSubTitle: "", routeFont: "'Dela Gothic One', sans-serif", routeTextColor: "#ffd100", routeStrokeColor: "#003876", routeFontSize: 92, routeSlant: -6, routeOffsetX: 0, routeOffsetY: 0, serviceType: "皇后山線", serviceColor: "#003876", stationOrigin: "粉嶺皇后山", routeArrow: "➔", stationDest: "長沙灣(甘泉街)", stationFont: "'Noto Sans TC', sans-serif", stationFontSize: 106, stationSlant: -6, mainRouteOffsetX: 10, mainRouteOffsetY: 0, bottomText: "Alexander Dennis Enviro500 MMC 12.8M • Queen's Hill Line", bottomBarColor: "#003876", bottomFontSize: 40, bottomOffsetX: 0, bottomOffsetY: 0 },
+      trunk_793: { logo: 'citybus_rebrand', topBadge: "1080P 60fps", topBadgeColor: "#ffd100", topText: "城巴793線上層展望•經將軍澳隧道•觀塘繞道•九龍灣•旺角•深水埗", topTextWeight: "900", topTextItalic: "0", topBarColor: "#003876", topTextOffsetX: 0, topTextOffsetY: 0, routeTitle: "城巴793路線", routeSubTitle: "", routeFont: "'Dela Gothic One', sans-serif", routeTextColor: "#ffffff", routeStrokeColor: "#003876", routeFontSize: 92, routeSlant: -6, routeOffsetX: 0, routeOffsetY: 0, serviceType: "九龍東西線", serviceColor: "#003876", stationOrigin: "將軍澳工業邨", routeArrow: "➔", stationDest: "蘇屋", stationFont: "'Noto Sans TC', sans-serif", stationFontSize: 108, stationSlant: -6, mainRouteOffsetX: 10, mainRouteOffsetY: 0, bottomText: "Alexander Dennis Enviro500 MMC 12.8M • Kowloon East West Line", bottomBarColor: "#003876", bottomFontSize: 40, bottomOffsetX: 0, bottomOffsetY: 0 },
+      trunk_798: { logo: 'citybus_rebrand', topBadge: "1080P 60fps", topBadgeColor: "#ffd100", topText: "城巴798線上層展望•經將軍澳隧道•大老山隧道•沙田市中心•火炭", topTextWeight: "900", topTextItalic: "0", topBarColor: "#003876", topTextOffsetX: 0, topTextOffsetY: 0, routeTitle: "城巴798路線", routeSubTitle: "", routeFont: "'Dela Gothic One', sans-serif", routeTextColor: "#ffd100", routeStrokeColor: "#003876", routeFontSize: 92, routeSlant: -6, routeOffsetX: 0, routeOffsetY: 0, serviceType: "將沙幹線", serviceColor: "#003876", stationOrigin: "調景嶺站", routeArrow: "➔", stationDest: "火炭(駿洋邨)", stationFont: "'Noto Sans TC', sans-serif", stationFontSize: 108, stationSlant: -6, mainRouteOffsetX: 10, mainRouteOffsetY: 0, bottomText: "Alexander Dennis Enviro500 MMC 12.8M • Tseung Sha Line", bottomBarColor: "#003876", bottomFontSize: 40, bottomOffsetX: 0, bottomOffsetY: 0 },
+      kmb_960: { logo: 'kmb_red', topBadge: "1080P 60fps", topBadgeColor: "#ffd100", topText: "九巴960線上層展望•經屯門公路•西區海底隧道•中環•灣仔北", topTextWeight: "900", topTextItalic: "0", topBarColor: "#c8102e", topTextOffsetX: 0, topTextOffsetY: 0, routeTitle: "九巴960路線", routeSubTitle: "", routeFont: "'Dela Gothic One', sans-serif", routeTextColor: "#ffffff", routeStrokeColor: "#c8102e", routeFontSize: 92, routeSlant: -6, routeOffsetX: 0, routeOffsetY: 0, serviceType: "西隧特快", serviceColor: "#c8102e", stationOrigin: "屯門(建生)", routeArrow: "➔", stationDest: "灣仔北", stationFont: "'Noto Sans TC', sans-serif", stationFontSize: 110, stationSlant: -6, mainRouteOffsetX: 10, mainRouteOffsetY: 0, bottomText: "Alexander Dennis Enviro500 MMC 12.8M • KMB City Red", bottomBarColor: "#c8102e", bottomFontSize: 40, bottomOffsetX: 0, bottomOffsetY: 0 },
+      kmb_968: { logo: 'kmb_red', topBadge: "1080P 60fps", topBadgeColor: "#ffd100", topText: "九巴968線上層展望•經大欖隧道•西區海底隧道•中環•銅鑼灣", topTextWeight: "900", topTextItalic: "0", topBarColor: "#007a33", topTextOffsetX: 0, topTextOffsetY: 0, routeTitle: "九巴968路線", routeSubTitle: "", routeFont: "'Noto Sans TC', sans-serif", routeTextColor: "#ffffff", routeStrokeColor: "#007a33", routeFontSize: 90, routeSlant: -5, routeOffsetX: 0, routeOffsetY: 0, serviceType: "西隧過海特快", serviceColor: "#007a33", stationOrigin: "元朗(西)", routeArrow: "➔", stationDest: "銅鑼灣(天后)", stationFont: "'Noto Sans TC', sans-serif", stationFontSize: 108, stationSlant: -5, mainRouteOffsetX: 10, mainRouteOffsetY: 0, bottomText: "Enviro500 MMC 12.8M (V6X) • 玻璃樓梯紅巴 2.0", bottomBarColor: "#c8102e", bottomFontSize: 40, bottomOffsetX: 0, bottomOffsetY: 0 },
+      kmb_1a: { logo: 'kmb_gold', topBadge: "1080P 60fps", topBadgeColor: "#ffd100", topText: "九巴1A線下層展望•經尖沙咀•彌敦道•旺角•太子•九龍城•觀塘", topTextWeight: "900", topTextItalic: "0", topBarColor: "#1a1a1a", topTextOffsetX: 0, topTextOffsetY: 0, routeTitle: "九巴1A路線", routeSubTitle: "", routeFont: "'Dela Gothic One', sans-serif", routeTextColor: "#c5a059", routeStrokeColor: "#1a1a1a", routeFontSize: 92, routeSlant: -6, routeOffsetX: 0, routeOffsetY: 0, serviceType: "彌敦道線", serviceColor: "#c5a059", stationOrigin: "尖沙咀碼頭", routeArrow: "➔", stationDest: "中秀茂坪", stationFont: "'Noto Sans TC', sans-serif", stationFontSize: 110, stationSlant: -6, mainRouteOffsetX: 10, mainRouteOffsetY: 0, bottomText: "Volvo Super Olympian 12M (3ASV) • 千禧香檳金巴", bottomBarColor: "#c5a059", bottomFontSize: 40, bottomOffsetX: 0, bottomOffsetY: 0 },
+      kmb_b1: { logo: 'kmb_red', topBadge: "1080P 60fps", topBadgeColor: "#ffd100", topText: "九巴B1線上層展望•經天水圍站•元朗大馬路•新田公路•落馬洲", topTextWeight: "900", topTextItalic: "0", topBarColor: "#c8102e", topTextOffsetX: 0, topTextOffsetY: 0, routeTitle: "九巴B1路線", routeSubTitle: "", routeFont: "'Dela Gothic One', sans-serif", routeTextColor: "#ffd100", routeStrokeColor: "#c8102e", routeFontSize: 92, routeSlant: -6, routeOffsetX: 0, routeOffsetY: 0, serviceType: "福田口岸", serviceColor: "#c8102e", stationOrigin: "天水圍(天慈)", routeArrow: "➔", stationDest: "落馬洲站", stationFont: "'Noto Sans TC', sans-serif", stationFontSize: 110, stationSlant: -6, mainRouteOffsetX: 10, mainRouteOffsetY: 0, bottomText: "Alexander Dennis Enviro500 MMC 12.8M • 口岸專線", bottomBarColor: "#c8102e", bottomFontSize: 40, bottomOffsetX: 0, bottomOffsetY: 0 },
+      kmb_b9: { logo: 'kmb_red', topBadge: "1080P 60fps", topBadgeColor: "#ffd100", topText: "九巴B9線上層展望•經屯門公路•元朗站•新田公路•香園圍公路", topTextWeight: "900", topTextItalic: "0", topBarColor: "#c8102e", topTextOffsetX: 0, topTextOffsetY: 0, routeTitle: "九巴B9路線", routeSubTitle: "", routeFont: "'Noto Sans TC', sans-serif", routeTextColor: "#ffd100", routeStrokeColor: "#8b0000", routeFontSize: 90, routeSlant: -5, routeOffsetX: 0, routeOffsetY: 0, serviceType: "香園圍專線", serviceColor: "#8b0000", stationOrigin: "屯門站", routeArrow: "➔", stationDest: "香園圍口岸", stationFont: "'Noto Sans TC', sans-serif", stationFontSize: 108, stationSlant: -5, mainRouteOffsetX: 10, mainRouteOffsetY: 0, bottomText: "Enviro500 MMC 12.8M (E6X) • 蓮塘香園圍口岸特快", bottomBarColor: "#8b0000", bottomFontSize: 40, bottomOffsetX: 0, bottomOffsetY: 0 },
+      kmb_290a: { logo: 'kmb_red', topBadge: "1080P 60fps", topBadgeColor: "#ffd100", topText: "九巴290A線上層展望•經秀茂坪•彩雲•黃大仙•呈祥道•葵芳", topTextWeight: "900", topTextItalic: "0", topBarColor: "#2e7d32", topTextOffsetX: 0, topTextOffsetY: 0, routeTitle: "九巴290A路線", routeSubTitle: "", routeFont: "'Dela Gothic One', sans-serif", routeTextColor: "#ffffff", routeStrokeColor: "#1b5e20", routeFontSize: 90, routeSlant: -6, routeOffsetX: 0, routeOffsetY: 0, serviceType: "將荃幹線", serviceColor: "#2e7d32", stationOrigin: "將軍澳(彩明)", routeArrow: "➔", stationDest: "荃灣西站", stationFont: "'Noto Sans TC', sans-serif", stationFontSize: 108, stationSlant: -6, mainRouteOffsetX: 10, mainRouteOffsetY: 0, bottomText: "Alexander Dennis Enviro500EV • 新一代綠能純電巴", bottomBarColor: "#2e7d32", bottomFontSize: 40, bottomOffsetX: 0, bottomOffsetY: 0 },
+      kmb_hotdog: { logo: 'kmb_red', topBadge: "1080P 60fps", topBadgeColor: "#ffd100", topText: "九巴16線下層展望•經藍田•觀塘道•九龍城•亞皆老街•旺角", topTextWeight: "900", topTextItalic: "0", topBarColor: "#8b0000", topTextOffsetX: 0, topTextOffsetY: 0, routeTitle: "九巴16路線", routeSubTitle: "", routeFont: "'Dela Gothic One', sans-serif", routeTextColor: "#f0e68c", routeStrokeColor: "#8b0000", routeFontSize: 92, routeSlant: -6, routeOffsetX: 0, routeOffsetY: 0, serviceType: "傳奇熱狗", serviceColor: "#8b0000", stationOrigin: "藍田(廣田邨)", routeArrow: "➔", stationDest: "旺角(柏景灣)", stationFont: "'Noto Sans TC', sans-serif", stationFontSize: 108, stationSlant: -6, mainRouteOffsetX: 10, mainRouteOffsetY: 0, bottomText: "Dennis Dragon 11M (S3N) • 經典非空調熱狗塗裝", bottomBarColor: "#8b0000", bottomFontSize: 40, bottomOffsetX: 0, bottomOffsetY: 0 },
+      kmb_white: { logo: 'kmb_red', topBadge: "1080P 60fps", topBadgeColor: "#ffd100", topText: "九巴6C線下層展望•經深水埗•旺角•加士居道•土瓜灣•九龍城", topTextWeight: "900", topTextItalic: "0", topBarColor: "#990000", topTextOffsetX: 0, topTextOffsetY: 0, routeTitle: "九巴6C路線", routeSubTitle: "", routeFont: "'Noto Sans TC', sans-serif", routeTextColor: "#ffffff", routeStrokeColor: "#990000", routeFontSize: 90, routeSlant: -5, routeOffsetX: 0, routeOffsetY: 0, serviceType: "經典白板線", serviceColor: "#990000", stationOrigin: "美孚", routeArrow: "➔", stationDest: "九龍城碼頭", stationFont: "'Noto Sans TC', sans-serif", stationFontSize: 108, stationSlant: -5, mainRouteOffsetX: 10, mainRouteOffsetY: 0, bottomText: "Volvo Olympian 12M (3AV) • 九巴經典白板紅線塗裝", bottomBarColor: "#990000", bottomFontSize: 40, bottomOffsetX: 0, bottomOffsetY: 0 },
+      kmb_p960: { logo: 'kmb_gold', topBadge: "1080P 60fps", topBadgeColor: "#ffd700", topText: "九巴P960線上層展望•經屯門公路•西區海底隧道•中環•銅鑼灣", topTextWeight: "900", topTextItalic: "0", topBarColor: "#1a1a1a", topTextOffsetX: 0, topTextOffsetY: 0, routeTitle: "九巴P960路線", routeSubTitle: "", routeFont: "'Noto Sans TC', sans-serif", routeTextColor: "#ffd700", routeStrokeColor: "#1a1a1a", routeFontSize: 90, routeSlant: -5, routeOffsetX: 0, routeOffsetY: 0, serviceType: "新型長途巴士", serviceColor: "#c5a059", stationOrigin: "屯門(兆康站)", routeArrow: "➔", stationDest: "灣仔北", stationFont: "'Noto Sans TC', sans-serif", stationFontSize: 108, stationSlant: -5, mainRouteOffsetX: 10, mainRouteOffsetY: 0, bottomText: "Enviro500 MMC 12.8M (P960) • KMB 星級尊線豪華塗裝", bottomBarColor: "#1a1a1a", bottomFontSize: 40, bottomOffsetX: 0, bottomOffsetY: 0 },
+      lwb_a31: { logo: 'lwb_orange', topBadge: "1080P 60fps", topBadgeColor: "#ffd100", topText: "龍運A31線上層展望•經荃灣市中心•青衣北岸公路•青馬大橋•機場", topTextWeight: "900", topTextItalic: "0", topBarColor: "#ea5b0c", topTextOffsetX: 0, topTextOffsetY: 0, routeTitle: "龍運A31路線", routeSubTitle: "", routeFont: "'Dela Gothic One', sans-serif", routeTextColor: "#ffffff", routeStrokeColor: "#c2410c", routeFontSize: 92, routeSlant: -6, routeOffsetX: 0, routeOffsetY: 0, serviceType: "機場特快", serviceColor: "#ea5b0c", stationOrigin: "荃灣(如心廣場)", routeArrow: "➔", stationDest: "機場", stationFont: "'Noto Sans TC', sans-serif", stationFontSize: 110, stationSlant: -6, mainRouteOffsetX: 10, mainRouteOffsetY: 0, bottomText: "Alexander Dennis Enviro500 MMC 12.8M • 龍運豪華客車", bottomBarColor: "#ea5b0c", bottomFontSize: 40, bottomOffsetX: 0, bottomOffsetY: 0 },
+      lwb_a41: { logo: 'lwb_orange', topBadge: "1080P 60fps", topBadgeColor: "#ffd100", topText: "龍運A41線上層展望•經沙田市中心•城門隧道•青馬大橋•一號客運大樓", topTextWeight: "900", topTextItalic: "0", topBarColor: "#b33c00", topTextOffsetX: 0, topTextOffsetY: 0, routeTitle: "龍運A41路線", routeSubTitle: "", routeFont: "'Noto Sans TC', sans-serif", routeTextColor: "#ffd100", routeStrokeColor: "#5a1800", routeFontSize: 90, routeSlant: -5, routeOffsetX: 0, routeOffsetY: 0, serviceType: "機場豪華快線", serviceColor: "#b33c00", stationOrigin: "沙田(碩門邨)", routeArrow: "➔", stationDest: "機場(地面運輸中心)", stationFont: "'Noto Sans TC', sans-serif", stationFontSize: 104, stationSlant: -5, mainRouteOffsetX: 10, mainRouteOffsetY: 0, bottomText: "Enviro500 MMC 12.8M (UE6X) • 龍運機場豪華客車", bottomBarColor: "#b33c00", bottomFontSize: 40, bottomOffsetX: 0, bottomOffsetY: 0 },
+      lwb_e36: { logo: 'lwb_orange', topBadge: "1080P 60fps", topBadgeColor: "#ffd100", topText: "龍運E36線上層展望•經元朗大馬路•大欖隧道•東涌市中心•機場後勤區", topTextWeight: "900", topTextItalic: "0", topBarColor: "#ea5b0c", topTextOffsetX: 0, topTextOffsetY: 0, routeTitle: "龍運E36路線", routeSubTitle: "", routeFont: "'Dela Gothic One', sans-serif", routeTextColor: "#ffd100", routeStrokeColor: "#ea5b0c", routeFontSize: 92, routeSlant: -6, routeOffsetX: 0, routeOffsetY: 0, serviceType: "大嶼山線", serviceColor: "#ea5b0c", stationOrigin: "元朗(八鄉路)", routeArrow: "➔", stationDest: "機場(西岸路)", stationFont: "'Noto Sans TC', sans-serif", stationFontSize: 110, stationSlant: -6, mainRouteOffsetX: 10, mainRouteOffsetY: 0, bottomText: "Alexander Dennis Enviro500 MMC 12.8M • 北大嶼山對外線", bottomBarColor: "#ea5b0c", bottomFontSize: 40, bottomOffsetX: 0, bottomOffsetY: 0 },
+      lwb_s1: { logo: 'lwb_orange', topBadge: "1080P 60fps", topBadgeColor: "#ffd100", topText: "龍運S1線下層展望•經東涌站•民航處總部•客運大樓•亞洲國際博覽館", topTextWeight: "900", topTextItalic: "0", topBarColor: "#ea5b0c", topTextOffsetX: 0, topTextOffsetY: 0, routeTitle: "龍運S1路線", routeSubTitle: "", routeFont: "'Dela Gothic One', sans-serif", routeTextColor: "#ffffff", routeStrokeColor: "#ea5b0c", routeFontSize: 92, routeSlant: -6, routeOffsetX: 0, routeOffsetY: 0, serviceType: "機場穿梭", serviceColor: "#ea5b0c", stationOrigin: "東涌站", routeArrow: "➔", stationDest: "機場博覽館", stationFont: "'Noto Sans TC', sans-serif", stationFontSize: 110, stationSlant: -6, mainRouteOffsetX: 10, mainRouteOffsetY: 0, bottomText: "Alexander Dennis Enviro500 MMC 12.8M • 機場循環穿梭線", bottomBarColor: "#ea5b0c", bottomFontSize: 40, bottomOffsetX: 0, bottomOffsetY: 0 },
+      lwb_na33: { logo: 'lwb_orange', topBadge: "1080P 60fps", topBadgeColor: "#ffd100", topText: "龍運NA33線上層展望•經港珠澳大橋口岸•機場•屯門赤鱲角隧道•屯門", topTextWeight: "900", topTextItalic: "0", topBarColor: "#111111", topTextOffsetX: 0, topTextOffsetY: 0, routeTitle: "龍運NA33路線", routeSubTitle: "", routeFont: "'Dela Gothic One', sans-serif", routeTextColor: "#ff7700", routeStrokeColor: "#000000", routeFontSize: 92, routeSlant: -6, routeOffsetX: 0, routeOffsetY: 0, serviceType: "深宵特快", serviceColor: "#ff7700", stationOrigin: "國泰城", routeArrow: "➔", stationDest: "屯門(富泰)", stationFont: "'Noto Sans TC', sans-serif", stationFontSize: 110, stationSlant: -6, mainRouteOffsetX: 10, mainRouteOffsetY: 0, bottomText: "Alexander Dennis Enviro500 MMC 12.8M • 深宵機場特快", bottomBarColor: "#111111", bottomFontSize: 40, bottomOffsetX: 0, bottomOffsetY: 0 },
+      lwb_r33: { logo: 'lwb_orange', topBadge: "1080P 60fps", topBadgeColor: "#ffd100", topText: "龍運R33線上層展望•經屯門市中心•豐景園•青馬大橋•迪欣湖", topTextWeight: "900", topTextItalic: "0", topBarColor: "#4a154b", topTextOffsetX: 0, topTextOffsetY: 0, routeTitle: "龍運R33路線", routeSubTitle: "", routeFont: "'Noto Sans TC', sans-serif", routeTextColor: "#ffffff", routeStrokeColor: "#e6007e", routeFontSize: 90, routeSlant: -5, routeOffsetX: 0, routeOffsetY: 0, serviceType: "迪士尼專線", serviceColor: "#e6007e", stationOrigin: "屯門站", routeArrow: "➔", stationDest: "迪士尼樂園", stationFont: "'Noto Sans TC', sans-serif", stationFontSize: 108, stationSlant: -5, mainRouteOffsetX: 10, mainRouteOffsetY: 0, bottomText: "Alexander Dennis Enviro500 MMC • 迪士尼旅遊專線", bottomBarColor: "#4a154b", bottomFontSize: 40, bottomOffsetX: 0, bottomOffsetY: 0 },
+      nlb_11: { logo: 'nlb_green', topBadge: "1080P 60fps", topBadgeColor: "#ffd100", topText: "嶼巴11線下層展望•經伯公坳•長沙海灘•塘福•石壁水塘•大澳", topTextWeight: "900", topTextItalic: "0", topBarColor: "#008037", topTextOffsetX: 0, topTextOffsetY: 0, routeTitle: "嶼巴11路線", routeSubTitle: "", routeFont: "'Dela Gothic One', sans-serif", routeTextColor: "#ffffff", routeStrokeColor: "#008037", routeFontSize: 92, routeSlant: -6, routeOffsetX: 0, routeOffsetY: 0, serviceType: "大澳專線", serviceColor: "#008037", stationOrigin: "東涌站", routeArrow: "➔", stationDest: "大澳", stationFont: "'Noto Sans TC', sans-serif", stationFontSize: 110, stationSlant: -6, mainRouteOffsetX: 10, mainRouteOffsetY: 0, bottomText: "MAN RR8 雙門單層巴士 • 南大嶼山海岸風景線", bottomBarColor: "#008037", bottomFontSize: 40, bottomOffsetX: 0, bottomOffsetY: 0 },
+      nlb_3m: { logo: 'nlb_green', topBadge: "1080P 60fps", topBadgeColor: "#ffd100", topText: "嶼巴3M線上層展望•經貝澳•長沙•散石灣•伯公坳•東涌道", topTextWeight: "900", topTextItalic: "0", topBarColor: "#008037", topTextOffsetX: 0, topTextOffsetY: 0, routeTitle: "嶼巴3M路線", routeSubTitle: "", routeFont: "'Dela Gothic One', sans-serif", routeTextColor: "#ffffff", routeStrokeColor: "#008037", routeFontSize: 92, routeSlant: -6, routeOffsetX: 0, routeOffsetY: 0, serviceType: "南嶼幹線", serviceColor: "#008037", stationOrigin: "梅窩碼頭", routeArrow: "➔", stationDest: "東涌站", stationFont: "'Noto Sans TC', sans-serif", stationFontSize: 110, stationSlant: -6, mainRouteOffsetX: 10, mainRouteOffsetY: 0, bottomText: "MAN A95 12M (MDR) • 猛獅雙層攀山巴士", bottomBarColor: "#008037", bottomFontSize: 40, bottomOffsetX: 0, bottomOffsetY: 0 },
+      nlb_23: { logo: 'nlb_green', topBadge: "1080P 60fps", topBadgeColor: "#ffd100", topText: "嶼巴23線下層展望•經東涌道•伯公坳•長沙•深屈道•昂坪", topTextWeight: "900", topTextItalic: "0", topBarColor: "#008037", topTextOffsetX: 0, topTextOffsetY: 0, routeTitle: "嶼巴23路線", routeSubTitle: "", routeFont: "'Dela Gothic One', sans-serif", routeTextColor: "#ffffff", routeStrokeColor: "#008037", routeFontSize: 92, routeSlant: -6, routeOffsetX: 0, routeOffsetY: 0, serviceType: "昂坪觀光", serviceColor: "#008037", stationOrigin: "東涌達東路", routeArrow: "➔", stationDest: "昂坪", stationFont: "'Noto Sans TC', sans-serif", stationFontSize: 110, stationSlant: -6, mainRouteOffsetX: 10, mainRouteOffsetY: 0, bottomText: "MAN RR8 / 青年 JNP6122G • 天壇大佛寶蓮寺專線", bottomBarColor: "#008037", bottomFontSize: 40, bottomOffsetX: 0, bottomOffsetY: 0 },
+      nlb_b6: { logo: 'nlb_green', topBadge: "1080P 60fps", topBadgeColor: "#ffd100", topText: "嶼巴B6線上層展望•經逸東邨•東涌市中心•赤鱲角南路•大橋口岸", topTextWeight: "900", topTextItalic: "0", topBarColor: "#0055a5", topTextOffsetX: 0, topTextOffsetY: 0, routeTitle: "嶼巴B6路線", routeSubTitle: "", routeFont: "'Dela Gothic One', sans-serif", routeTextColor: "#ffd200", routeStrokeColor: "#0055a5", routeFontSize: 92, routeSlant: -6, routeOffsetX: 0, routeOffsetY: 0, serviceType: "大橋口岸", serviceColor: "#008037", stationOrigin: "滿東邨", routeArrow: "➔", stationDest: "港珠澳大橋口岸", stationFont: "'Noto Sans TC', sans-serif", stationFontSize: 108, stationSlant: -6, mainRouteOffsetX: 10, mainRouteOffsetY: 0, bottomText: "MAN A95 12M / ADL Enviro500 • 口岸24小時接駁專線", bottomBarColor: "#0055a5", bottomFontSize: 40, bottomOffsetX: 0, bottomOffsetY: 0 },
+      nlb_b2p: { logo: 'nlb_green', topBadge: "1080P 60fps", topBadgeColor: "#ffd100", topText: "嶼巴B2P線上層展望•經天水圍市中心•天瑞•屏廈路•港深西部公路", topTextWeight: "900", topTextItalic: "0", topBarColor: "#003876", topTextOffsetX: 0, topTextOffsetY: 0, routeTitle: "嶼巴B2P路線", routeSubTitle: "", routeFont: "'Noto Sans TC', sans-serif", routeTextColor: "#ffd200", routeStrokeColor: "#003876", routeFontSize: 90, routeSlant: -5, routeOffsetX: 0, routeOffsetY: 0, serviceType: "深圳灣專線", serviceColor: "#003876", stationOrigin: "天慈邨", routeArrow: "➔", stationDest: "深圳灣口岸", stationFont: "'Noto Sans TC', sans-serif", stationFontSize: 108, stationSlant: -5, mainRouteOffsetX: 10, mainRouteOffsetY: 0, bottomText: "MAN A95 12M (MDR) • 深圳灣口岸雙層特快", bottomBarColor: "#003876", bottomFontSize: 40, bottomOffsetX: 0, bottomOffsetY: 0 },
+      nlb_1: { logo: 'nlb_green', topBadge: "1080P 60fps", topBadgeColor: "#ffd100", topText: "嶼巴1號線下層展望•經貝澳•長沙•塘福•水口•石壁•羗山道", topTextWeight: "900", topTextItalic: "0", topBarColor: "#004d25", topTextOffsetX: 0, topTextOffsetY: 0, routeTitle: "嶼巴1號路線", routeSubTitle: "", routeFont: "'Noto Sans TC', sans-serif", routeTextColor: "#76ff03", routeStrokeColor: "#003311", routeFontSize: 90, routeSlant: -5, routeOffsetX: 0, routeOffsetY: 0, serviceType: "嶼南幹線", serviceColor: "#008037", stationOrigin: "梅窩碼頭", routeArrow: "➔", stationDest: "大澳", stationFont: "'Noto Sans TC', sans-serif", stationFontSize: 108, stationSlant: -5, mainRouteOffsetX: 10, mainRouteOffsetY: 0, bottomText: "Enviro400 10.4M / MAN RR8 • 大嶼山第一條專營路線", bottomBarColor: "#004d25", bottomFontSize: 40, bottomOffsetX: 0, bottomOffsetY: 0 },
+      mtr_k52: { logo: 'mtr_bus', topBadge: "1080P 60fps", topBadgeColor: "#ffd100", topText: "港鐵K52線上層展望•經屯門市中心•三聖邨•黃金海岸•蝴蝶灣•龍鼓灘", topTextWeight: "900", topTextItalic: "0", topBarColor: "#0055a5", topTextOffsetX: 0, topTextOffsetY: 0, routeTitle: "港鐵K52路線", routeSubTitle: "", routeFont: "'Dela Gothic One', sans-serif", routeTextColor: "#ffffff", routeStrokeColor: "#0055a5", routeFontSize: 92, routeSlant: -6, routeOffsetX: 0, routeOffsetY: 0, serviceType: "屯馬接駁", serviceColor: "#0055a5", stationOrigin: "屯門站", routeArrow: "➔", stationDest: "龍鼓灘", stationFont: "'Noto Sans TC', sans-serif", stationFontSize: 110, stationSlant: -6, mainRouteOffsetX: 10, mainRouteOffsetY: 0, bottomText: "Alexander Dennis Enviro500 MMC 11.3M (5XX) • 港鐵接駁巴士", bottomBarColor: "#0055a5", bottomFontSize: 40, bottomOffsetX: 0, bottomOffsetY: 0 },
+      mtr_k65: { logo: 'mtr_bus', topBadge: "1080P 60fps", topBadgeColor: "#ffd100", topText: "港鐵K65線下層展望•經元朗大馬路•水邊圍•屏山文物徑•流浮山", topTextWeight: "900", topTextItalic: "0", topBarColor: "#0055a5", topTextOffsetX: 0, topTextOffsetY: 0, routeTitle: "港鐵K65路線", routeSubTitle: "", routeFont: "'Dela Gothic One', sans-serif", routeTextColor: "#ffd100", routeStrokeColor: "#0055a5", routeFontSize: 92, routeSlant: -6, routeOffsetX: 0, routeOffsetY: 0, serviceType: "輕鐵接駁", serviceColor: "#0055a5", stationOrigin: "元朗站", routeArrow: "➔", stationDest: "流浮山", stationFont: "'Noto Sans TC', sans-serif", stationFontSize: 110, stationSlant: -6, mainRouteOffsetX: 10, mainRouteOffsetY: 0, bottomText: "Alexander Dennis Enviro500 MMC 11.3M • 流浮山海鮮街專線", bottomBarColor: "#0055a5", bottomFontSize: 40, bottomOffsetX: 0, bottomOffsetY: 0 },
+      mtr_k76: { logo: 'mtr_bus', topBadge: "1080P 60fps", topBadgeColor: "#ffd100", topText: "港鐵K76線上層展望•經天富•天恩•天澤•屏廈路•天水圍站", topTextWeight: "900", topTextItalic: "0", topBarColor: "#0055a5", topTextOffsetX: 0, topTextOffsetY: 0, routeTitle: "港鐵K76路線", routeSubTitle: "", routeFont: "'Dela Gothic One', sans-serif", routeTextColor: "#ffffff", routeStrokeColor: "#0055a5", routeFontSize: 92, routeSlant: -6, routeOffsetX: 0, routeOffsetY: 0, serviceType: "西鐵接駁", serviceColor: "#0055a5", stationOrigin: "天恆", routeArrow: "➔", stationDest: "天水圍站", stationFont: "'Noto Sans TC', sans-serif", stationFontSize: 110, stationSlant: -6, mainRouteOffsetX: 10, mainRouteOffsetY: 0, bottomText: "Alexander Dennis Enviro500 MMC 12M • 天水圍北高頻接駁線", bottomBarColor: "#0055a5", bottomFontSize: 40, bottomOffsetX: 0, bottomOffsetY: 0 },
+      mtr_k12: { logo: 'mtr_bus', topBadge: "1080P 60fps", topBadgeColor: "#ffd100", topText: "港鐵K12線上層展望•經新達廣場•廣福邨•大埔超級城•八號花園", topTextWeight: "900", topTextItalic: "0", topBarColor: "#0055a5", topTextOffsetX: 0, topTextOffsetY: 0, routeTitle: "港鐵K12路線", routeSubTitle: "", routeFont: "'Dela Gothic One', sans-serif", routeTextColor: "#ffd100", routeStrokeColor: "#0055a5", routeFontSize: 92, routeSlant: -6, routeOffsetX: 0, routeOffsetY: 0, serviceType: "東鐵接駁", serviceColor: "#0055a5", stationOrigin: "大埔墟站", routeArrow: "➔", stationDest: "八號花園", stationFont: "'Noto Sans TC', sans-serif", stationFontSize: 110, stationSlant: -6, mainRouteOffsetX: 10, mainRouteOffsetY: 0, bottomText: "Alexander Dennis Enviro500 MMC 12M • 大埔新市鎮接駁線", bottomBarColor: "#0055a5", bottomFontSize: 40, bottomOffsetX: 0, bottomOffsetY: 0 },
+      mtr_k73: { logo: 'mtr_bus', topBadge: "1080P 60fps", topBadgeColor: "#ffd100", topText: "港鐵K73線上層展望•經天富•天晴•天慈•朗屏邨•元朗廣場", topTextWeight: "900", topTextItalic: "0", topBarColor: "#4a154b", topTextOffsetX: 0, topTextOffsetY: 0, routeTitle: "港鐵K73路線", routeSubTitle: "", routeFont: "'Noto Sans TC', sans-serif", routeTextColor: "#ffd100", routeStrokeColor: "#4a154b", routeFontSize: 90, routeSlant: -5, routeOffsetX: 0, routeOffsetY: 0, serviceType: "新界西接駁", serviceColor: "#4a154b", stationOrigin: "天恆", routeArrow: "➔", stationDest: "元朗(西)", stationFont: "'Noto Sans TC', sans-serif", stationFontSize: 108, stationSlant: -5, mainRouteOffsetX: 10, mainRouteOffsetY: 0, bottomText: "Enviro500 MMC 11.3M (5XX) • 港鐵黃紫白波浪塗裝", bottomBarColor: "#4a154b", bottomFontSize: 40, bottomOffsetX: 0, bottomOffsetY: 0 },
+      kcr_retro_506: { logo: 'kcr_retro', topBadge: "1080P 60fps", topBadgeColor: "#ffd100", topText: "九鐵506線下層展望•經蝴蝶邨•屯門站•屯門市中心•安定•友愛", topTextWeight: "900", topTextItalic: "0", topBarColor: "#003366", topTextOffsetX: 0, topTextOffsetY: 0, routeTitle: "九鐵506路線", routeSubTitle: "", routeFont: "'Dela Gothic One', sans-serif", routeTextColor: "#ffffff", routeStrokeColor: "#c8102e", routeFontSize: 92, routeSlant: -6, routeOffsetX: 0, routeOffsetY: 0, serviceType: "九鐵接駁", serviceColor: "#c8102e", stationOrigin: "屯門碼頭", routeArrow: "➔", stationDest: "兆麟", stationFont: "'Noto Sans TC', sans-serif", stationFontSize: 110, stationSlant: -6, mainRouteOffsetX: 10, mainRouteOffsetY: 0, bottomText: "Volvo Olympian 11M (2XX) • KCR 九廣鐵路經典紅灰塗裝", bottomBarColor: "#c8102e", bottomFontSize: 40, bottomOffsetX: 0, bottomOffsetY: 0 }
+    };
+
+    function syncQuickText(targetId, val) {
+      const target = document.getElementById(targetId);
+      if (target) {
+        target.value = val;
+        renderCanvas();
+      }
+    }
+
+    function syncAllToQuickBar() {
+      const mapping = {
+        topText: 'quickTopText',
+        routeTitle: 'quickRouteTitle',
+        serviceType: 'quickServiceType',
+        stationOrigin: 'quickStationOrigin',
+        routeArrow: 'quickRouteArrow',
+        stationDest: 'quickStationDest',
+        bottomText: 'quickBottomText'
+      };
+      for (const [srcId, quickId] of Object.entries(mapping)) {
+        const srcEl = document.getElementById(srcId);
+        const quickEl = document.getElementById(quickId);
+        if (srcEl && quickEl && document.activeElement !== quickEl) {
+          quickEl.value = srcEl.value;
+        }
+      }
+    }
+
+    function switchCompanyTab(tabId, btnEl, companyCode) {
+      document.querySelectorAll('.company-tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.preset-tab-panel').forEach(p => p.classList.remove('active'));
+      if (btnEl) btnEl.classList.add('active');
+      const panel = document.getElementById(tabId);
+      if (panel) panel.classList.add('active');
+      if (companyCode) filterServiceTags(companyCode);
+    }
+
+    function filterServiceTags(companyCode) {
+      document.querySelectorAll('.service-tab-btn').forEach(b => b.classList.remove('active'));
+      const activeBtn = document.getElementById('srvTab_' + companyCode);
+      if (activeBtn) activeBtn.classList.add('active');
+
+      document.querySelectorAll('#serviceTagList .type-tag-btn').forEach(btn => {
+        const comp = btn.getAttribute('data-company');
+        if (companyCode === 'all' || !comp || comp === companyCode) {
+          btn.style.display = 'inline-flex';
+        } else {
+          btn.style.display = 'none';
+        }
+      });
+    }
+
+    function setTitleColors(textColor, strokeColor, labelName) {
+      document.getElementById('routeTextColor').value = textColor;
+      document.getElementById('routeStrokeColor').value = strokeColor;
+      renderCanvas();
+      showToast(`已套用標題配色：「${labelName}」`);
+    }
+
+    const companyThemes = {
+      ctb_1979: { prefix: '城巴', companyGroup: 'ctb', label: '城巴 1979 創辦米黃棗紅', routeTextColor: '#f3e5ab', routeStrokeColor: '#5c1d24', serviceColor: '#5c1d24', topBarColor: '#5c1d24', bottomBarColor: '#5c1d24', topBadgeColor: '#ffd100', logo: 'citybus_40th', sampleBottom: 'Enviro500 MMC 12.8M (6493 / VB 9800) • CITY BUSES EST. 1979' },
+      ctb_cityflyer: { prefix: '城巴', companyGroup: 'ctb', label: '城巴 Cityflyer 機場快線紅金', routeTextColor: '#ffd100', routeStrokeColor: '#9e0b0f', serviceColor: '#9e0b0f', topBarColor: '#d91a2a', bottomBarColor: '#9e0b0f', topBadgeColor: '#ffd100', logo: 'cityflyer', sampleBottom: 'Alexander Dennis Enviro500 MMC 12.8M • Cityflyer 城巴機場快線' },
+      ctb_blue: { prefix: '城巴', companyGroup: 'ctb', label: '城巴標準黃藍塗裝', routeTextColor: '#ffd200', routeStrokeColor: '#003876', serviceColor: '#003876', topBarColor: '#003876', bottomBarColor: '#003876', topBadgeColor: '#ffd200', logo: 'citybus_rebrand', sampleBottom: 'Alexander Dennis Enviro500 MMC 12.8M • Citybus 城巴' },
+      nwfb_wave: { prefix: '新巴', companyGroup: 'ctb', label: '新巴經典白綠橙波浪', routeTextColor: '#ffffff', routeStrokeColor: '#009b3a', serviceColor: '#ff7300', topBarColor: '#009b3a', bottomBarColor: '#ff7300', topBadgeColor: '#ffd100', logo: 'nwfb', sampleBottom: 'Alexander Dennis Enviro500 MMC • NWFB 新世界第一巴士' },
+      kmb_red: { prefix: '九巴', companyGroup: 'kmb', label: '九巴城市脈搏紅巴 2.0', routeTextColor: '#ffffff', routeStrokeColor: '#c8102e', serviceColor: '#c8102e', topBarColor: '#c8102e', bottomBarColor: '#c8102e', topBadgeColor: '#ffd100', logo: 'kmb_red', sampleBottom: 'Alexander Dennis Enviro500 MMC 12.8M • KMB 城市脈搏紅巴' },
+      kmb_gold: { prefix: '九巴', companyGroup: 'kmb', label: '九巴千禧香檳金巴', routeTextColor: '#f5d77f', routeStrokeColor: '#4a2e0b', serviceColor: '#c5a059', topBarColor: '#4a2e0b', bottomBarColor: '#c5a059', topBadgeColor: '#ffd100', logo: 'kmb_gold', sampleBottom: 'Volvo Super Olympian / Enviro500 • KMB 千禧香檳金巴' },
+      kmb_ev: { prefix: '九巴', companyGroup: 'kmb', label: '九巴新能源電光綠純電巴', routeTextColor: '#ffffff', routeStrokeColor: '#1b5e20', serviceColor: '#2e7d32', topBarColor: '#1b5e20', bottomBarColor: '#2e7d32', topBadgeColor: '#76ff03', logo: 'kmb_red', sampleBottom: 'Alexander Dennis Enviro500EV / BYD B12D • 九巴綠能純電巴' },
+      kmb_hotdog: { prefix: '九巴', companyGroup: 'kmb', label: '九巴 1933 經典非空調熱狗', routeTextColor: '#f0e68c', routeStrokeColor: '#8b0000', serviceColor: '#8b0000', topBarColor: '#8b0000', bottomBarColor: '#8b0000', topBadgeColor: '#f0e68c', logo: 'kmb_red', sampleBottom: 'Dennis Dragon / Leyland Olympian • 九巴經典非空調熱狗塗裝' },
+      kmb_white: { prefix: '九巴', companyGroup: 'kmb', label: '九巴經典白板冷氣巴', routeTextColor: '#ffffff', routeStrokeColor: '#990000', serviceColor: '#990000', topBarColor: '#990000', bottomBarColor: '#990000', topBadgeColor: '#ffd100', logo: 'kmb_red', sampleBottom: 'Volvo Olympian / Dennis Dragon • 九巴 90 年代經典白板塗裝' },
+      lwb_orange: { prefix: '龍運', companyGroup: 'lwb', label: '龍運巴士陽光橙白塗裝', routeTextColor: '#ffffff', routeStrokeColor: '#c2410c', serviceColor: '#ea5b0c', topBarColor: '#ea5b0c', bottomBarColor: '#ea5b0c', topBadgeColor: '#ffd100', logo: 'lwb_orange', sampleBottom: 'Alexander Dennis Enviro500 MMC 12.8M • LWB 龍運機場豪華客車' },
+      lwb_night: { prefix: '龍運', companyGroup: 'lwb', label: '龍運深宵特快黑橙塗裝', routeTextColor: '#ff9900', routeStrokeColor: '#111111', serviceColor: '#ff7700', topBarColor: '#111111', bottomBarColor: '#111111', topBadgeColor: '#ff9900', logo: 'lwb_orange', sampleBottom: 'Alexander Dennis Enviro500 MMC 12.8M • LWB 深宵機場特快' },
+      nlb_green: { prefix: '嶼巴', companyGroup: 'nlb', label: '新大嶼山巴士嶼南翠綠', routeTextColor: '#ffffff', routeStrokeColor: '#008037', serviceColor: '#008037', topBarColor: '#008037', bottomBarColor: '#008037', topBadgeColor: '#ffd100', logo: 'nlb_green', sampleBottom: 'MAN A95 12M / MAN RR8 • NLB 新大嶼山巴士' },
+      nlb_port: { prefix: '嶼巴', companyGroup: 'nlb', label: '嶼巴口岸專線藍黃配色', routeTextColor: '#ffd200', routeStrokeColor: '#0055a5', serviceColor: '#008037', topBarColor: '#0055a5', bottomBarColor: '#0055a5', topBadgeColor: '#ffd200', logo: 'nlb_green', sampleBottom: 'MAN A95 12M (MDR) • 嶼巴口岸特快專線' },
+      mtr_bus: { prefix: '港鐵', companyGroup: 'mtr', label: '港鐵巴士新塗裝藍白紅', routeTextColor: '#ffffff', routeStrokeColor: '#0055a5', serviceColor: '#0055a5', topBarColor: '#0055a5', bottomBarColor: '#0055a5', topBadgeColor: '#ffd100', logo: 'mtr_bus', sampleBottom: 'Alexander Dennis Enviro500 MMC (5XX) • MTR Bus 港鐵接駁巴士' },
+      mtr_wave: { prefix: '港鐵', companyGroup: 'mtr', label: '港鐵巴士經典黃紫白波浪', routeTextColor: '#ffd100', routeStrokeColor: '#4a154b', serviceColor: '#4a154b', topBarColor: '#4a154b', bottomBarColor: '#4a154b', topBadgeColor: '#ffd100', logo: 'mtr_bus', sampleBottom: 'Alexander Dennis Enviro500 • 港鐵新界西黃紫白波浪塗裝' },
+      kcr_retro: { prefix: '九鐵', companyGroup: 'mtr', label: '九鐵巴士經典藍白紅塗裝', routeTextColor: '#ffffff', routeStrokeColor: '#c8102e', serviceColor: '#c8102e', topBarColor: '#003366', bottomBarColor: '#c8102e', topBadgeColor: '#ffd100', logo: 'kcr_retro', sampleBottom: 'Volvo Olympian 11M (2XX) • KCR 九廣鐵路接駁巴士' }
+    };
+
+    function applyCompanyThemeOnly(themeKey, silent = false) {
+      const t = companyThemes[themeKey];
+      if (!t) return;
+
+      document.getElementById('routeTextColor').value = t.routeTextColor;
+      document.getElementById('routeStrokeColor').value = t.routeStrokeColor;
+      document.getElementById('serviceColor').value = t.serviceColor;
+      document.getElementById('topBarColor').value = t.topBarColor;
+      document.getElementById('bottomBarColor').value = t.bottomBarColor;
+      document.getElementById('topBadgeColor').value = t.topBadgeColor;
+
+      const companyRegex = /^(城巴|新巴|九巴|龍運|嶼巴|港鐵巴士|港鐵|九鐵巴士|九鐵|Cityflyer\s*)/i;
+      const topEl = document.getElementById('topText');
+      if (topEl && topEl.value) {
+        if (companyRegex.test(topEl.value)) {
+          topEl.value = topEl.value.replace(companyRegex, t.prefix);
+        } else {
+          topEl.value = t.prefix + topEl.value;
+        }
+      }
+
+      const routeEl = document.getElementById('routeTitle');
+      if (routeEl && routeEl.value) {
+        if (companyRegex.test(routeEl.value)) {
+          routeEl.value = routeEl.value.replace(companyRegex, t.prefix);
+        } else {
+          routeEl.value = t.prefix + routeEl.value;
+        }
+      }
+
+      const bottomEl = document.getElementById('bottomText');
+      if (bottomEl && t.sampleBottom && !linkedClipContext) {
+        bottomEl.value = t.sampleBottom;
+      }
+
+      if (t.logo && presetLogos[t.logo]) {
+        const img = new Image();
+        img.onload = function() {
+          logoImage = img;
+          renderCanvas();
+        };
+        img.src = presetLogos[t.logo];
+      }
+
+      if (t.companyGroup) {
+        filterServiceTags(t.companyGroup);
+      }
+
+      renderCanvas();
+      if (!silent) showToast(`已切換為「${t.label}」`);
+    }
+
+    function setLayoutMode(mode) {
+      currentLayoutMode = mode;
+      document.querySelectorAll('.layout-btn').forEach(btn => btn.classList.remove('active'));
+      const activeBtn = document.getElementById(`btnLayout${mode.charAt(0).toUpperCase() + mode.slice(1)}`);
+      if (activeBtn) activeBtn.classList.add('active');
+
+      if (mode === 'led') {
+        document.getElementById('routeFont').value = "'VT323', monospace";
+        document.getElementById('stationFont').value = "'VT323', monospace";
+        document.getElementById('routeTextColor').value = "#ff9900";
+        document.getElementById('routeStrokeColor').value = "#331100";
+      }
+
+      renderCanvas();
+      showToast(`已切換排版模式為：「${mode}」`);
+    }
+
+    function selectPresetLogo(logoKey) {
+      if (!presetLogos[logoKey]) return;
+      const img = new Image();
+      img.onload = function() {
+        logoImage = img;
+        document.getElementById('logoEnabled').value = "1";
+        renderCanvas();
+        showToast(`已套用專屬標誌！`);
+      };
+      img.src = presetLogos[logoKey];
+    }
+
+    function alignLogo(pos) {
+      if (pos === 'topRight') {
+        document.getElementById('logoOffsetX').value = 750;
+        document.getElementById('logoOffsetY').value = -450;
+      } else if (pos === 'topLeft') {
+        document.getElementById('logoOffsetX').value = -750;
+        document.getElementById('logoOffsetY').value = -450;
+      } else if (pos === 'bottomRight') {
+        document.getElementById('logoOffsetX').value = 750;
+        document.getElementById('logoOffsetY').value = 350;
+      }
+      renderCanvas();
+    }
+
+    function injectDeck(deckType) {
+      const topInput = document.getElementById('topText');
+      let val = topInput.value;
+      if (val.includes('上層展望')) {
+        val = val.replace('上層展望', deckType);
+      } else if (val.includes('下層展望')) {
+        val = val.replace('下層展望', deckType);
+      } else if (val.includes('前面展望')) {
+        val = val.replace('前面展望', deckType);
+      } else {
+        val = val.replace(/^([^•]+)/, `$1${deckType}`);
+      }
+      val = val.replace(/\s*•\s*/g, '•');
+      topInput.value = val;
+      renderCanvas();
+      showToast(`已切換為：${deckType}`);
+    }
+
+    function applyPreset(name) {
+      const p = presets[name];
+      if (!p) return;
+      
+      for (const key in p) {
+        if (key === 'logo') {
+          if (presetLogos[p[key]]) {
+            const img = new Image();
+            img.onload = function() {
+              logoImage = img;
+              renderCanvas();
+            };
+            img.src = presetLogos[p[key]];
+          }
+        } else {
+          const el = document.getElementById(key);
+          if (el) el.value = p[key];
+        }
+      }
+      
+      const topItalicBtn = document.getElementById('btnTopItalic');
+      if (topItalicBtn) {
+        topItalicBtn.classList.toggle('active', p.topTextItalic === "1");
+      }
+
+      updateHints();
+      renderCanvas();
+      showToast(`已套用塗裝風格：「${p.routeTitle}」`);
+    }
+
+    function setServiceTag(tagText, bgColorHex, textColorHex, titleTextHex, titleStrokeHex) {
+      document.getElementById('serviceType').value = tagText;
+      if (bgColorHex) {
+        document.getElementById('serviceColor').value = bgColorHex;
+        document.getElementById('topBarColor').value = bgColorHex;
+        document.getElementById('bottomBarColor').value = bgColorHex;
+      }
+      if (textColorHex) document.getElementById('topBadgeColor').value = textColorHex;
+      if (titleTextHex) document.getElementById('routeTextColor').value = titleTextHex;
+      if (titleStrokeHex) document.getElementById('routeStrokeColor').value = titleStrokeHex;
+      renderCanvas();
+      showToast(`已套用官方路線標準配色：「${tagText}」`);
+    }
+
+    function toggleStyle(inputId, btnId) {
+      const input = document.getElementById(inputId);
+      const btn = document.getElementById(btnId);
+      const isCurrentlyActive = input.value === "1";
+      input.value = isCurrentlyActive ? "0" : "1";
+      btn.classList.toggle('active', !isCurrentlyActive);
+      renderCanvas();
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.innerText = msg;
+      toast.style.display = 'block';
+      setTimeout(() => { toast.style.display = 'none'; }, 2400);
+    }
+
+    function resetPos(idX, idY) {
+      document.getElementById(idX).value = 0;
+      document.getElementById(idY).value = 0;
+      renderCanvas();
+    }
+
+    function updateHints() {
+      syncAllToQuickBar();
+      document.getElementById('valScale').innerText = document.getElementById('imgScale').value + 'x';
+      document.getElementById('valOffsetY').innerText = document.getElementById('imgOffsetY').value + 'px';
+      document.getElementById('valOffsetX').innerText = document.getElementById('imgOffsetX').value + 'px';
+      document.getElementById('valVignette').innerText = Math.round(document.getElementById('vignetteOpacity').value * 100) + '%';
+      
+      document.getElementById('valLogoSize').innerText = document.getElementById('logoSize').value + 'px';
+      document.getElementById('valLogoOffsetX').innerText = document.getElementById('logoOffsetX').value + 'px';
+      document.getElementById('valLogoOffsetY').innerText = document.getElementById('logoOffsetY').value + 'px';
+
+      document.getElementById('valTopOffsetX').innerText = document.getElementById('topTextOffsetX').value + 'px';
+      document.getElementById('valTopOffsetY').innerText = document.getElementById('topTextOffsetY').value + 'px';
+
+      document.getElementById('valRouteFontSize').innerText = document.getElementById('routeFontSize').value + 'px';
+      document.getElementById('valRouteSlant').innerText = document.getElementById('routeSlant').value + '°';
+      document.getElementById('valRouteOffsetX').innerText = document.getElementById('routeOffsetX').value + 'px';
+      document.getElementById('valRouteOffsetY').innerText = document.getElementById('routeOffsetY').value + 'px';
+
+      document.getElementById('valStationFontSize').innerText = document.getElementById('stationFontSize').value + 'px';
+      document.getElementById('valStationSlant').innerText = document.getElementById('stationSlant').value + '°';
+      document.getElementById('valMainRouteOffsetX').innerText = document.getElementById('mainRouteOffsetX').value + 'px';
+      document.getElementById('valMainRouteOffsetY').innerText = document.getElementById('mainRouteOffsetY').value + 'px';
+
+      document.getElementById('valBottomFontSize').innerText = document.getElementById('bottomFontSize').value + 'px';
+      document.getElementById('valBottomOffsetX').innerText = document.getElementById('bottomOffsetX').value + 'px';
+      document.getElementById('valBottomOffsetY').innerText = document.getElementById('bottomOffsetY').value + 'px';
+    }
+
+    function drawDualStrokedText(text, x, y, options = {}) {
+      const {
+        fill = '#ffffff',
+        innerStroke = '#ffffff',
+        innerStrokeWidth = 0,
+        outerStroke = '#000000',
+        outerStrokeWidth = 16,
+        slant = 0,
+        font = 'bold 90px sans-serif',
+        align = 'left',
+        shadow = true
+      } = options;
+
+      ctx.save();
+      ctx.font = font;
+      ctx.textAlign = align;
+      ctx.textBaseline = 'alphabetic';
+
+      ctx.translate(x, y);
+      if (slant !== 0) {
+        ctx.transform(1, 0, Math.tan((slant * Math.PI) / 180), 1, 0, 0);
+      }
+
+      ctx.lineJoin = 'round';
+      ctx.miterLimit = 2;
+
+      if (outerStrokeWidth > 0) {
+        if (shadow) {
+          ctx.shadowColor = 'rgba(0, 0, 0, 0.9)';
+          ctx.shadowBlur = 12;
+          ctx.shadowOffsetX = 5;
+          ctx.shadowOffsetY = 5;
+        }
+        ctx.strokeStyle = outerStroke;
+        ctx.lineWidth = outerStrokeWidth;
+        ctx.strokeText(text, 0, 0);
+      }
+
+      ctx.shadowColor = 'transparent';
+
+      if (innerStrokeWidth > 0) {
+        ctx.strokeStyle = innerStroke;
+        ctx.lineWidth = innerStrokeWidth;
+        ctx.strokeText(text, 0, 0);
+      }
+
+      ctx.fillStyle = fill;
+      ctx.fillText(text, 0, 0);
+
+      ctx.restore();
+    }
+
+    function renderCanvas() {
+      updateHints();
+
+      const isLogoEnabled = document.getElementById('logoEnabled').value === "1";
+      const logoSize = parseInt(document.getElementById('logoSize').value);
+      const logoOffsetX = parseFloat(document.getElementById('logoOffsetX').value);
+      const logoOffsetY = parseFloat(document.getElementById('logoOffsetY').value);
+
+      const topBadge = document.getElementById('topBadge').value.trim();
+      const topBadgeColor = document.getElementById('topBadgeColor').value;
+      const topText = document.getElementById('topText').value;
+      const topTextWeight = document.getElementById('topTextWeight').value;
+      const topTextItalic = document.getElementById('topTextItalic').value === "1";
+      const topBarColor = document.getElementById('topBarColor').value;
+      const topBarOpacity = parseFloat(document.getElementById('topBarOpacity').value);
+      const topTextOffsetX = parseFloat(document.getElementById('topTextOffsetX').value);
+      const topTextOffsetY = parseFloat(document.getElementById('topTextOffsetY').value);
+
+      const routeTitle = document.getElementById('routeTitle').value;
+      const routeSubTitle = document.getElementById('routeSubTitle').value;
+      const routeFont = document.getElementById('routeFont').value;
+      const routeTextColor = document.getElementById('routeTextColor').value;
+      const routeStrokeColor = document.getElementById('routeStrokeColor').value;
+      const routeFontSize = parseInt(document.getElementById('routeFontSize').value);
+      const routeSlant = parseInt(document.getElementById('routeSlant').value);
+      const routeOffsetX = parseFloat(document.getElementById('routeOffsetX').value);
+      const routeOffsetY = parseFloat(document.getElementById('routeOffsetY').value);
+
+      const serviceType = document.getElementById('serviceType').value;
+      const serviceColor = document.getElementById('serviceColor').value;
+      const stationOrigin = document.getElementById('stationOrigin').value;
+      const routeArrow = document.getElementById('routeArrow').value;
+      const stationDest = document.getElementById('stationDest').value;
+      const stationFont = document.getElementById('stationFont').value;
+      const stationFontSize = parseInt(document.getElementById('stationFontSize').value);
+      const stationSlant = parseInt(document.getElementById('stationSlant').value);
+      const mainRouteOffsetX = parseFloat(document.getElementById('mainRouteOffsetX').value);
+      const mainRouteOffsetY = parseFloat(document.getElementById('mainRouteOffsetY').value);
+
+      const bottomText = document.getElementById('bottomText').value;
+      const bottomBarColor = document.getElementById('bottomBarColor').value;
+      const bottomFontSize = parseInt(document.getElementById('bottomFontSize').value);
+      const bottomOffsetX = parseFloat(document.getElementById('bottomOffsetX').value);
+      const bottomOffsetY = parseFloat(document.getElementById('bottomOffsetY').value);
+
+      const imgScale = parseFloat(document.getElementById('imgScale').value);
+      const imgOffsetX = parseFloat(document.getElementById('imgOffsetX').value);
+      const imgOffsetY = parseFloat(document.getElementById('imgOffsetY').value);
+      const vignetteOpacity = parseFloat(document.getElementById('vignetteOpacity').value);
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      if (bgImage) {
+        ctx.save();
+        const w = bgImage.width * imgScale;
+        const h = bgImage.height * imgScale;
+        const x = (canvas.width - w) / 2 + imgOffsetX;
+        const y = (canvas.height - h) / 2 + imgOffsetY;
+        ctx.drawImage(bgImage, x, y, w, h);
+        ctx.restore();
+      } else {
+        const grad = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+        grad.addColorStop(0, '#1c2233');
+        grad.addColorStop(1, '#0e121c');
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.35)';
+        ctx.font = '900 42px "Noto Sans TC", sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('📷 請於右側上傳或貼上背景車輛圖片 (支援 Ctrl+V)', canvas.width / 2, canvas.height / 2);
+      }
+
+      if (vignetteOpacity > 0) {
+        ctx.fillStyle = `rgba(0, 0, 0, ${vignetteOpacity})`;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+      }
+
+      if (currentLayoutMode === 'classic') {
+        const topBarHeight = 118;
+        ctx.save();
+        ctx.fillStyle = topBarColor;
+        ctx.globalAlpha = topBarOpacity;
+        ctx.fillRect(0, 0, canvas.width, topBarHeight);
+        ctx.fillStyle = '#ffffff';
+        ctx.globalAlpha = 0.5;
+        ctx.fillRect(0, topBarHeight - 3, canvas.width, 3);
+        ctx.restore();
+
+        const bottomBarHeight = 92;
+        const bottomBarY = canvas.height - bottomBarHeight;
+        ctx.save();
+        ctx.fillStyle = bottomBarColor;
+        ctx.fillRect(0, bottomBarY, canvas.width, bottomBarHeight);
+        ctx.fillStyle = '#ffffff';
+        ctx.globalAlpha = 0.5;
+        ctx.fillRect(0, bottomBarY, canvas.width, 3);
+        ctx.restore();
+      } else if (currentLayoutMode === 'modern') {
+        const topGrad = ctx.createLinearGradient(0, 0, 0, 180);
+        topGrad.addColorStop(0, 'rgba(0,0,0,0.85)');
+        topGrad.addColorStop(1, 'rgba(0,0,0,0)');
+        ctx.fillStyle = topGrad;
+        ctx.fillRect(0, 0, canvas.width, 180);
+
+        const botGrad = ctx.createLinearGradient(0, canvas.height - 200, 0, canvas.height);
+        botGrad.addColorStop(0, 'rgba(0,0,0,0)');
+        botGrad.addColorStop(1, 'rgba(0,0,0,0.9)');
+        ctx.fillStyle = botGrad;
+        ctx.fillRect(0, canvas.height - 200, canvas.width, 200);
+      } else if (currentLayoutMode === 'led') {
+        const boxX = canvas.width - 920 + routeOffsetX;
+        const boxY = 80 + routeOffsetY;
+        const boxW = 870;
+        const boxH = 260;
+
+        ctx.save();
+        ctx.fillStyle = 'rgba(5, 5, 5, 0.9)';
+        ctx.fillRect(boxX, boxY, boxW, boxH);
+        ctx.strokeStyle = '#ff8800';
+        ctx.lineWidth = 6;
+        ctx.strokeRect(boxX, boxY, boxW, boxH);
+        ctx.restore();
+      } else if (currentLayoutMode === 'sidebar') {
+        const sideW = 420;
+        ctx.save();
+        ctx.fillStyle = topBarColor;
+        ctx.globalAlpha = 0.92;
+        ctx.fillRect(0, 0, sideW, canvas.height);
+        ctx.fillStyle = '#ffffff';
+        ctx.globalAlpha = 0.6;
+        ctx.fillRect(sideW - 5, 0, 5, canvas.height);
+        ctx.restore();
+      }
+
+      let badgeEndX = 25;
+      if (topBadge) {
+        ctx.save();
+        const badgeX = 25;
+        const badgeY = 18;
+        const badgeH = 80;
+
+        const parts = topBadge.split(/[\s,]+/).filter(Boolean);
+        let line1 = parts[0] || "";
+        let line2 = parts.length >= 2 ? parts.slice(1).join(' ') : "";
+
+        ctx.font = '900 36px "Noto Sans JP", sans-serif';
+        const m1 = ctx.measureText(line1).width;
+        ctx.font = 'bold 22px sans-serif';
+        const m2 = line2 ? ctx.measureText(line2).width : 0;
+        const maxTextW = Math.max(m1, m2);
+
+        const badgeW = Math.max(105, maxTextW + 30);
+        badgeEndX = badgeX + badgeW;
+
+        ctx.fillStyle = '#080808';
+        ctx.fillRect(badgeX, badgeY, badgeW, badgeH);
+        
+        ctx.strokeStyle = topBadgeColor;
+        ctx.lineWidth = 4;
+        ctx.strokeRect(badgeX, badgeY, badgeW, badgeH);
+
+        ctx.textAlign = 'center';
+        ctx.fillStyle = topBadgeColor;
+
+        if (line2) {
+          const s1 = m1 > (badgeW - 16) ? (badgeW - 16) / m1 : 1;
+          const s2 = m2 > (badgeW - 16) ? (badgeW - 16) / m2 : 1;
+
+          ctx.font = `900 ${Math.floor(36 * s1)}px "Noto Sans JP", sans-serif`;
+          ctx.fillText(line1, badgeX + badgeW / 2, badgeY + 40);
+
+          ctx.font = `bold ${Math.floor(22 * s2)}px sans-serif`;
+          ctx.fillText(line2, badgeX + badgeW / 2, badgeY + 70);
+        } else {
+          const s1 = m1 > (badgeW - 16) ? (badgeW - 16) / m1 : 1;
+          ctx.font = `900 ${Math.floor(34 * s1)}px "Noto Sans JP", sans-serif`;
+          ctx.fillText(line1, badgeX + badgeW / 2, badgeY + 52);
+        }
+        ctx.restore();
+      }
+
+      if (topText.trim()) {
+        const topStartX = topBadge ? (badgeEndX + 22) : 35;
+        const topX = topStartX + topTextOffsetX;
+        const topY = 80 + topTextOffsetY;
+
+        const availTopWidth = canvas.width - topX - 40;
+        const fontPrefix = topTextItalic ? "italic " : "";
+        ctx.font = `${fontPrefix}${topTextWeight} 52px "Noto Sans JP", "Noto Sans TC", sans-serif`;
+        const topMetrics = ctx.measureText(topText);
+        let effTopFontSize = 52;
+        if (topMetrics.width > availTopWidth && availTopWidth > 100) {
+          effTopFontSize = Math.max(28, Math.floor(52 * (availTopWidth / topMetrics.width)));
+        }
+
+        drawDualStrokedText(topText, topX, topY, {
+          fill: '#ffffff',
+          outerStroke: '#000000',
+          outerStrokeWidth: Math.round(effTopFontSize * 0.26),
+          font: `${fontPrefix}${topTextWeight} ${effTopFontSize}px "Noto Sans JP", "Noto Sans TC", sans-serif`,
+          align: 'left',
+          slant: topTextItalic ? -8 : 0,
+          shadow: true
+        });
+
+        hitBoxes.topText = {
+          x: topX - 10,
+          y: topY - effTopFontSize,
+          w: topMetrics.width + 20,
+          h: effTopFontSize + 25
+        };
+      }
+
+      if (isLogoEnabled && logoImage) {
+        ctx.save();
+        const logoW = logoSize;
+        const logoH = (logoImage.height / logoImage.width) * logoW;
+        const logoX = (canvas.width - logoW - 60) + logoOffsetX;
+        const logoY = 145 + logoOffsetY;
+
+        ctx.shadowColor = 'rgba(0, 0, 0, 0.7)';
+        ctx.shadowBlur = 10;
+        ctx.drawImage(logoImage, logoX, logoY, logoW, logoH);
+        ctx.restore();
+
+        hitBoxes.logo = { x: logoX - 10, y: logoY - 10, w: logoW + 20, h: logoH + 20 };
+      } else {
+        delete hitBoxes.logo;
+      }
+
+      if (routeTitle.trim()) {
+        const titleX = canvas.width - 50 + routeOffsetX;
+        const titleY = (routeSubTitle.trim() ? 210 : 205) + routeOffsetY;
+
+        ctx.font = `900 ${routeFontSize}px ${routeFont}`;
+        const routeMetrics = ctx.measureText(routeTitle);
+        let effRouteFontSize = routeFontSize;
+        const maxRouteWidth = 1000;
+        if (routeMetrics.width > maxRouteWidth) {
+          effRouteFontSize = Math.floor(routeFontSize * (maxRouteWidth / routeMetrics.width));
+        }
+
+        drawDualStrokedText(routeTitle, titleX, titleY, {
+          fill: routeTextColor,
+          innerStroke: routeStrokeColor,
+          innerStrokeWidth: Math.round(effRouteFontSize * 0.17),
+          outerStroke: '#ffffff',
+          outerStrokeWidth: Math.round(effRouteFontSize * 0.28),
+          font: `900 ${effRouteFontSize}px ${routeFont}`,
+          align: 'right',
+          slant: routeSlant,
+          shadow: true
+        });
+
+        if (routeSubTitle.trim()) {
+          const subFontSize = Math.round(effRouteFontSize * 0.58);
+          drawDualStrokedText(routeSubTitle, titleX, titleY + Math.round(effRouteFontSize * 0.72), {
+            fill: '#ffffff',
+            innerStroke: '#0055a5',
+            innerStrokeWidth: 10,
+            outerStroke: '#000000',
+            outerStrokeWidth: 18,
+            font: `900 ${subFontSize}px "Noto Sans JP", "Noto Sans TC", sans-serif`,
+            align: 'right',
+            slant: routeSlant,
+            shadow: true
+          });
+        }
+
+        hitBoxes.routeTitle = {
+          x: titleX - routeMetrics.width - 30,
+          y: titleY - effRouteFontSize,
+          w: routeMetrics.width + 50,
+          h: routeSubTitle.trim() ? effRouteFontSize + 90 : effRouteFontSize + 30
+        };
+      }
+
+      const bottomMainY = canvas.height - 145 + mainRouteOffsetY;
+      let currentX = 50 + mainRouteOffsetX;
+      const startMainX = currentX;
+
+      const testServiceFont = `italic 900 ${stationFontSize + 6}px "Noto Sans JP", "Noto Sans TC", sans-serif`;
+      const testStationFont = `900 ${stationFontSize}px ${stationFont}`;
+      
+      ctx.font = testServiceFont;
+      const testServiceWidth = serviceType.trim() ? ctx.measureText(serviceType).width + 40 : 0;
+      
+      const fullRouteText = `${stationOrigin} ${routeArrow} ${stationDest}`;
+      ctx.font = testStationFont;
+      const testStationWidth = ctx.measureText(fullRouteText).width;
+
+      const totalRequiredWidth = testServiceWidth + testStationWidth;
+      const maxAllowedWidth = canvas.width - currentX - 45;
+
+      let scaleRatio = 1.0;
+      if (totalRequiredWidth > maxAllowedWidth && maxAllowedWidth > 200) {
+        scaleRatio = maxAllowedWidth / totalRequiredWidth;
+      }
+
+      const effStationFontSize = Math.floor(stationFontSize * scaleRatio);
+      const effServiceFontSize = Math.floor((stationFontSize + 6) * scaleRatio);
+
+      if (serviceType.trim()) {
+        drawDualStrokedText(serviceType, currentX, bottomMainY, {
+          fill: serviceColor,
+          innerStroke: '#ffffff',
+          innerStrokeWidth: Math.round(effServiceFontSize * 0.16),
+          outerStroke: '#000000',
+          outerStrokeWidth: Math.round(effServiceFontSize * 0.28),
+          font: `italic 900 ${effServiceFontSize}px "Noto Sans JP", "Noto Sans TC", sans-serif`,
+          align: 'left',
+          slant: -10,
+          shadow: true
+        });
+
+        ctx.font = `italic 900 ${effServiceFontSize}px "Noto Sans JP", sans-serif`;
+        const renderedServiceW = ctx.measureText(serviceType).width;
+        currentX += renderedServiceW + Math.round(35 * scaleRatio);
+      }
+
+      drawDualStrokedText(fullRouteText, currentX, bottomMainY, {
+        fill: '#ffffff',
+        outerStroke: '#000000',
+        outerStrokeWidth: Math.round(effStationFontSize * 0.26),
+        font: `900 ${effStationFontSize}px ${stationFont}`,
+        align: 'left',
+        slant: stationSlant,
+        shadow: true
+      });
+
+      hitBoxes.mainRoute = {
+        x: startMainX - 20,
+        y: bottomMainY - effStationFontSize - 20,
+        w: (currentX - startMainX) + testStationWidth + 40,
+        h: effStationFontSize + 50
+      };
+
+      if (bottomText.trim()) {
+        const bX = 50 + bottomOffsetX;
+        const bY = canvas.height - 30 + bottomOffsetY;
+        const maxBottomW = canvas.width - bX - 50;
+
+        ctx.font = `900 ${bottomFontSize}px "Noto Sans JP", "Noto Sans TC", sans-serif`;
+        const testBMetrics = ctx.measureText(bottomText);
+        let effBottomFontSize = bottomFontSize;
+        if (testBMetrics.width > maxBottomW && maxBottomW > 100) {
+          effBottomFontSize = Math.floor(bottomFontSize * (maxBottomW / testBMetrics.width));
+        }
+
+        drawDualStrokedText(bottomText, bX, bY, {
+          fill: '#ffffff',
+          outerStroke: '#000000',
+          outerStrokeWidth: Math.round(effBottomFontSize * 0.26),
+          font: `900 ${effBottomFontSize}px "Noto Sans JP", "Noto Sans TC", sans-serif`,
+          align: 'left',
+          slant: -8,
+          shadow: true
+        });
+
+        hitBoxes.bottomText = {
+          x: bX - 10,
+          y: bY - effBottomFontSize,
+          w: testBMetrics.width + 20,
+          h: effBottomFontSize + 20
+        };
+      }
+
+      if (isDragging && dragTarget && hitBoxes[dragTarget]) {
+        const b = hitBoxes[dragTarget];
+        ctx.save();
+        ctx.strokeStyle = '#ffd100';
+        ctx.lineWidth = 4;
+        ctx.setLineDash([12, 8]);
+        ctx.strokeRect(b.x, b.y, b.w, b.h);
+        ctx.restore();
+      }
+    }
+
+    function getCanvasCoordinates(e) {
+      const rect = canvas.getBoundingClientRect();
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+      const scaleX = canvas.width / rect.width;
+      const scaleY = canvas.height / rect.height;
+
+      return { x: (clientX - rect.left) * scaleX, y: (clientY - rect.top) * scaleY };
+    }
+
+    function getHitTarget(pos) {
+      for (const key of ['logo', 'mainRoute', 'routeTitle', 'topText', 'bottomText']) {
+        const box = hitBoxes[key];
+        if (box && pos.x >= box.x && pos.x <= box.x + box.w && pos.y >= box.y && pos.y <= box.y + box.h) {
+          return key;
+        }
+      }
+      return 'bgImage';
+    }
+
+    function handlePointerDown(e) {
+      const pos = getCanvasCoordinates(e);
+      dragTarget = getHitTarget(pos);
+      isDragging = true;
+      startMousePos = pos;
+
+      if (dragTarget === 'logo') startElementPos = { x: parseFloat(document.getElementById('logoOffsetX').value), y: parseFloat(document.getElementById('logoOffsetY').value) };
+      else if (dragTarget === 'routeTitle') startElementPos = { x: parseFloat(document.getElementById('routeOffsetX').value), y: parseFloat(document.getElementById('routeOffsetY').value) };
+      else if (dragTarget === 'mainRoute') startElementPos = { x: parseFloat(document.getElementById('mainRouteOffsetX').value), y: parseFloat(document.getElementById('mainRouteOffsetY').value) };
+      else if (dragTarget === 'topText') startElementPos = { x: parseFloat(document.getElementById('topTextOffsetX').value), y: parseFloat(document.getElementById('topTextOffsetY').value) };
+      else if (dragTarget === 'bottomText') startElementPos = { x: parseFloat(document.getElementById('bottomOffsetX').value), y: parseFloat(document.getElementById('bottomOffsetY').value) };
+      else if (dragTarget === 'bgImage') startElementPos = { x: parseFloat(document.getElementById('imgOffsetX').value), y: parseFloat(document.getElementById('imgOffsetY').value) };
+
+      renderCanvas();
+    }
+
+    function handlePointerMove(e) {
+      const pos = getCanvasCoordinates(e);
+      if (!isDragging) {
+        const hoverTarget = getHitTarget(pos);
+        canvas.style.cursor = (hoverTarget && hoverTarget !== 'bgImage') ? 'grab' : 'crosshair';
+        return;
+      }
+
+      canvas.style.cursor = 'grabbing';
+      const dx = pos.x - startMousePos.x;
+      const dy = pos.y - startMousePos.y;
+
+      if (dragTarget === 'logo') { document.getElementById('logoOffsetX').value = Math.round(startElementPos.x + dx); document.getElementById('logoOffsetY').value = Math.round(startElementPos.y + dy); }
+      else if (dragTarget === 'routeTitle') { document.getElementById('routeOffsetX').value = Math.round(startElementPos.x + dx); document.getElementById('routeOffsetY').value = Math.round(startElementPos.y + dy); }
+      else if (dragTarget === 'mainRoute') { document.getElementById('mainRouteOffsetX').value = Math.round(startElementPos.x + dx); document.getElementById('mainRouteOffsetY').value = Math.round(startElementPos.y + dy); }
+      else if (dragTarget === 'topText') { document.getElementById('topTextOffsetX').value = Math.round(startElementPos.x + dx); document.getElementById('topTextOffsetY').value = Math.round(startElementPos.y + dy); }
+      else if (dragTarget === 'bottomText') { document.getElementById('bottomOffsetX').value = Math.round(startElementPos.x + dx); document.getElementById('bottomOffsetY').value = Math.round(startElementPos.y + dy); }
+      else if (dragTarget === 'bgImage') { document.getElementById('imgOffsetX').value = Math.round(startElementPos.x + dx); document.getElementById('imgOffsetY').value = Math.round(startElementPos.y + dy); }
+
+      renderCanvas();
+    }
+
+    function handlePointerUp() {
+      if (isDragging) {
+        isDragging = false;
+        renderCanvas();
+        canvas.style.cursor = 'crosshair';
+      }
+    }
+
+    const inlineEditor = document.getElementById('inlineEditor');
+    const inlineEditorLabel = document.getElementById('inlineEditorLabel');
+    const inlineEditorInput = document.getElementById('inlineEditorInput');
+    let currentInlineFieldId = null;
+
+    canvas.addEventListener('dblclick', (e) => {
+      const pos = getCanvasCoordinates(e);
+      const hit = getHitTarget(pos);
+      const fieldMap = {
+        topText: { id: 'topText', label: '✏️ 修改頂部文字 (按 Enter 完成)' },
+        routeTitle: { id: 'routeTitle', label: '✏️ 修改右上角路線標題 (按 Enter 完成)' },
+        mainRoute: { id: 'stationDest', label: '✏️ 修改訖點站名 (按 Enter 完成)' },
+        bottomText: { id: 'bottomText', label: '✏️ 修改底部車型數據 (按 Enter 完成)' }
+      };
+      if (hit && fieldMap[hit]) {
+        const info = fieldMap[hit];
+        currentInlineFieldId = info.id;
+        const srcEl = document.getElementById(info.id);
+        inlineEditorLabel.innerText = info.label;
+        inlineEditorInput.value = srcEl.value;
+
+        const rect = canvas.getBoundingClientRect();
+        const relX = Math.min(rect.width - 300, Math.max(12, e.clientX - rect.left - 100));
+        const relY = Math.min(rect.height - 80, Math.max(12, e.clientY - rect.top - 30));
+        inlineEditor.style.left = relX + 'px';
+        inlineEditor.style.top = relY + 'px';
+        inlineEditor.style.display = 'block';
+        inlineEditorInput.focus();
+        inlineEditorInput.select();
+      }
+    });
+
+    inlineEditorInput.addEventListener('input', () => {
+      if (currentInlineFieldId) {
+        document.getElementById(currentInlineFieldId).value = inlineEditorInput.value;
+        renderCanvas();
+      }
+    });
+
+    inlineEditorInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === 'Escape') {
+        inlineEditor.style.display = 'none';
+        currentInlineFieldId = null;
+      }
+    });
+
+    window.addEventListener('mousedown', (e) => {
+      if (inlineEditor.style.display === 'block' && !inlineEditor.contains(e.target)) {
+        inlineEditor.style.display = 'none';
+        currentInlineFieldId = null;
+      }
+    });
+
+    canvas.addEventListener('mousedown', handlePointerDown);
+    window.addEventListener('mousemove', handlePointerMove);
+    window.addEventListener('mouseup', handlePointerUp);
+
+    canvas.addEventListener('touchstart', (e) => { e.preventDefault(); handlePointerDown(e); }, { passive: false });
+    window.addEventListener('touchmove', (e) => { if (isDragging) e.preventDefault(); handlePointerMove(e); }, { passive: false });
+    window.addEventListener('touchend', handlePointerUp);
+
+    document.querySelectorAll('input, select').forEach(i => i.addEventListener('input', renderCanvas));
+
+    function handleFile(file) {
+      if (!file || !file.type.startsWith('image/')) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const img = new Image();
+        img.onload = function() {
+          bgImage = img;
+          const scale = Math.max(canvas.width / img.width, canvas.height / img.height);
+          document.getElementById('imgScale').value = scale.toFixed(2);
+          document.getElementById('imgOffsetX').value = 0;
+          document.getElementById('imgOffsetY').value = 0;
+          renderCanvas();
+          showToast('📷 背景巴士圖片載入成功！');
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    const uploadZone = document.getElementById('uploadZone');
+    const imageInput = document.getElementById('imageInput');
+    uploadZone.addEventListener('click', () => imageInput.click());
+    imageInput.addEventListener('change', (e) => handleFile(e.target.files[0]));
+
+    const logoUploadZone = document.getElementById('logoUploadZone');
+    const logoInput = document.getElementById('logoInput');
+    logoUploadZone.addEventListener('click', () => logoInput.click());
+    logoInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        const img = new Image();
+        img.onload = function() {
+          logoImage = img;
+          document.getElementById('logoEnabled').value = "1";
+          renderCanvas();
+          showToast('📁 自訂 Logo 圖片已成功載入！');
+        };
+        img.src = evt.target.result;
+      };
+      reader.readAsDataURL(file);
+    });
+
+    uploadZone.addEventListener('dragover', (e) => { e.preventDefault(); uploadZone.classList.add('dragover'); });
+    uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('dragover'));
+    uploadZone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      uploadZone.classList.remove('dragover');
+      if (e.dataTransfer.files.length) handleFile(e.dataTransfer.files[0]);
+    });
+
+    window.addEventListener('paste', (e) => {
+      const items = (e.clipboardData || e.originalEvent.clipboardData).items;
+      for (const item of items) {
+        if (item.type.indexOf('image') !== -1) {
+          handleFile(item.getAsFile());
+          break;
+        }
+      }
+    });
+
+    document.getElementById('downloadPngBtn').addEventListener('click', () => {
+      const stationOrigin = document.getElementById('stationOrigin').value;
+      const stationDest = document.getElementById('stationDest').value;
+      const routeTitle = document.getElementById('routeTitle').value;
+      const filename = `thumbnail_${routeTitle}_${stationOrigin}_${stationDest}.png`.replace(/[\/:*?"<>| ]/g, '_');
+      
+      const link = document.createElement('a');
+      link.download = filename;
+      link.href = canvas.toDataURL('image/png', 1.0);
+      link.click();
+      showToast('📥 正在下載 1080P PNG 封面圖...');
+    });
+
+    document.getElementById('copyClipboardBtn').addEventListener('click', async () => {
+      try {
+        canvas.toBlob(async (blob) => {
+          await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
+          showToast('📋 已複製封面圖到剪貼簿！');
+        }, 'image/png');
+      } catch (err) {
+        showToast('請直接點擊「下載 1080P PNG」儲存圖片。');
+      }
+    });
+
+    document.getElementById('resetBtn').addEventListener('click', () => {
+      applyPreset('founder_1979');
+    });
+
+    // =========================================================================
+    // TRANSITDECK TWO-WAY INTEGRATION (Receive Clip Context & Save Cover Back)
+    // =========================================================================
+    const BRIDGE_DRAFT_KEY = 'transitdeck_thumb_draft_clip';
+    const BRIDGE_RESULT_KEY = 'transitdeck_thumb_generated_result';
+
+    function loadIncomingTransitDeckClip() {
+      try {
+        const raw = localStorage.getItem(BRIDGE_DRAFT_KEY);
+        if (!raw) return false;
+        const clip = JSON.parse(raw);
+        linkedClipContext = clip;
+
+        const pill = document.getElementById('linkedClipIndicator');
+        const label = document.getElementById('linkedClipLabel');
+        pill.classList.add('active');
+        label.textContent = `${clip.route || '未命名'} ${clip.direction || ''}`.trim();
+
+        // Map TransitDeck operator to company theme
+        const opToTheme = {
+          KMB: 'kmb_red',
+          CTB: 'ctb_blue',
+          LWB: 'lwb_orange',
+          NLB: 'nlb_green',
+          MTR: 'mtr_bus',
+          OMSI: 'kmb_red',
+          PIDS: 'ctb_blue',
+          OTHER: 'ctb_cityflyer'
+        };
+        const themeKey = opToTheme[clip.operator] || 'ctb_blue';
+        applyCompanyThemeOnly(themeKey, true);
+
+        const opPrefixMap = { KMB: '九巴', CTB: '城巴', LWB: '龍運', NLB: '嶼巴', MTR: '港鐵', OMSI: 'OMSI 2 ', PIDS: '報站機模擬 ', OTHER: '' };
+        const prefix = opPrefixMap[clip.operator] ?? '';
+        const cleanRoute = (clip.route || '').trim();
+        const deckLabel = clip.deck === '下層' ? '下層展望' : '上層展望';
+
+        if (cleanRoute) {
+          document.getElementById('routeTitle').value = `${prefix}${cleanRoute}路線`;
+          const viaText = clip.location ? `•經${clip.location}` : '';
+          document.getElementById('topText').value = `${prefix}${cleanRoute}線${deckLabel}${viaText}`;
+        }
+
+        if (clip.direction) {
+          const cleanDest = clip.direction.replace(/^往/, '').trim();
+          document.getElementById('stationDest').value = cleanDest || clip.direction;
+        }
+        if (clip.location) {
+          document.getElementById('stationOrigin').value = clip.location;
+        }
+        if (clip.model || clip.plate) {
+          document.getElementById('bottomText').value = [clip.model, clip.plate ? `(${clip.plate})` : ''].filter(Boolean).join(' ');
+        }
+        if (clip.operator === 'OMSI') {
+          document.getElementById('serviceType').value = 'OMSI 2 模擬';
+        } else if (clip.operator === 'PIDS') {
+          document.getElementById('serviceType').value = '報站機模擬';
+        }
+
+        // If clip already has a cover image URL or dataURL, preload it as background
+        if (clip.cover && clip.cover.startsWith('data:image')) {
+          const img = new Image();
+          img.onload = function() {
+            bgImage = img;
+            const scale = Math.max(canvas.width / img.width, canvas.height / img.height);
+            document.getElementById('imgScale').value = scale.toFixed(2);
+            renderCanvas();
+          };
+          img.src = clip.cover;
+        }
+
+        renderCanvas();
+        showToast(`已載入「${cleanRoute}」資料，完成後按綠色按鈕存回影片庫`);
+        return true;
+      } catch (err) {
+        console.warn('Failed to parse incoming TransitDeck clip:', err);
+        return false;
+      }
+    }
+
+    // Compress 1920x1080 Canvas to 1280x720 JPEG (0.82 quality) for fast Firestore sync
+    function exportCompressedCoverDataUrl() {
+      const exportCanvas = document.createElement('canvas');
+      exportCanvas.width = 1280;
+      exportCanvas.height = 720;
+      const eCtx = exportCanvas.getContext('2d');
+      eCtx.drawImage(canvas, 0, 0, 1280, 720);
+      return exportCanvas.toDataURL('image/jpeg', 0.82);
+    }
+
+    document.getElementById('saveToTransitDeckBtn').addEventListener('click', () => {
+      try {
+        const compressedCover = exportCompressedCoverDataUrl();
+        const routeTitleVal = document.getElementById('routeTitle').value.trim();
+        const originVal = document.getElementById('stationOrigin').value.trim();
+        const destVal = document.getElementById('stationDest').value.trim();
+        const bottomVal = document.getElementById('bottomText').value.trim();
+        const topVal = document.getElementById('topText').value.trim();
+
+        // Infer operator from routeTitle if creating fresh
+        let inferredOp = linkedClipContext?.operator || 'CTB';
+        if (!linkedClipContext) {
+          if (/九巴|KMB/i.test(routeTitleVal)) inferredOp = 'KMB';
+          else if (/龍運|LWB/i.test(routeTitleVal)) inferredOp = 'LWB';
+          else if (/嶼巴|NLB/i.test(routeTitleVal)) inferredOp = 'NLB';
+          else if (/港鐵|九鐵|MTR|KCR/i.test(routeTitleVal)) inferredOp = 'MTR';
+          else if (/OMSI/i.test(routeTitleVal)) inferredOp = 'OMSI';
+          else if (/報站|PIDS/i.test(routeTitleVal)) inferredOp = 'PIDS';
+          else inferredOp = 'CTB';
+        }
+
+        const routeCodeOnly = linkedClipContext?.route || routeTitleVal.replace(/^(城巴|新巴|九巴|龍運|嶼巴|港鐵巴士|港鐵|九鐵)/, '').replace(/路線$/, '').trim() || routeTitleVal;
+
+        const payload = {
+          targetClipId: linkedClipContext?.id || null,
+          cover: compressedCover,
+          operator: inferredOp,
+          route: routeCodeOnly,
+          direction: destVal ? `往${destVal}` : (linkedClipContext?.direction || ''),
+          location: originVal || linkedClipContext?.location || '',
+          model: linkedClipContext?.model || bottomVal,
+          title: linkedClipContext?.title || topVal,
+          deck: topVal.includes('下層') ? '下層' : '上層',
+          savedAt: Date.now()
+        };
+
+        localStorage.setItem(BRIDGE_RESULT_KEY, JSON.stringify(payload));
+        localStorage.removeItem(BRIDGE_DRAFT_KEY);
+        showToast('封面已壓縮並儲存，正在返回 TransitDeck 影片庫...');
+        setTimeout(() => {
+          window.location.href = './app.html';
+        }, 550);
+      } catch (err) {
+        console.error(err);
+        showToast('儲存失敗：請確認瀏覽器允許本機儲存空間');
+      }
+    });
+
+    window.addEventListener('DOMContentLoaded', () => {
+      document.fonts.ready.then(() => {
+        const hasLinkedClip = loadIncomingTransitDeckClip();
+        if (!hasLinkedClip) {
+          applyPreset('founder_1979');
+        }
+      });
+    });
+  </script>
+</body>
+</html>

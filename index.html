@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>TransitDeck — 專為行車記錄片與模擬遊戲片設計的影片管理庫</title>
-  <meta name="description" content="拍完行車記錄片同遊戲片，唔再怕忘記傳入電腦同上載。連接 YouTube 頻道自動讀取儲存所有影片，手機電腦即時同步。" />
+  <meta name="description" content="拍完行車記錄片同遊戲片，唔再怕忘記傳入電腦同上載。支援 1005.idv.hk 車牌查詢、一鍵匯出 CSV 備份及自動生成 YouTube 標題。" />
   <meta property="og:title" content="TransitDeck — 行車記錄片與模擬遊戲片管理庫" />
   <meta property="og:description" content="支援九巴、城巴、龍運、嶼巴、港鐵、OMSI 2 及報站機模擬分類，獨立 Google 帳號雲端隔離。" />
   <meta property="og:type" content="website" />
@@ -270,7 +270,7 @@
         </h1>
 
         <p class="body-3 text-inkSecondary max-w-[680px] mt-6">
-          專為拍巴士、鐵路行車記錄片同 OMSI 2 / 報站機遊戲片的創作者而設。記低每條片係咪已經由記憶卡傳入電腦、剪好片同上載 YouTube，並可連接頻道自動讀取所有已發佈影片。
+          專為拍巴士、鐵路行車記錄片同 OMSI 2 / 報站機遊戲片的創作者而設。記低每條片係咪已經由記憶卡傳入電腦、剪好片同上載 YouTube，並支援一鍵匯出 CSV 備份及自動生成 YouTube 標題。
         </p>
 
         <div class="mt-8 flex flex-col items-center gap-3">
@@ -283,7 +283,7 @@
           <div class="flex flex-wrap items-center justify-center gap-x-4 gap-y-1 caption-5 text-inkSecondary pt-2">
             <span class="inline-flex items-center gap-1.5"><i class="ph ph-check-circle text-ledAmber"></i>支援九巴、城巴、港鐵、OMSI 2 及報站機遊戲片</span>
             <span class="inline-flex items-center gap-1.5"><i class="ph ph-youtube-logo text-ledAmber"></i>連接 YouTube 自動讀取儲存所有影片</span>
-            <span class="inline-flex items-center gap-1.5"><i class="ph ph-shield-check text-ledAmber"></i>獨立 Google 帳號雲端隔離</span>
+            <span class="inline-flex items-center gap-1.5"><i class="ph ph-file-csv text-ledAmber"></i>一鍵匯出 CSV 本地備份與標題複製</span>
           </div>
         </div>
 
@@ -377,24 +377,24 @@
 
         <article class="rounded-2xl bg-surface1 border border-borderLine p-4 flex flex-col gap-4">
           <div class="w-10 h-10 rounded-lg bg-surface2 border border-borderLine flex items-center justify-center text-ledAmber">
-            <i class="ph ph-sort-ascending text-xl"></i>
+            <i class="ph ph-copy text-xl"></i>
           </div>
           <div class="space-y-1.5">
-            <h3 class="title-2 text-inkPrimary">支援按時間先後次序與影片名稱即時排序</h3>
+            <h3 class="title-2 text-inkPrimary">自動生成標準 YouTube 標題，一鍵複製上載</h3>
             <p class="body-6 text-inkSecondary">
-              一鍵切換由新至舊、由舊至新或按片名路線 A 至 Z 排序，配合營運商與遊戲類別篩選，幾百條素材庫存秒速搵到目標。
+              根據營運商、路線編號、目的地、車型與車牌自動組裝標準 YouTube 標題格式，點擊即可複製到剪貼簿，上載影片時直接貼上。
             </p>
           </div>
         </article>
 
         <article class="rounded-2xl bg-surface1 border border-borderLine p-4 flex flex-col gap-4">
           <div class="w-10 h-10 rounded-lg bg-surface2 border border-borderLine flex items-center justify-center text-ledAmber">
-            <i class="ph ph-link text-xl"></i>
+            <i class="ph ph-file-csv text-xl"></i>
           </div>
           <div class="space-y-1.5">
-            <h3 class="title-2 text-inkPrimary">標記已上載時順便貼入連結，自動補齊高清封面</h3>
+            <h3 class="title-2 text-inkPrimary">一鍵匯出 CSV 本地備份，支援 Excel 打開整理</h3>
             <p class="body-6 text-inkSecondary">
-              手動建立的待上載影片在轉為已上載 YouTube 時，會彈出貼上連結視窗，貼入網址即自動關聯觀看按鈕並抓取縮圖。
+              純前端直接從快取資料生成帶有 UTF-8 編碼的 CSV 表格，包含拍攝日期、車型車牌、製作狀態與 YouTube 連結，無額外資料庫讀取成本。
             </p>
           </div>
         </article>
@@ -406,7 +406,7 @@
           <div class="space-y-1.5">
             <h3 class="title-2 text-inkPrimary">專設 OMSI 2 與報站機遊戲分類及快捷標籤</h3>
             <p class="body-6 text-inkSecondary">
-              揀選 OMSI 2 或報站機模擬時，表單自動切換對應地圖、車包與 PIDS 系統快捷標籤，唔受實車車牌欄位限制。
+              揀選 OMSI 2 或報站機模擬時，表單自動切換對應地圖、車包與 PIDS 系統快捷標籤，並支援 1005.idv.hk 車牌資料查詢。
             </p>
           </div>
         </article>
@@ -442,17 +442,17 @@
 
         <div class="rounded-2xl bg-surface1 border border-borderLine p-6 space-y-4">
           <div class="font-mono caption-3 text-ledAmber">步驟 02</div>
-          <h3 class="title-2 text-inkPrimary">按時間與名稱排程剪片</h3>
+          <h3 class="title-2 text-inkPrimary">按時間排程剪片並一鍵複製標題</h3>
           <p class="body-6 text-inkSecondary">
-            將記憶卡檔案傳入電腦後一撳更新狀態；按拍攝日期先後或影片名稱排序整理待剪清單，上載後順便貼入影片連結。
+            將記憶卡檔案傳入電腦後一撳更新狀態；上載時直接複製自動生成的標準 YouTube 標題，完成後貼入影片連結。
           </p>
         </div>
 
         <div class="rounded-2xl bg-surface1 border border-borderLine p-6 space-y-4">
           <div class="font-mono caption-3 text-ledAmber">步驟 03</div>
-          <h3 class="title-2 text-inkPrimary">連接頻道自動同步所有影片</h3>
+          <h3 class="title-2 text-inkPrimary">連接頻道自動同步與匯出備份</h3>
           <p class="body-6 text-inkSecondary">
-            連接你嘅 YouTube 頻道後，系統自動讀取過往全部公開影片並儲存至影片庫，永久保留完整作品紀錄。
+            連接 YouTube 頻道自動讀取過往全部公開影片，並可隨時一鍵匯出 CSV 表格保存本地備份檔案。
           </p>
         </div>
       </div>
@@ -463,11 +463,25 @@
       <div class="max-w-[680px] space-y-3 mb-12">
         <h2 class="heading-3 text-inkPrimary">常見問題</h2>
         <p class="body-3 text-inkSecondary">
-          關於 YouTube 自動儲存、遊戲片分類同雲端同步的常見疑問。
+          關於 CSV 備份、YouTube 標題生成、遊戲片分類同雲端同步的常見疑問。
         </p>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="rounded-2xl bg-surface1 border border-borderLine p-6 space-y-2">
+          <h3 class="title-3 text-inkPrimary">點樣將影片庫資料匯出成 Excel / CSV 表格？</h3>
+          <p class="body-6 text-inkSecondary">
+            在影片庫左側工具列點擊「匯出 CSV 備份」，系統會直接從前端快取生成包含日期、營運商、標題、車型車牌、狀態與 Video ID 的 CSV 檔案，並加入 UTF-8 編碼確保 Excel 打開不亂碼。
+          </p>
+        </div>
+
+        <div class="rounded-2xl bg-surface1 border border-borderLine p-6 space-y-2">
+          <h3 class="title-3 text-inkPrimary">自動生成 YouTube 標題功能點樣用？</h3>
+          <p class="body-6 text-inkSecondary">
+            在每張影片卡片或編輯視窗點擊「複製 YT 標題」，系統會自動將營運商標籤、路線、方向、車型與車牌組裝成標準格式並複製到剪貼簿，方便直接貼上至 YouTube Studio。
+          </p>
+        </div>
+
         <div class="rounded-2xl bg-surface1 border border-borderLine p-6 space-y-2">
           <h3 class="title-3 text-inkPrimary">連接 YouTube 頻道後會重複儲存同一條片嗎？</h3>
           <p class="body-6 text-inkSecondary">
@@ -495,20 +509,6 @@
             進入影片庫頁面後，喺 Android Chrome 或 iPhone Safari 選單按「加到主畫面」或「安裝應用程式」，桌面就會出現專屬雙層巴士圖示。
           </p>
         </div>
-
-        <div class="rounded-2xl bg-surface1 border border-borderLine p-6 space-y-2">
-          <h3 class="title-3 text-inkPrimary">手動標記已上載時一定要填 YouTube 連結嗎？</h3>
-          <p class="body-6 text-inkSecondary">
-            唔一定。彈出輸入框時可以直接貼上連結（自動補齊縮圖），亦可以按「暫不填連結，直接標記」先更新狀態，日後隨時補填。
-          </p>
-        </div>
-
-        <div class="rounded-2xl bg-surface1 border border-borderLine p-6 space-y-2">
-          <h3 class="title-3 text-inkPrimary">使用 TransitDeck 需要收費嗎？</h3>
-          <p class="body-6 text-inkSecondary">
-            完全免費，無需任何月費或 API Key 設定，打開即用。
-          </p>
-        </div>
       </div>
     </section>
 
@@ -519,7 +519,7 @@
           立即整理你記憶卡與電腦資料夾入面嘅影片庫存
         </h2>
         <p class="body-3 text-inkSecondary max-w-[680px]">
-          免費使用，支援 Google 帳號跨裝置雲端同步及 YouTube 頻道自動讀取儲存。
+          免費使用，支援 Google 帳號跨裝置雲端同步、一鍵 CSV 備份及 YouTube 頻道自動讀取儲存。
         </p>
         <a href="./app.html"
           class="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-ledAmber hover:bg-amber-400 active:scale-[0.98] text-canvas button-md transition-all duration-300 ease-weighted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inkPrimary">
@@ -640,7 +640,7 @@
       },
       terms: {
         title: '使用條款',
-        html: '<p>TransitDeck 為免費提供予行車記錄片及模擬遊戲片創作者使用的個人素材管理工具。請定期使用內置匯出備份功能保存重要紀錄，並遵守 YouTube 平台公開資料讀取規範。</p>'
+        html: '<p>TransitDeck 為免費提供予行車記錄片及模擬遊戲片創作者使用的個人素材管理工具。請定期使用內置 CSV 或 JSON 匯出備份功能保存重要紀錄，並遵守 YouTube 平台公開資料讀取規範。</p>'
       }
     };
 
