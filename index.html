@@ -173,7 +173,7 @@
             <h1 class="text-lg sm:text-xl font-bold tracking-tight text-cream truncate">TransitDeck</h1>
             <span id="syncModeBadge" class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-xs font-mono bg-depot border border-line text-muted">
               <span id="syncDot" class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
-              <span id="syncLabel">本機模式</span>
+              <span id="syncLabel">未登入 (本機)</span>
             </span>
           </div>
         </div>
@@ -190,7 +190,7 @@
         <button id="btnAuthAction" type="button"
           class="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-depot hover:bg-panelHover active:scale-[0.98] border border-line text-sm font-medium text-cream transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-led">
           <i id="authIcon" class="ph ph-cloud-arrow-up text-base text-led"></i>
-          <span id="authLabel" class="hidden md:inline">連接雲端</span>
+          <span id="authLabel" class="hidden md:inline">登入同步</span>
         </button>
 
         <button id="btnNewClip" type="button"
@@ -603,16 +603,16 @@
     import { getFirestore, collection, doc, setDoc, deleteDoc, onSnapshot, query, orderBy } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
 
     // =========================================================================
-    // 1. FIREBASE CONFIGURATION
-    // 請將下方 firebaseConfig 替換為你喺 Firebase Console 複製嘅設定碼
+    // 1. FIREBASE CONFIGURATION (Configured for transitdeck)
     // =========================================================================
     const firebaseConfig = {
-      apiKey: "YOUR_API_KEY",
-      authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-      projectId: "YOUR_PROJECT_ID",
-      storageBucket: "YOUR_PROJECT_ID.appspot.com",
-      messagingSenderId: "YOUR_SENDER_ID",
-      appId: "YOUR_APP_ID"
+      apiKey: "AIzaSyBPVmgUi21Zv1unAdQlwZgCKan_w_Pybmc",
+      authDomain: "transitdeck.firebaseapp.com",
+      projectId: "transitdeck",
+      storageBucket: "transitdeck.firebasestorage.app",
+      messagingSenderId: "613782473585",
+      appId: "1:613782473585:web:c32063f1f637aef53104d0",
+      measurementId: "G-GY93HXKZ5M"
     };
 
     const isFirebaseConfigured = firebaseConfig.apiKey && firebaseConfig.apiKey !== "YOUR_API_KEY";
