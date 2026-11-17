@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="zh-HK" class="dark scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TransitDeck — 專為香港交通迷拍片設計的雲端調度片倉</title>
+  <meta name="description" content="拍完巴士同鐵路片，唔再怕忘記過機同出街。用電話影完封面圖即刻記低路線、車牌同上下層位置，返到電腦剪完一鍵配對 YouTube 頻道自動標記已上載。" />
+  <meta property="og:title" content="TransitDeck — 交通影視素材與派車調度片倉" />
+  <meta property="og:description" content="支援九巴、城巴、龍運、嶼巴及港鐵色標，獨立 Google 帳號雲端隔離，手機電腦即時同步。" />
+  <meta property="og:type" content="website" />
+  <meta name="theme-color" content="#000000" />
+
+  <!-- Fonts: Geist & Geist Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600&family=Geist:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Geist"', '"Noto Sans TC"', 'system-ui', 'sans-serif'],
+            mono: ['"Geist Mono"', 'monospace'],
+          },
+          colors: {
+            canvas: '#000000',
+            surface1: '#181818',
+            surface2: '#1F1F1F',
+            surface3: '#272727',
+            borderLine: '#313131',
+            inkPrimary: '#F4F4F0',
+            inkSecondary: '#A1A1AA',
+            ledAmber: '#E8A817',
+          }
+        }
+      }
+    };
+  </script>
+
+  <!-- Phosphor Icons -->
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+  <style>
+    :root {
+      color-scheme: dark;
+    }
+    body {
+      background-color: #000000;
+      color: #F4F4F0;
+      font-family: "Geist", "Noto Sans TC", system-ui, sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* Named Type Scale Classes (Part B1) */
+    .heading-1 {
+      font-size: 3rem;
+      line-height: 1.08;
+      font-weight: 600;
+      text-wrap: balance;
+    }
+    @media (min-width: 768px) {
+      .heading-1 {
+        font-size: 3.75rem;
+        line-height: 1.05;
+      }
+    }
+    .heading-2 {
+      font-size: 2.25rem;
+      line-height: 1.15;
+      font-weight: 600;
+      text-wrap: balance;
+    }
+    @media (min-width: 768px) {
+      .heading-2 {
+        font-size: 3rem;
+        line-height: 1.1;
+      }
+    }
+    .heading-3 {
+      font-size: 1.875rem;
+      line-height: 2.25rem;
+      font-weight: 600;
+      text-wrap: balance;
+    }
+    @media (min-width: 768px) {
+      .heading-3 {
+        font-size: 2.25rem;
+        line-height: 2.5rem;
+      }
+    }
+    .title-2 {
+      font-size: 1.125rem;
+      line-height: 1.75rem;
+      font-weight: 500;
+    }
+    .title-3 {
+      font-size: 1rem;
+      line-height: 1.5rem;
+      font-weight: 500;
+    }
+    .body-3 {
+      font-size: 1rem;
+      line-height: 1.5rem;
+      font-weight: 400;
+      text-wrap: pretty;
+    }
+    .body-6 {
+      font-size: 0.875rem;
+      line-height: 1.25rem;
+      font-weight: 400;
+      text-wrap: pretty;
+    }
+    .button-md {
+      font-size: 1rem;
+      line-height: 1.5rem;
+      font-weight: 600;
+    }
+    .button-sm {
+      font-size: 0.875rem;
+      line-height: 1.25rem;
+      font-weight: 600;
+    }
+    .caption-3 {
+      font-size: 0.75rem;
+      line-height: 1rem;
+      font-weight: 600;
+    }
+    .caption-5 {
+      font-size: 0.75rem;
+      line-height: 1rem;
+      font-weight: 400;
+    }
+
+    /* Hero Text Gradient (Only permitted gradient in B5) */
+    .hero-text-gradient {
+      background: linear-gradient(90deg, #FFFFFF 0%, #9B9B9B 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* Base Motion Curve (B7) */
+    .ease-weighted {
+      transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    /* Scroll Reveal Sections (B7) */
+    .reveal-section {
+      opacity: 0;
+      transform: translateY(32px);
+      transition: opacity 700ms cubic-bezier(0.22, 1, 0.36, 1), transform 700ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .reveal-section.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Word-by-word Tagline Reveal (B11) */
+    .reveal-word {
+      color: rgba(244, 244, 240, 0.28);
+      transition: color 500ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .reveal-word.is-lit {
+      color: #F4F4F0;
+    }
+
+    /* Mobile Menu Stagger */
+    .mobile-nav-link {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 350ms cubic-bezier(0.22, 1, 0.36, 1), transform 350ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    #mobileMenuPanel.is-open .mobile-nav-link {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .reveal-section {
+        opacity: 1 !important;
+        transform: none !important;
+        transition: none !important;
+      }
+      .reveal-word {
+        color: #F4F4F0 !important;
+        transition: none !important;
+      }
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+<body class="bg-canvas text-inkPrimary antialiased selection:bg-ledAmber selection:text-canvas">
+
+  <!-- Branded SVG Favicon -->
+  <script>
+    (function injectFavicon() {
+      const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="14" fill="#181818"/><rect x="14" y="12" width="36" height="40" rx="6" fill="#E8A817"/><rect x="18" y="16" width="28" height="8" rx="2" fill="#000000"/><rect x="18" y="28" width="28" height="12" rx="2" fill="#000000"/></svg>`;
+      const link = document.createElement('link');
+      link.rel = 'icon';
+      link.type = 'image/svg+xml';
+      link.href = 'data:image/svg+xml;base64,' + btoa(svg);
+      document.head.appendChild(link);
+    })();
+  </script>
+
+  <!-- Skip to Content Link (B10) -->
+  <a href="#mainContent" class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:rounded-lg focus:bg-ledAmber focus:text-canvas button-sm">
+    跳至主要內容
+  </a>
+
+  <!-- Floating Centered Translucent Navigation Bar (B7) -->
+  <header class="fixed top-4 inset-x-0 z-40 px-4 flex justify-center pointer-events-none">
+    <nav aria-label="主導航列" class="pointer-events-auto inline-flex items-center justify-between gap-6 px-4 py-2 rounded-2xl bg-surface1/85 backdrop-blur-md border border-borderLine shadow-2xl max-w-3xl w-full sm:w-auto">
+      <!-- Logo -->
+      <a href="#top" class="inline-flex items-center gap-2.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ledAmber rounded-lg">
+        <span class="w-7 h-7 rounded-md bg-ledAmber flex flex-col justify-between p-1">
+          <span class="w-full h-2 bg-canvas rounded-[2px]"></span>
+          <span class="w-full h-2 bg-canvas rounded-[2px]"></span>
+        </span>
+        <span class="title-3 text-inkPrimary tracking-tight">TransitDeck</span>
+      </a>
+
+      <!-- Desktop Links -->
+      <div class="hidden md:flex items-center gap-6">
+        <a href="#benefits" class="body-6 text-inkSecondary hover:text-inkPrimary transition-colors duration-300 ease-weighted">核心功能</a>
+        <a href="#workflow" class="body-6 text-inkSecondary hover:text-inkPrimary transition-colors duration-300 ease-weighted">運作流程</a>
+        <a href="#faq" class="body-6 text-inkSecondary hover:text-inkPrimary transition-colors duration-300 ease-weighted">常見問題</a>
+      </div>
+
+      <!-- Header CTA + Mobile Menu Toggle -->
+      <div class="flex items-center gap-2">
+        <a href="https://kenyip0244.github.io/TransitDeck/"
+          class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-ledAmber hover:bg-amber-400 active:scale-[0.98] text-canvas button-sm transition-all duration-300 ease-weighted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inkPrimary">
+          <span>開啟片倉</span>
+          <i class="ph ph-arrow-up-right text-base"></i>
+        </a>
+
+        <button id="btnMobileMenu" type="button" aria-label="開啟選單" aria-expanded="false"
+          class="md:hidden w-9 h-9 rounded-xl bg-surface2 hover:bg-surface3 border border-borderLine flex items-center justify-center text-inkPrimary transition-colors duration-300">
+          <i id="menuIconOpen" class="ph ph-list text-lg transition-transform duration-300 ease-weighted"></i>
+          <i id="menuIconClose" class="ph ph-x text-lg hidden transition-transform duration-300 ease-weighted"></i>
+        </button>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Full-Height Mobile Navigation Panel (B7) -->
+  <div id="mobileMenuPanel" class="fixed inset-0 z-30 hidden bg-canvas/95 backdrop-blur-xl px-6 pt-24 pb-8 flex flex-col justify-between md:hidden">
+    <div class="flex flex-col gap-6">
+      <a href="#benefits" style="transition-delay: 60ms;" class="mobile-nav-link heading-3 text-inkPrimary">核心功能</a>
+      <a href="#workflow" style="transition-delay: 120ms;" class="mobile-nav-link heading-3 text-inkPrimary">運作流程</a>
+      <a href="#faq" style="transition-delay: 180ms;" class="mobile-nav-link heading-3 text-inkPrimary">常見問題</a>
+    </div>
+    <div style="transition-delay: 240ms;" class="mobile-nav-link space-y-3">
+      <a href="https://kenyip0244.github.io/TransitDeck/"
+        class="w-full inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-ledAmber text-canvas button-md">
+        <span>立即免費開啟片倉</span>
+        <i class="ph ph-arrow-up-right text-lg"></i>
+      </a>
+      <p class="caption-5 text-inkSecondary text-center">免費使用 · 支援手機與電腦即時雲端同步</p>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <main id="mainContent">
+
+    <!-- 1. HERO SECTION (A2 + B5) -->
+    <section id="top" class="pt-32 pb-20 md:pt-40 md:pb-24 px-4 sm:px-6 max-w-6xl mx-auto">
+      <div class="flex flex-col items-center text-center">
+        <!-- Hero Headline (Capped at 680px, gradient text, meaningful break, no period) -->
+        <h1 class="heading-1 hero-text-gradient max-w-[680px]">
+          拍完巴士同鐵路片<br />唔再怕忘記過機同出街
+        </h1>
+
+        <!-- Subheadline (Capped at 680px) -->
+        <p class="body-3 text-inkSecondary max-w-[680px] mt-6">
+          專為香港交通迷拍片設計的雲端調度片倉。用電話影完封面圖即刻記低路線、車牌同上下層位置，返到電腦剪完一鍵配對 YouTube 頻道自動標記已上載。
+        </p>
+
+        <!-- Single Primary CTA Above the Fold (A4) -->
+        <div class="mt-8 flex flex-col items-center gap-3">
+          <a href="https://kenyip0244.github.io/TransitDeck/"
+            class="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-ledAmber hover:bg-amber-400 active:scale-[0.98] text-canvas button-md transition-all duration-300 ease-weighted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inkPrimary">
+            <span>立即免費開啟片倉</span>
+            <i class="ph ph-arrow-right text-lg"></i>
+          </a>
+
+          <!-- Proof Signal -->
+          <div class="flex flex-wrap items-center justify-center gap-x-4 gap-y-1 caption-5 text-inkSecondary pt-2">
+            <span class="inline-flex items-center gap-1.5"><i class="ph ph-check-circle text-ledAmber"></i>支援九巴、城巴、龍運、嶼巴及港鐵色標</span>
+            <span class="inline-flex items-center gap-1.5"><i class="ph ph-shield-check text-ledAmber"></i>獨立 Google 帳號雲端隔離</span>
+            <span class="inline-flex items-center gap-1.5"><i class="ph ph-device-mobile text-ledAmber"></i>免安裝網頁版兼支援主畫面 PWA</span>
+          </div>
+        </div>
+
+        <!-- Hero Product Visual: Live Dispatch Console Mockup -->
+        <div class="w-full mt-12 md:mt-16 rounded-2xl bg-surface1 border border-borderLine p-2 sm:p-4 text-left">
+          <!-- Inner nested radius: 16px - 8px = 8px (rounded-lg) -->
+          <div class="rounded-lg bg-canvas border border-borderLine p-4 sm:p-6 space-y-4">
+            <!-- Mock Top Status Strip -->
+            <div class="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-borderLine">
+              <div class="flex items-center gap-2.5">
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
+                <span class="caption-3 text-inkPrimary">雲端同步中 · 派車調度總表</span>
+              </div>
+              <div class="flex items-center gap-2 font-mono caption-5 text-inkSecondary">
+                <span class="px-2 py-1 rounded bg-surface1 border border-borderLine">未過機 2</span>
+                <span class="px-2 py-1 rounded bg-surface1 border border-borderLine">已過機待剪 3</span>
+                <span class="px-2 py-1 rounded bg-surface1 border border-borderLine text-ledAmber">已剪待上載 1</span>
+              </div>
+            </div>
+
+            <!-- Sample Dispatch Rows (Realistic HK Transit Telemetry) -->
+            <div class="space-y-3">
+              <!-- Row 1 -->
+              <div class="rounded-xl bg-surface1 border border-borderLine p-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div class="flex items-center gap-3 min-w-0">
+                  <span class="px-2.5 py-1 rounded-md bg-red-600 text-white caption-3 shrink-0">九巴</span>
+                  <span class="px-2.5 py-1 rounded-md bg-canvas border border-amber-500/40 font-mono title-3 text-ledAmber shrink-0">42C</span>
+                  <div class="min-w-0">
+                    <div class="title-3 text-inkPrimary truncate">往藍田站 · 呈祥道特快路段</div>
+                    <div class="caption-5 font-mono text-inkSecondary truncate">ADL E500MMC · ATENU1542 · 上層 · 2026-11-14</div>
+                  </div>
+                </div>
+                <span class="px-2.5 py-1 rounded-md bg-amber-500/15 border border-amber-500/40 text-amber-300 caption-3 self-start sm:self-center shrink-0">
+                  已剪待上載
+                </span>
+              </div>
+
+              <!-- Row 2 -->
+              <div class="rounded-xl bg-surface1 border border-borderLine p-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div class="flex items-center gap-3 min-w-0">
+                  <span class="px-2.5 py-1 rounded-md bg-amber-400 text-canvas caption-3 shrink-0">城巴</span>
+                  <span class="px-2.5 py-1 rounded-md bg-canvas border border-amber-500/40 font-mono title-3 text-ledAmber shrink-0">969</span>
+                  <div class="min-w-0">
+                    <div class="title-3 text-inkPrimary truncate">往天水圍市中心 · 西區海底隧道</div>
+                    <div class="caption-5 font-mono text-inkSecondary truncate">Volvo B8L · 8824 · 上層 · 2026-11-16</div>
+                  </div>
+                </div>
+                <span class="px-2.5 py-1 rounded-md bg-sky-500/15 border border-sky-500/40 text-sky-300 caption-3 self-start sm:self-center shrink-0">
+                  已過機待剪
+                </span>
+              </div>
+
+              <!-- Row 3 -->
+              <div class="rounded-xl bg-surface1 border border-borderLine p-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div class="flex items-center gap-3 min-w-0">
+                  <span class="px-2.5 py-1 rounded-md bg-rose-900 text-white caption-3 shrink-0">港鐵</span>
+                  <span class="px-2.5 py-1 rounded-md bg-canvas border border-amber-500/40 font-mono title-3 text-ledAmber shrink-0">屯馬綫</span>
+                  <div class="min-w-0">
+                    <div class="title-3 text-inkPrimary truncate">往屯門 · 紅磡至尖東過海段</div>
+                    <div class="caption-5 font-mono text-inkSecondary truncate">IKK Train · D357 · 車外站台 · 2026-11-17</div>
+                  </div>
+                </div>
+                <span class="px-2.5 py-1 rounded-md bg-rose-500/15 border border-rose-500/40 text-rose-300 caption-3 self-start sm:self-center shrink-0">
+                  未過機
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. PROBLEM TO SOLUTION & BENEFITS (A2 + B2 + B3) -->
+    <section id="benefits" class="reveal-section py-20 px-4 sm:px-6 max-w-6xl mx-auto">
+      <div class="max-w-[680px] space-y-3 mb-12">
+        <h2 class="heading-3 text-inkPrimary">記憶卡積存幾十條行車片，唔再用腦硬記邊條未剪</h2>
+        <p class="body-3 text-inkSecondary">
+          每次出車影完相拍完片，返到屋企成日唔記得邊張卡未過機、邊條路線影咗上層定下層。TransitDeck 將成個剪片排程變成清晰派車表。
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <!-- Benefit 1 -->
+        <article class="rounded-2xl bg-surface1 border border-borderLine p-4 flex flex-col gap-4">
+          <div class="w-10 h-10 rounded-lg bg-surface2 border border-borderLine flex items-center justify-center text-ledAmber">
+            <i class="ph ph-image-square text-xl"></i>
+          </div>
+          <div class="space-y-1.5">
+            <h3 class="title-2 text-inkPrimary">封面圖置頂對照，睇住相填路線同車牌</h3>
+            <p class="body-6 text-inkSecondary">
+              用電話影完封面圖直接上載，系統自動壓縮至 1280px 並置頂顯示。一邊望住相入面嘅電牌同車牌一邊輸入資料，唔會入錯號碼。
+            </p>
+          </div>
+        </article>
+
+        <!-- Benefit 2 -->
+        <article class="rounded-2xl bg-surface1 border border-borderLine p-4 flex flex-col gap-4">
+          <div class="w-10 h-10 rounded-lg bg-surface2 border border-borderLine flex items-center justify-center text-ledAmber">
+            <i class="ph ph-cloud-arrow-up text-xl"></i>
+          </div>
+          <div class="space-y-1.5">
+            <h3 class="title-2 text-inkPrimary">電話出街入庫，返屋企開電腦即時同步</h3>
+            <p class="body-6 text-inkSecondary">
+              登入 Google 帳號後資料即時同步至雲端。喺街外等車用電話記低資料，返到屋企開 Windows 或 Mac 瀏覽器即刻見到並更新過機狀態。
+            </p>
+          </div>
+        </article>
+
+        <!-- Benefit 3 -->
+        <article class="rounded-2xl bg-surface1 border border-borderLine p-4 flex flex-col gap-4">
+          <div class="w-10 h-10 rounded-lg bg-surface2 border border-borderLine flex items-center justify-center text-ledAmber">
+            <i class="ph ph-youtube-logo text-xl"></i>
+          </div>
+          <div class="space-y-1.5">
+            <h3 class="title-2 text-inkPrimary">一鍵抓取 YouTube 頻道，自動配對已出街舊片</h3>
+            <p class="body-6 text-inkSecondary">
+              輸入頻道 Handle 或 Channel ID 即時讀取最新公開影片標題同縮圖。系統自動比對片倉入面嘅車牌同路線，一撳轉為已上載並貼入連結。
+            </p>
+          </div>
+        </article>
+
+        <!-- Benefit 4 -->
+        <article class="rounded-2xl bg-surface1 border border-borderLine p-4 flex flex-col gap-4">
+          <div class="w-10 h-10 rounded-lg bg-surface2 border border-borderLine flex items-center justify-center text-ledAmber">
+            <i class="ph ph-users-three text-xl"></i>
+          </div>
+          <div class="space-y-1.5">
+            <h3 class="title-2 text-inkPrimary">多用戶獨立資料隔離，直接分享畀巴迷朋友用</h3>
+            <p class="body-6 text-inkSecondary">
+              每位朋友用自己嘅 Google 帳號登入後，系統自動建立獨立私人片倉，互不干擾亦睇唔到對方未公開嘅素材庫存。
+            </p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- 3. MANDATORY WORD-BY-WORD TAGLINE REVEAL SECTION (B11) -->
+    <section id="taglineRevealSection" class="py-24 md:py-32 px-4 sm:px-6 max-w-6xl mx-auto">
+      <div class="max-w-[680px]">
+        <p id="taglineRevealText" class="heading-2">
+          由按下快門記低車牌那一刻，到剪輯完成正式發佈上頻道，每條交通紀錄都井井有條。
+        </p>
+      </div>
+    </section>
+
+    <!-- 4. HOW IT WORKS (3 Steps - A2) -->
+    <section id="workflow" class="reveal-section py-20 px-4 sm:px-6 max-w-6xl mx-auto">
+      <div class="max-w-[680px] space-y-3 mb-12">
+        <h2 class="heading-3 text-inkPrimary">三個步驟，理順成個拍片至出街流程</h2>
+        <p class="body-3 text-inkSecondary">
+          唔使下載安裝任何龐大軟件，打開瀏覽器即可開始記錄。
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <!-- Step 1 -->
+        <div class="rounded-2xl bg-surface1 border border-borderLine p-6 space-y-4">
+          <div class="font-mono caption-3 text-ledAmber">步驟 01</div>
+          <h3 class="title-2 text-inkPrimary">影完相即刻入庫</h3>
+          <p class="body-6 text-inkSecondary">
+            用電話影完封面圖並上載，揀好九巴、城巴或港鐵色標，填寫路線、車牌同上下層位置，狀態預設為未過機。
+          </p>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="rounded-2xl bg-surface1 border border-borderLine p-6 space-y-4">
+          <div class="font-mono caption-3 text-ledAmber">步驟 02</div>
+          <h3 class="title-2 text-inkPrimary">過機同剪輯追蹤</h3>
+          <p class="body-6 text-inkSecondary">
+            返到屋企將記憶卡過入電腦硬碟後，一撳切換狀態為已過機待剪；剪好匯出後再標記為已剪待上載，進度一目了然。
+          </p>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="rounded-2xl bg-surface1 border border-borderLine p-6 space-y-4">
+          <div class="font-mono caption-3 text-ledAmber">步驟 03</div>
+          <h3 class="title-2 text-inkPrimary">同步頻道自動歸檔</h3>
+          <p class="body-6 text-inkSecondary">
+            影片喺 YouTube 公開發佈後，打開同步 YouTube 功能抓取最新清單，一鍵配對舊紀錄並自動補齊影片連結與封面。
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. FAQ SECTION (6 Questions - A2 & A7) -->
+    <section id="faq" class="reveal-section py-20 px-4 sm:px-6 max-w-6xl mx-auto">
+      <div class="max-w-[680px] space-y-3 mb-12">
+        <h2 class="heading-3 text-inkPrimary">常見問題</h2>
+        <p class="body-3 text-inkSecondary">
+          關於雲端同步、私隱隔離同手機主畫面安裝的常見疑問。
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="rounded-2xl bg-surface1 border border-borderLine p-6 space-y-2">
+          <h3 class="title-3 text-inkPrimary">使用 TransitDeck 需要收費嗎？</h3>
+          <p class="body-6 text-inkSecondary">
+            完全免費。網頁託管於 GitHub Pages，雲端資料庫採用 Firebase 免費額度，日常個人記錄幾千條影片封面都綽綽有餘。
+          </p>
+        </div>
+
+        <div class="rounded-2xl bg-surface1 border border-borderLine p-6 space-y-2">
+          <h3 class="title-3 text-inkPrimary">朋友用同一個網址登入，會睇到我未出街嘅片嗎？</h3>
+          <p class="body-6 text-inkSecondary">
+            唔會。資料庫設有嚴格用戶隔離規則，每位用戶登入 Google 帳號後只能讀寫自己帳號下的資料夾，完全私密安全。
+          </p>
+        </div>
+
+        <div class="rounded-2xl bg-surface1 border border-borderLine p-6 space-y-2">
+          <h3 class="title-3 text-inkPrimary">如果唔登入 Google 帳號可以用嗎？</h3>
+          <p class="body-6 text-inkSecondary">
+            可以。未登入時系統會自動以本機模式運作，資料儲存在你目前裝置的瀏覽器內，亦支援隨時匯出 JSON 備份檔案。
+          </p>
+        </div>
+
+        <div class="rounded-2xl bg-surface1 border border-borderLine p-6 space-y-2">
+          <h3 class="title-3 text-inkPrimary">點樣將 TransitDeck 變成手機桌面 App？</h3>
+          <p class="body-6 text-inkSecondary">
+            喺 Android Chrome 或 iPhone Safari 打開網站後，按瀏覽器選單的「加到主畫面」或「安裝應用程式」，桌面就會出現專屬雙層巴士圖示。
+          </p>
+        </div>
+
+        <div class="rounded-2xl bg-surface1 border border-borderLine p-6 space-y-2">
+          <h3 class="title-3 text-inkPrimary">上載電話影嘅高像素封面圖會唔會好慢？</h3>
+          <p class="body-6 text-inkSecondary">
+            唔會。系統喺上載前會自動喺本機將相片壓縮至 1280px 闊度，既保留清晰車牌同路線牌細節，又確保手機流動網絡秒速同步。
+          </p>
+        </div>
+
+        <div class="rounded-2xl bg-surface1 border border-borderLine p-6 space-y-2">
+          <h3 class="title-3 text-inkPrimary">同步 YouTube 功能需要申請 API Key 嗎？</h3>
+          <p class="body-6 text-inkSecondary">
+            唔需要。只要輸入公開頻道的 Handle 或 UC 開頭 Channel ID，系統就會自動透過 RSS 介面讀取最新公開影片的標題與封面縮圖。
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. RISK REVERSAL & FINAL CTA (A2) -->
+    <section class="reveal-section py-20 px-4 sm:px-6 max-w-6xl mx-auto">
+      <div class="rounded-2xl bg-surface1 border border-borderLine p-8 md:p-12 flex flex-col items-center text-center space-y-6">
+        <h2 class="heading-3 text-inkPrimary max-w-[680px]">
+          立即整理你記憶卡入面嘅交通影片庫存
+        </h2>
+        <p class="body-3 text-inkSecondary max-w-[680px]">
+          免費使用，無需註冊繁複帳號，隨時匯出 JSON 備份。打開即用。
+        </p>
+        <a href="https://kenyip0244.github.io/TransitDeck/"
+          class="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-ledAmber hover:bg-amber-400 active:scale-[0.98] text-canvas button-md transition-all duration-300 ease-weighted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inkPrimary">
+          <span>立即免費開啟片倉</span>
+          <i class="ph ph-arrow-right text-lg"></i>
+        </a>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer with Legal & 404 Preview Links (B10) -->
+  <footer class="border-t border-borderLine py-8 px-4 sm:px-6 max-w-6xl mx-auto">
+    <div class="flex flex-col sm:flex-row items-center justify-between gap-4 caption-5 text-inkSecondary">
+      <div>TransitDeck © 2026 | Powered by SZPTF</div>
+      <div class="flex items-center gap-6">
+        <button type="button" data-legal="privacy" class="hover:text-inkPrimary transition-colors">私隱政策</button>
+        <button type="button" data-legal="terms" class="hover:text-inkPrimary transition-colors">使用條款</button>
+        <button type="button" data-legal="notfound" class="hover:text-inkPrimary transition-colors">404 頁面預覽</button>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Legal & Custom Branded 404 Modal (B10) -->
+  <div id="infoModal" class="fixed inset-0 z-50 hidden bg-black/85 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="w-full max-w-lg rounded-2xl bg-surface1 border border-borderLine p-6 space-y-4">
+      <div class="flex items-center justify-between">
+        <h3 id="infoModalTitle" class="title-2 text-inkPrimary">資料說明</h3>
+        <button id="btnCloseInfoModal" type="button" class="w-8 h-8 rounded-lg bg-surface2 hover:bg-surface3 flex items-center justify-center text-inkSecondary hover:text-inkPrimary">
+          <i class="ph ph-x text-base"></i>
+        </button>
+      </div>
+      <div id="infoModalBody" class="body-6 text-inkSecondary space-y-3"></div>
+      <div class="pt-2 flex justify-end">
+        <a href="https://kenyip0244.github.io/TransitDeck/" class="px-3 py-2 rounded-xl bg-ledAmber text-canvas button-sm">
+          返回片倉主頁
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Interactive Motion & Scroll Logic (B7 & B11) -->
+  <script>
+    // 1. Mobile Navigation Toggle
+    const btnMobileMenu = document.getElementById('btnMobileMenu');
+    const mobileMenuPanel = document.getElementById('mobileMenuPanel');
+    const menuIconOpen = document.getElementById('menuIconOpen');
+    const menuIconClose = document.getElementById('menuIconClose');
+
+    function toggleMobileMenu(forceState) {
+      const isOpen = typeof forceState === 'boolean' ? forceState : mobileMenuPanel.classList.contains('hidden');
+      if (isOpen) {
+        mobileMenuPanel.classList.remove('hidden');
+        requestAnimationFrame(() => mobileMenuPanel.classList.add('is-open'));
+        menuIconOpen.classList.add('hidden');
+        menuIconClose.classList.remove('hidden');
+        btnMobileMenu.setAttribute('aria-expanded', 'true');
+      } else {
+        mobileMenuPanel.classList.remove('is-open');
+        setTimeout(() => mobileMenuPanel.classList.add('hidden'), 280);
+        menuIconOpen.classList.remove('hidden');
+        menuIconClose.classList.add('hidden');
+        btnMobileMenu.setAttribute('aria-expanded', 'false');
+      }
+    }
+
+    btnMobileMenu.addEventListener('click', () => toggleMobileMenu());
+    mobileMenuPanel.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => toggleMobileMenu(false));
+    });
+
+    // 2. Section Scroll Reveal via IntersectionObserver (B7)
+    const sectionObserver = new IntersectionObserver((entries, observer) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12 });
+
+    document.querySelectorAll('.reveal-section').forEach(sec => sectionObserver.observe(sec));
+
+    // 3. Mandatory Word-by-Word Tagline Reveal via rAF Throttled Scroll (B11)
+    const taglineEl = document.getElementById('taglineRevealText');
+    const rawPhrase = taglineEl.textContent.trim();
+    const segments = rawPhrase.split('');
+    taglineEl.innerHTML = segments.map(ch => `<span class="reveal-word">${ch}</span>`).join('');
+    const wordSpans = Array.from(taglineEl.querySelectorAll('.reveal-word'));
+
+    let ticking = false;
+    function updateTaglineWords() {
+      const rect = taglineEl.getBoundingClientRect();
+      const viewportH = window.innerHeight;
+      const startTrigger = viewportH * 0.85;
+      const endTrigger = viewportH * 0.32;
+      const progress = Math.min(1, Math.max(0, (startTrigger - rect.top) / (startTrigger - endTrigger)));
+      const litCount = Math.floor(progress * wordSpans.length);
+
+      wordSpans.forEach((span, idx) => {
+        if (idx < litCount) span.classList.add('is-lit');
+        else span.classList.remove('is-lit');
+      });
+      ticking = false;
+    }
+
+    window.addEventListener('scroll', () => {
+      if (!ticking) {
+        window.requestAnimationFrame(updateTaglineWords);
+        ticking = true;
+      }
+    }, { passive: true });
+    updateTaglineWords();
+
+    // 4. Legal & Branded 404 Dialog
+    const infoModal = document.getElementById('infoModal');
+    const infoModalTitle = document.getElementById('infoModalTitle');
+    const infoModalBody = document.getElementById('infoModalBody');
+
+    const LEGAL_CONTENT = {
+      privacy: {
+        title: '私隱政策',
+        html: '<p>TransitDeck 僅在您主動登入 Google 帳號進行雲端同步時，透過 Firebase Authentication 取得您的基本帳號識別碼（UID）與電郵地址，用以隔離並儲存您個人的影片調度資料。</p><p>所有紀錄與壓縮封面縮圖僅存於您的專屬資料庫路徑下，不會出售或分享予任何第三方。</p>'
+      },
+      terms: {
+        title: '使用條款',
+        html: '<p>TransitDeck 為免費提供予交通攝影愛好者使用的個人影視素材管理工具。請定期使用內置匯出備份功能保存重要紀錄，並遵守 YouTube 平台公開資料讀取規範。</p>'
+      },
+      notfound: {
+        title: '404 · 此班次路線不存在',
+        html: '<p class="font-mono text-ledAmber">ERROR 404 · ROUTE NOT IN SERVICE</p><p>您尋找的頁面已經收車或不存在，請點擊下方按鈕返回 TransitDeck 主片倉。</p>'
+      }
+    };
+
+    document.querySelectorAll('[data-legal]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const item = LEGAL_CONTENT[btn.dataset.legal];
+        if (!item) return;
+        infoModalTitle.textContent = item.title;
+        infoModalBody.innerHTML = item.html;
+        infoModal.classList.remove('hidden');
+      });
+    });
+
+    document.getElementById('btnCloseInfoModal').addEventListener('click', () => {
+      infoModal.classList.add('hidden');
+    });
+  </script>
+</body>
+</html>
