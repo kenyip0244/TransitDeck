@@ -1256,7 +1256,7 @@
       <div class="section-card">
         <div class="section-header">
           <span>🏷️ 1. 頂部特徵條（文字標準格式）</span>
-          <span class="sub-tag">標準格式</span>
+          <span class="sub-tag">自動防重疊</span>
         </div>
 
         <div class="form-row">
@@ -2320,18 +2320,27 @@
         ctx.restore();
       }
 
+      // 4. 頂部特徵文字（自動偵測並避讓右上角路線標題，防止重疊）
       if (topText.trim()) {
         const topStartX = topBadge ? (badgeEndX + 22) : 35;
         const topX = topStartX + topTextOffsetX;
         const topY = 80 + topTextOffsetY;
 
-        const availTopWidth = canvas.width - topX - 40;
+        let rightLimitX = canvas.width - 40;
+        const titleYCheck = (routeSubTitle.trim() ? 210 : 205) + routeOffsetY;
+        if (routeTitle.trim() && (titleYCheck - routeFontSize) < (topY + 25)) {
+          ctx.font = `900 ${routeFontSize}px ${routeFont}`;
+          const estRouteW = Math.min(1000, ctx.measureText(routeTitle).width);
+          rightLimitX = (canvas.width - 50 + routeOffsetX) - estRouteW - 36;
+        }
+
+        const availTopWidth = Math.max(260, rightLimitX - topX);
         const fontPrefix = topTextItalic ? "italic " : "";
         ctx.font = `${fontPrefix}${topTextWeight} 52px "Noto Sans JP", "Noto Sans TC", sans-serif`;
         const topMetrics = ctx.measureText(topText);
         let effTopFontSize = 52;
-        if (topMetrics.width > availTopWidth && availTopWidth > 100) {
-          effTopFontSize = Math.max(28, Math.floor(52 * (availTopWidth / topMetrics.width)));
+        if (topMetrics.width > availTopWidth) {
+          effTopFontSize = Math.max(24, Math.floor(52 * (availTopWidth / topMetrics.width)));
         }
 
         drawDualStrokedText(topText, topX, topY, {
@@ -2347,7 +2356,7 @@
         hitBoxes.topText = {
           x: topX - 10,
           y: topY - effTopFontSize,
-          w: topMetrics.width + 20,
+          w: Math.min(topMetrics.width, availTopWidth) + 20,
           h: effTopFontSize + 25
         };
       }
@@ -2773,7 +2782,6 @@
         const deckLabel = (clip.deck || '上層展望').includes('下層') ? '下層展望' : '上層展望';
         const bracketNote = (clip.bracketTag || '').trim();
 
-        // Extract Chinese station name before English letters for clean Cantonese cover display
         const extractZhPlace = (str) => {
           if (!str) return '';
           const zhMatch = str.match(/^[\u4e00-\u9fa5\d（）()·]+(?:\s+[\u4e00-\u9fa5\d（）()·]+)*/);
@@ -2789,12 +2797,26 @@
           document.getElementById('topText').value = `${prefix}${cleanRoute}線${deckLabel}${viaPart}`;
         }
 
-        if (bracketNote) {
-          document.getElementById('serviceType').value = bracketNote;
-        } else if (clip.operator === 'OMSI') {
+        // Set standard route service badge on bottom-left so custom bracketNote doesn't repeat twice
+        const routeUpper = cleanRoute.toUpperCase();
+        if (clip.operator === 'OMSI') {
           document.getElementById('serviceType').value = 'OMSI 2 模擬';
         } else if (clip.operator === 'PIDS') {
           document.getElementById('serviceType').value = '報站機模擬';
+        } else if (/^A\d+/i.test(routeUpper)) {
+          document.getElementById('serviceType').value = '機場快線';
+        } else if (/^NA\d+/i.test(routeUpper)) {
+          document.getElementById('serviceType').value = '深宵機場線';
+        } else if (/^E\d+/i.test(routeUpper)) {
+          document.getElementById('serviceType').value = '大嶼山線';
+        } else if (/^B\d+/i.test(routeUpper)) {
+          document.getElementById('serviceType').value = '口岸專線';
+        } else if (/^(1|3|6|9)\d{2}/i.test(routeUpper)) {
+          document.getElementById('serviceType').value = '過海路線';
+        } else if (/^K\d+/i.test(routeUpper)) {
+          document.getElementById('serviceType').value = '港鐵接駁';
+        } else {
+          document.getElementById('serviceType').value = '常規路線';
         }
 
         if (originZh) {
