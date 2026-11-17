@@ -7,23 +7,44 @@
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=M+PLUS+1p:ital,wght@0,400;0,700;0,800;0,900;1,700;1,900&family=M+PLUS+Rounded+1c:ital,wght@0,400;0,700;0,800;0,900;1,700;1,900&family=Noto+Sans+JP:ital,wght@0,400;0,700;0,900;1,700;1,900&family=Noto+Sans+TC:ital,wght@0,400;0,700;0,900;1,700;1,900&family=RocknRoll+One&family=Zen+Kaku+Gothic+New:ital,wght@0,400;0,700;0,900;1,700;1,900&family=VT323&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=JetBrains+Mono:wght@500;700&family=M+PLUS+1p:ital,wght@0,400;0,700;0,800;0,900;1,700;1,900&family=M+PLUS+Rounded+1c:ital,wght@0,400;0,700;0,800;0,900;1,700;1,900&family=Noto+Sans+JP:ital,wght@0,400;0,700;0,900;1,700;1,900&family=Noto+Sans+TC:ital,wght@0,400;0,700;0,900;1,700;1,900&family=RocknRoll+One&family=Space+Grotesk:wght@500;600;700&family=Zen+Kaku+Gothic+New:ital,wght@0,400;0,700;0,900;1,700;1,900&family=VT323&display=swap" rel="stylesheet">
   
   <style>
     :root {
-      --bg-base: #0c0e14;
-      --bg-panel: #161922;
-      --bg-card: #202432;
-      --bg-input: #11131b;
-      --accent: #ffd100;
-      --accent-red: #d91a2a;
+      --bg-base: #0A0B0D;
+      --bg-panel: #13151A;
+      --bg-card: #191C23;
+      --bg-card-hover: #222630;
+      --bg-input: #0A0B0D;
+      --accent: #E8A817;
+      --accent-red: #D92B2B;
       --accent-blue: #0055a5;
-      --text-main: #f3f6fc;
-      --text-muted: #9aa5b8;
-      --border: #2e3547;
-      --radius-sm: 6px;
-      --radius: 12px;
-      --shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      --text-main: #F4F4F0;
+      --text-muted: #9CA3AF;
+      --border: #262A34;
+      --radius-sm: 8px;
+      --radius: 14px;
+      --shadow: 0 10px 30px rgba(0, 0, 0, 0.55);
+    }
+
+    ::selection {
+      background: #E8A817;
+      color: #0A0B0D;
+    }
+
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0A0B0D;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #262A34;
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #3B4150;
     }
     
     * {
@@ -33,15 +54,15 @@
     }
     
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", "Noto Sans JP", sans-serif;
+      font-family: "Space Grotesk", "Noto Sans TC", "Noto Sans JP", -apple-system, BlinkMacSystemFont, sans-serif;
       background-color: var(--bg-base);
       color: var(--text-main);
       line-height: 1.5;
-      padding: 16px 20px 24px;
+      padding: 16px 20px 28px;
       min-height: 100vh;
     }
 
-    /* 頂部與 TransitDeck 片倉導航列 */
+    /* 頂部與 TransitDeck 影片庫互通導航列 */
     .top-nav-strip {
       max-width: 1680px;
       margin: 0 auto 16px;
@@ -61,20 +82,20 @@
       align-items: center;
       gap: 10px;
       text-decoration: none;
-      color: #fff;
-      font-weight: 800;
+      color: #F4F4F0;
+      font-weight: 700;
       font-size: 16px;
     }
 
     .nav-brand-icon {
-      width: 30px;
-      height: 30px;
-      border-radius: 7px;
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
       background: #E8A817;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      padding: 5px;
+      padding: 6px;
     }
 
     .nav-brand-icon span {
@@ -91,10 +112,10 @@
       gap: 8px;
       background: rgba(232, 168, 23, 0.14);
       border: 1px solid rgba(232, 168, 23, 0.45);
-      color: #ffd100;
-      padding: 5px 12px;
+      color: #E8A817;
+      padding: 6px 14px;
       border-radius: 20px;
-      font-size: 12px;
+      font-size: 12.5px;
       font-weight: 700;
     }
 
@@ -103,14 +124,15 @@
     }
 
     .nav-back-btn {
+      min-height: 38px;
       background: var(--bg-card);
       border: 1px solid var(--border);
       color: var(--text-main);
       text-decoration: none;
       padding: 7px 14px;
-      border-radius: 8px;
-      font-size: 12.5px;
-      font-weight: 700;
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      font-weight: 600;
       display: inline-flex;
       align-items: center;
       gap: 6px;
@@ -118,8 +140,9 @@
     }
 
     .nav-back-btn:hover {
-      border-color: #ffd100;
-      color: #ffd100;
+      border-color: var(--accent);
+      background: var(--bg-card-hover);
+      color: var(--accent);
     }
 
     header {
@@ -129,8 +152,8 @@
 
     header h1 {
       font-size: 24px;
-      font-weight: 900;
-      color: #fff;
+      font-weight: 800;
+      color: #F4F4F0;
       display: inline-flex;
       align-items: center;
       gap: 12px;
@@ -139,19 +162,20 @@
     }
 
     header h1 .badge-citybus {
-      background: linear-gradient(135deg, #ffd100, #ffaa00);
-      color: #004080;
-      font-size: 13px;
+      background: linear-gradient(135deg, #E8A817, #f59e0b);
+      color: #0A0B0D;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 12px;
       padding: 3px 10px;
       border-radius: 6px;
-      font-weight: 900;
-      letter-spacing: 1px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
     }
 
     header p {
       color: var(--text-muted);
       font-size: 13px;
-      margin-top: 4px;
+      margin-top: 5px;
     }
 
     .main-layout {
@@ -183,19 +207,19 @@
 
     .quick-edit-bar {
       background: var(--bg-panel);
-      border: 1.5px solid #ffd100;
+      border: 1.5px solid rgba(232, 168, 23, 0.75);
       border-radius: var(--radius);
-      padding: 12px 14px;
+      padding: 14px;
       box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 10px;
     }
 
     .quick-edit-title {
       font-size: 12.5px;
-      font-weight: 900;
-      color: #ffd100;
+      font-weight: 800;
+      color: var(--accent);
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -211,7 +235,7 @@
 
     .quick-edit-route-row {
       display: grid;
-      grid-template-columns: 1.1fr 1.2fr 68px 1.2fr 2fr;
+      grid-template-columns: 1.1fr 1.2fr 74px 1.2fr 2fr;
       gap: 8px;
       align-items: end;
     }
@@ -231,26 +255,27 @@
     }
 
     .company-tab-btn {
+      min-height: 34px;
       background: var(--bg-card);
       border: 1px solid var(--border);
       color: var(--text-muted);
       padding: 6px 12px;
       border-radius: 20px;
       font-size: 12px;
-      font-weight: 800;
+      font-weight: 700;
       cursor: pointer;
       transition: all 0.15s;
     }
 
     .company-tab-btn:hover {
       color: var(--text-main);
-      border-color: #ffd100;
+      border-color: var(--accent);
     }
 
     .company-tab-btn.active {
-      background: #ffd100;
-      color: #0c1c2e;
-      border-color: #ffd100;
+      background: var(--accent);
+      color: #0A0B0D;
+      border-color: var(--accent);
     }
 
     .preset-tab-panel {
@@ -261,7 +286,7 @@
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(165px, 1fr));
       gap: 8px;
-      max-height: 210px;
+      max-height: 215px;
       overflow-y: auto;
       padding-right: 4px;
     }
@@ -270,9 +295,9 @@
       position: absolute;
       display: none;
       z-index: 50;
-      background: rgba(15, 18, 28, 0.96);
-      border: 2px solid #ffd100;
-      border-radius: 8px;
+      background: rgba(19, 21, 26, 0.96);
+      border: 2px solid var(--accent);
+      border-radius: 10px;
       padding: 8px 10px;
       box-shadow: 0 10px 30px rgba(0,0,0,0.8);
       min-width: 280px;
@@ -280,8 +305,8 @@
     }
 
     .canvas-inline-editor label {
-      color: #ffd100;
-      font-size: 11px;
+      color: var(--accent);
+      font-size: 11.5px;
       margin-bottom: 4px;
       display: block;
     }
@@ -320,17 +345,17 @@
       position: absolute;
       bottom: 10px;
       right: 12px;
-      background: rgba(0, 0, 0, 0.65);
+      background: rgba(10, 11, 13, 0.78);
       backdrop-filter: blur(4px);
-      color: #ffd700;
-      border: 1px solid rgba(255, 215, 0, 0.35);
-      padding: 3px 10px;
+      color: var(--accent);
+      border: 1px solid rgba(232, 168, 23, 0.4);
+      padding: 4px 11px;
       border-radius: 20px;
       font-size: 11px;
       font-weight: 700;
       pointer-events: none;
       z-index: 10;
-      opacity: 0.85;
+      opacity: 0.88;
       transition: opacity 0.2s;
     }
     .canvas-container:hover .canvas-hint {
@@ -344,7 +369,8 @@
     }
 
     .btn {
-      padding: 12px 16px;
+      min-height: 44px;
+      padding: 11px 16px;
       border-radius: var(--radius-sm);
       font-weight: 700;
       font-size: 13.5px;
@@ -354,34 +380,34 @@
       align-items: center;
       justify-content: center;
       gap: 8px;
-      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: all 0.2s cubic-bezier(0.22, 1, 0.36, 1);
       user-select: none;
     }
 
     .btn-sync-deck {
       background: linear-gradient(135deg, #10b981, #059669);
       color: #042f2e;
-      font-weight: 900;
+      font-weight: 800;
       flex: 1.6;
     }
 
     .btn-sync-deck:hover {
       filter: brightness(1.08);
-      transform: translateY(-2px);
-      box-shadow: 0 4px 16px rgba(16, 185, 129, 0.4);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 16px rgba(16, 185, 129, 0.38);
     }
 
     .btn-primary {
-      background: linear-gradient(135deg, #ffd100, #ff9900);
-      color: #0d233a;
-      font-weight: 900;
+      background: linear-gradient(135deg, #E8A817, #f59e0b);
+      color: #0A0B0D;
+      font-weight: 800;
       flex: 1.2;
     }
 
     .btn-primary:hover {
-      filter: brightness(1.1);
-      transform: translateY(-2px);
-      box-shadow: 0 4px 15px rgba(255, 209, 0, 0.4);
+      filter: brightness(1.08);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 15px rgba(232, 168, 23, 0.38);
     }
 
     .btn-secondary {
@@ -392,8 +418,8 @@
     }
 
     .btn-secondary:hover {
-      background: #2b3144;
-      border-color: #ffd100;
+      background: var(--bg-card-hover);
+      border-color: var(--accent);
     }
 
     .presets-container {
@@ -409,9 +435,8 @@
     .presets-title {
       font-size: 13px;
       font-weight: 800;
-      color: #ffd100;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
+      color: var(--accent);
+      letter-spacing: 0.4px;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -424,6 +449,7 @@
     }
 
     .layout-btn {
+      min-height: 48px;
       background: var(--bg-card);
       border: 1px solid var(--border);
       color: var(--text-main);
@@ -437,19 +463,20 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 4px;
+      justify-content: center;
+      gap: 3px;
     }
 
     .layout-btn:hover {
-      border-color: #ffd100;
-      background: #2b3144;
+      border-color: var(--accent);
+      background: var(--bg-card-hover);
     }
 
     .layout-btn.active {
-      background: #ffd100;
-      color: #0c1c2e;
-      border-color: #ffd100;
-      box-shadow: 0 0 10px rgba(255, 209, 0, 0.4);
+      background: var(--accent);
+      color: #0A0B0D;
+      border-color: var(--accent);
+      box-shadow: 0 0 10px rgba(232, 168, 23, 0.35);
     }
 
     .preset-chip {
@@ -469,9 +496,9 @@
     }
 
     .preset-chip:hover {
-      border-color: #ffd100;
-      background: #272d3f;
-      transform: translateY(-2px);
+      border-color: var(--accent);
+      background: var(--bg-card-hover);
+      transform: translateY(-1px);
     }
 
     .preset-chip-header {
@@ -489,7 +516,7 @@
     }
 
     .preset-desc {
-      font-size: 10px;
+      font-size: 10.5px;
       color: var(--text-muted);
       font-weight: 500;
     }
@@ -497,12 +524,11 @@
     .quick-company-bar {
       display: flex;
       flex-direction: column;
-      gap: 4px;
-      background: rgba(10, 14, 23, 0.78);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 7px;
-      padding: 6px 8px;
-      margin-bottom: 2px;
+      gap: 6px;
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 8px 10px;
     }
 
     .quick-company-header {
@@ -510,34 +536,35 @@
       align-items: center;
       justify-content: space-between;
       font-size: 11px;
-      font-weight: 800;
-      color: #e2e8f0;
+      font-weight: 700;
+      color: var(--text-main);
     }
 
     .quick-company-chips {
       display: flex;
       flex-wrap: wrap;
-      gap: 4px;
+      gap: 5px;
     }
 
     .quick-theme-chip {
+      min-height: 30px;
       display: inline-flex;
       align-items: center;
-      gap: 4px;
-      padding: 3px 7px;
+      gap: 5px;
+      padding: 4px 8px;
       font-size: 11px;
-      font-weight: 800;
-      border-radius: 5px;
-      border: 1px solid rgba(255, 255, 255, 0.16);
-      background: #161d2a;
-      color: #f0f4f8;
+      font-weight: 700;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      color: var(--text-main);
       cursor: pointer;
       transition: all 0.15s;
     }
 
     .quick-theme-chip:hover {
-      border-color: #ffd100;
-      background: #232f46;
+      border-color: var(--accent);
+      background: var(--bg-card-hover);
       transform: translateY(-1px);
     }
 
@@ -552,19 +579,20 @@
     .service-company-tabs {
       display: flex;
       flex-wrap: wrap;
-      gap: 4px;
+      gap: 5px;
       margin-bottom: 6px;
-      padding-bottom: 5px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding-bottom: 6px;
+      border-bottom: 1px solid var(--border);
     }
 
     .service-tab-btn {
-      padding: 3px 8px;
+      min-height: 30px;
+      padding: 4px 9px;
       font-size: 11px;
-      font-weight: 800;
-      border-radius: 5px;
+      font-weight: 700;
+      border-radius: 6px;
       border: 1px solid var(--border);
-      background: #0d121b;
+      background: var(--bg-input);
       color: var(--text-muted);
       cursor: pointer;
       transition: all 0.15s;
@@ -576,16 +604,16 @@
     }
 
     .service-tab-btn.active {
-      background: rgba(255, 209, 0, 0.16);
-      color: #ffd100;
-      border-color: #ffd100;
+      background: rgba(232, 168, 23, 0.16);
+      color: var(--accent);
+      border-color: var(--accent);
     }
 
     .controls-col {
       background: var(--bg-panel);
       border: 1px solid var(--border);
       border-radius: var(--radius);
-      padding: 20px;
+      padding: 18px;
       display: flex;
       flex-direction: column;
       gap: 16px;
@@ -604,11 +632,11 @@
     .section-header {
       font-size: 13.5px;
       font-weight: 800;
-      color: #ffd100;
+      color: var(--accent);
       display: flex;
       align-items: center;
       justify-content: space-between;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      border-bottom: 1px solid var(--border);
       padding-bottom: 7px;
     }
 
@@ -617,8 +645,8 @@
       color: #38bdf8;
       font-weight: 600;
       background: rgba(56, 189, 248, 0.12);
-      padding: 2px 6px;
-      border-radius: 4px;
+      padding: 2px 7px;
+      border-radius: 5px;
     }
 
     .form-group {
@@ -649,12 +677,14 @@
     }
 
     label span.val-hint {
-      color: #ffd100;
+      color: var(--accent);
+      font-family: "JetBrains Mono", monospace;
       font-weight: normal;
       font-size: 11px;
     }
 
     input[type="text"], select {
+      min-height: 38px;
       background: var(--bg-input);
       border: 1px solid var(--border);
       color: var(--text-main);
@@ -667,8 +697,8 @@
     }
 
     input[type="text"]:focus, select:focus {
-      border-color: #ffd100;
-      box-shadow: 0 0 0 2px rgba(255, 209, 0, 0.2);
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(232, 168, 23, 0.22);
     }
 
     input[type="color"] {
@@ -676,7 +706,7 @@
       border: 1px solid var(--border);
       border-radius: var(--radius-sm);
       width: 100%;
-      height: 36px;
+      height: 38px;
       cursor: pointer;
       background: var(--bg-input);
       padding: 2px 4px;
@@ -685,7 +715,7 @@
     input[type="range"] {
       width: 100%;
       height: 6px;
-      accent-color: #ffd100;
+      accent-color: var(--accent);
       background: var(--bg-input);
       border-radius: 3px;
       outline: none;
@@ -695,13 +725,14 @@
       display: inline-flex;
       background: var(--bg-input);
       border: 1px solid var(--border);
-      border-radius: 6px;
+      border-radius: 8px;
       overflow: hidden;
       gap: 2px;
       padding: 2px;
     }
 
     .style-btn {
+      min-height: 32px;
       background: transparent;
       border: none;
       color: var(--text-muted);
@@ -709,7 +740,7 @@
       font-size: 12px;
       font-weight: 700;
       cursor: pointer;
-      border-radius: 4px;
+      border-radius: 6px;
       transition: all 0.15s ease;
       display: inline-flex;
       align-items: center;
@@ -718,12 +749,12 @@
 
     .style-btn:hover {
       color: var(--text-main);
-      background: #22293a;
+      background: var(--bg-card-hover);
     }
 
     .style-btn.active {
-      background: #ffd100;
-      color: #0c1c2e;
+      background: var(--accent);
+      color: #0A0B0D;
     }
 
     .pos-btn-group {
@@ -734,20 +765,22 @@
     }
 
     .btn-xs {
+      min-height: 30px;
       background: var(--bg-input);
       border: 1px solid var(--border);
       color: var(--text-muted);
       padding: 4px 9px;
-      border-radius: 4px;
+      border-radius: 6px;
       font-size: 11px;
+      font-weight: 600;
       cursor: pointer;
       transition: all 0.15s;
     }
 
     .btn-xs:hover {
       color: var(--text-main);
-      border-color: #ffd100;
-      background: #202636;
+      border-color: var(--accent);
+      background: var(--bg-card-hover);
     }
 
     .logo-chips {
@@ -757,13 +790,14 @@
     }
 
     .logo-chip-btn {
+      min-height: 32px;
       background: var(--bg-input);
       border: 1px solid var(--border);
       color: var(--text-main);
-      padding: 4px 8px;
-      border-radius: 6px;
+      padding: 5px 9px;
+      border-radius: 7px;
       font-size: 11.5px;
-      font-weight: bold;
+      font-weight: 700;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
@@ -772,9 +806,9 @@
     }
 
     .logo-chip-btn:hover {
-      border-color: #ffd100;
-      background: #232a3b;
-      color: #ffd100;
+      border-color: var(--accent);
+      background: var(--bg-card-hover);
+      color: var(--accent);
     }
 
     .type-tags-container {
@@ -791,10 +825,11 @@
     }
 
     .type-tag-btn {
+      min-height: 30px;
       background: var(--bg-input);
       border: 1px solid var(--border);
-      color: #e2e8f0;
-      padding: 4px 9px;
+      color: var(--text-main);
+      padding: 4px 10px;
       border-radius: 14px;
       font-size: 11.5px;
       font-weight: 700;
@@ -809,7 +844,7 @@
     .type-tag-btn:hover {
       transform: translateY(-1px);
       box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-      border-color: #ffd100;
+      border-color: var(--accent);
     }
 
     .tag-color-dot {
@@ -830,8 +865,8 @@
     }
 
     .upload-zone:hover, .upload-zone.dragover {
-      border-color: #ffd100;
-      background: rgba(255, 209, 0, 0.06);
+      border-color: var(--accent);
+      background: rgba(232, 168, 23, 0.06);
     }
 
     .upload-zone svg {
@@ -859,11 +894,12 @@
 
     .deck-btn {
       flex: 1;
+      min-height: 34px;
       padding: 5px 8px;
-      border-radius: 5px;
+      border-radius: 6px;
       border: 1px solid var(--border);
       background: var(--bg-input);
-      color: #cbd5e1;
+      color: var(--text-main);
       font-size: 11.5px;
       font-weight: 700;
       cursor: pointer;
@@ -871,30 +907,30 @@
     }
 
     .deck-btn:hover {
-      border-color: #ffd100;
-      color: #ffd100;
-      background: #1e2434;
+      border-color: var(--accent);
+      color: var(--accent);
+      background: var(--bg-card-hover);
     }
 
     .toast {
       position: fixed;
       bottom: 24px;
       right: 24px;
-      background: #1e293b;
-      color: #fff;
-      border: 1px solid #ffd100;
-      border-radius: 8px;
-      padding: 10px 18px;
+      background: var(--bg-card);
+      color: var(--text-main);
+      border: 1px solid var(--accent);
+      border-radius: 10px;
+      padding: 11px 18px;
       font-size: 13px;
       font-weight: 600;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.55);
       display: none;
       z-index: 999;
-      animation: slideUp 0.3s ease;
+      animation: slideUp 0.25s cubic-bezier(0.22, 1, 0.36, 1);
     }
 
     @keyframes slideUp {
-      from { transform: translateY(20px); opacity: 0; }
+      from { transform: translateY(16px); opacity: 0; }
       to { transform: translateY(0); opacity: 1; }
     }
   </style>
@@ -902,7 +938,7 @@
 <body>
 
   <!-- 頂部與 TransitDeck 影片庫互通導航列 -->
-  <nav class="top-nav-strip">
+  <nav aria-label="封面工作室導航列" class="top-nav-strip">
     <a href="./app.html" class="nav-brand">
       <span class="nav-brand-icon"><span></span><span></span></span>
       <span>TransitDeck · 封面工作室</span>
@@ -934,7 +970,7 @@
         <canvas id="thumbCanvas" width="1920" height="1080"></canvas>
         <div class="canvas-hint">🖱️ 可直接拖曳元素 • 雙擊畫布文字可即時改字</div>
         <div class="canvas-inline-editor" id="inlineEditor">
-          <label id="inlineEditorLabel">修改文字</label>
+          <label id="inlineEditorLabel" for="inlineEditorInput">修改文字</label>
           <input type="text" id="inlineEditorInput">
         </div>
       </div>
@@ -953,7 +989,7 @@
         <div class="quick-company-bar">
           <div class="quick-company-header">
             <span>🎨 一鍵切換五大巴士公司配色＋字頭（保留目前路線號碼與起訖站）：</span>
-            <span style="font-size:10px; color:#9aa5b8; font-weight:normal;">支援 九巴 • 龍運 • 城巴 • 新巴 • 嶼巴 • 港鐵 • 九鐵</span>
+            <span style="font-size:10px; color:#9CA3AF; font-weight:normal;">支援 九巴 • 龍運 • 城巴 • 新巴 • 嶼巴 • 港鐵 • 九鐵</span>
           </div>
           <div class="quick-company-chips">
             <button type="button" class="quick-theme-chip" onclick="applyCompanyThemeOnly('ctb_1979')">
@@ -1009,26 +1045,26 @@
 
         <div class="quick-edit-grid">
           <div class="form-group">
-            <label>① 頂部文字 (`XXX線上/下層展望•經XXX`)</label>
+            <label for="quickTopText">① 頂部文字 (`XXX線上/下層展望•經XXX`)</label>
             <input type="text" id="quickTopText" value="城巴B14線下層展望•經大欖隧道•中九龍繞道•啟德體育園" oninput="syncQuickText('topText', this.value)">
           </div>
           <div class="form-group">
-            <label>② 右上角路線標題 (`XXX路線`)</label>
+            <label for="quickRouteTitle">② 右上角路線標題 (`XXX路線`)</label>
             <input type="text" id="quickRouteTitle" value="城巴B14路線" oninput="syncQuickText('routeTitle', this.value)">
           </div>
         </div>
 
         <div class="quick-edit-route-row">
           <div class="form-group">
-            <label>③ 左下車種標籤</label>
+            <label for="quickServiceType">③ 左下車種標籤</label>
             <input type="text" id="quickServiceType" value="皇崗專線" oninput="syncQuickText('serviceType', this.value)">
           </div>
           <div class="form-group">
-            <label>④ 起點站 (Origin)</label>
+            <label for="quickStationOrigin">④ 起點站 (Origin)</label>
             <input type="text" id="quickStationOrigin" value="皇崗口岸" oninput="syncQuickText('stationOrigin', this.value)">
           </div>
           <div class="form-group">
-            <label>方向</label>
+            <label for="quickRouteArrow">方向</label>
             <select id="quickRouteArrow" onchange="syncQuickText('routeArrow', this.value)">
               <option value="➔" selected>➔</option>
               <option value="→">→</option>
@@ -1037,11 +1073,11 @@
             </select>
           </div>
           <div class="form-group">
-            <label>⑤ 訖點站 (Dest)</label>
+            <label for="quickStationDest">⑤ 訖點站 (Dest)</label>
             <input type="text" id="quickStationDest" value="啟德世運道" oninput="syncQuickText('stationDest', this.value)">
           </div>
           <div class="form-group">
-            <label>⑥ 底部車型 / 車牌描述</label>
+            <label for="quickBottomText">⑥ 底部車型 / 車牌描述</label>
             <input type="text" id="quickBottomText" value="Enviro500 MMC 12.8M (6493 / VB 9800) • CITY BUSES EST. 1979" oninput="syncQuickText('bottomText', this.value)">
           </div>
         </div>
@@ -1049,17 +1085,17 @@
 
       <!-- 操作按鈕列：一鍵存回 TransitDeck 影片庫 + 下載 PNG + 複製剪貼簿 -->
       <div class="action-row">
-        <button class="btn btn-sync-deck" id="saveToTransitDeckBtn">
+        <button class="btn btn-sync-deck" id="saveToTransitDeckBtn" type="button">
           <span>💾 儲存封面並返回 TransitDeck 影片庫</span>
         </button>
-        <button class="btn btn-primary" id="downloadPngBtn">
+        <button class="btn btn-primary" id="downloadPngBtn" type="button">
           <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
           下載 1080P PNG
         </button>
-        <button class="btn btn-secondary" id="copyClipboardBtn">
+        <button class="btn btn-secondary" id="copyClipboardBtn" type="button">
           複製圖片
         </button>
-        <button class="btn btn-secondary" id="resetBtn">重設範本</button>
+        <button class="btn btn-secondary" id="resetBtn" type="button">重設範本</button>
       </div>
     </div>
 
@@ -1070,7 +1106,7 @@
       <div class="presets-container">
         <div class="presets-title">
           <span>🎨 一鍵套用巴士塗裝與路線範本</span>
-          <span style="font-size:11px; color:#9aa5b8; font-weight:normal;">點擊分類切換</span>
+          <span style="font-size:11px; color:#9CA3AF; font-weight:normal;">點擊分類切換</span>
         </div>
 
         <div class="company-tabs">
@@ -1083,56 +1119,56 @@
         </div>
 
         <div class="preset-tab-panel active" id="tab_citybus">
-          <button class="preset-chip" onclick="applyPreset('founder_1979')">
+          <button type="button" class="preset-chip" onclick="applyPreset('founder_1979')">
             <div class="preset-chip-header">
               <span class="preset-bar" style="background: linear-gradient(135deg, #f3e5ab 60%, #5c1d24 60%);"></span>
               <span>1979 創辦米黃棗紅 (B14)</span>
             </div>
             <div class="preset-desc">B14 / 6493 皇崗口岸➔啟德世運道</div>
           </button>
-          <button class="preset-chip" onclick="applyPreset('cityflyer')">
+          <button type="button" class="preset-chip" onclick="applyPreset('cityflyer')">
             <div class="preset-chip-header">
               <span class="preset-bar" style="background: linear-gradient(135deg, #ffd100 50%, #d91a2a 50%);"></span>
               <span>Cityflyer 機場快線 (A29)</span>
             </div>
             <div class="preset-desc">A29 / 6840 機場➔將軍澳(寶琳)</div>
           </button>
-          <button class="preset-chip" onclick="applyPreset('pacman')">
+          <button type="button" class="preset-chip" onclick="applyPreset('pacman')">
             <div class="preset-chip-header">
               <span class="preset-bar" style="background: linear-gradient(135deg, #ffd100 50%, #e21b23 50%);"></span>
               <span>經典「大食鬼」塗裝 (43R)</span>
             </div>
             <div class="preset-desc">43R / 9150 堅尼地城站➔西寧街</div>
           </button>
-          <button class="preset-chip" onclick="applyPreset('classic_stripes')">
+          <button type="button" class="preset-chip" onclick="applyPreset('classic_stripes')">
             <div class="preset-chip-header">
               <span class="preset-bar" style="background: linear-gradient(135deg, #ffd200 40%, #e31b23 40%, #e31b23 60%, #004b97 60%);"></span>
               <span>經典黃帶紅白藍 (73)</span>
             </div>
             <div class="preset-desc">73 / 9149 數碼港➔赤柱市場</div>
           </button>
-          <button class="preset-chip" onclick="applyPreset('anniversary_40')">
+          <button type="button" class="preset-chip" onclick="applyPreset('anniversary_40')">
             <div class="preset-chip-header">
               <span class="preset-bar" style="background: linear-gradient(135deg, #ffd200 45%, #ff6600 45%, #ff6600 65%, #00338d 65%);"></span>
               <span>40載你同行 1979復刻 (307)</span>
             </div>
             <div class="preset-desc">307 / 6495 大埔中心➔中環碼頭</div>
           </button>
-          <button class="preset-chip" onclick="applyPreset('modern_yellow_blue')">
+          <button type="button" class="preset-chip" onclick="applyPreset('modern_yellow_blue')">
             <div class="preset-chip-header">
               <span class="preset-bar" style="background: linear-gradient(135deg, #ffd200 65%, #0072ce 65%);"></span>
               <span>當代簡約黃藍 (606)</span>
             </div>
             <div class="preset-desc">606 / 8538 小西灣➔彩雲</div>
           </button>
-          <button class="preset-chip" onclick="applyPreset('new_rebrand')">
+          <button type="button" class="preset-chip" onclick="applyPreset('new_rebrand')">
             <div class="preset-chip-header">
               <span class="preset-bar" style="background: linear-gradient(135deg, #ffd200 45%, #e50012 45%, #e50012 55%, #0055a5 55%);"></span>
               <span>新品牌動感黃藍 (788)</span>
             </div>
             <div class="preset-desc">788 / 8570 小西灣➔中環</div>
           </button>
-          <button class="preset-chip" onclick="applyPreset('nwfb_wave')">
+          <button type="button" class="preset-chip" onclick="applyPreset('nwfb_wave')">
             <div class="preset-chip-header">
               <span class="preset-bar" style="background: linear-gradient(135deg, #ffffff 40%, #009b3a 40%, #009b3a 55%, #ff7300 55%);"></span>
               <span>新巴經典波浪白綠橙 (8)</span>
@@ -1142,74 +1178,74 @@
         </div>
 
         <div class="preset-tab-panel" id="tab_trunk">
-          <button class="preset-chip" onclick="applyPreset('trunk_2a')"><div class="preset-chip-header"><span class="preset-bar" style="background:#003876;"></span><span>2A 英皇道線</span></div><div class="preset-desc">耀東邨 ➔ 會展站</div></button>
-          <button class="preset-chip" onclick="applyPreset('trunk_4')"><div class="preset-chip-header"><span class="preset-bar" style="background:#003876;"></span><span>4 薄扶林線</span></div><div class="preset-desc">黃竹坑 ➔ 中環(交易廣場)</div></button>
-          <button class="preset-chip" onclick="applyPreset('trunk_38')"><div class="preset-chip-header"><span class="preset-bar" style="background:#003876;"></span><span>38 南區線</span></div><div class="preset-desc">置富花園 ➔ 北角碼頭</div></button>
-          <button class="preset-chip" onclick="applyPreset('trunk_82')"><div class="preset-chip-header"><span class="preset-bar" style="background:#003876;"></span><span>82 東區線</span></div><div class="preset-desc">小西灣(藍灣半島) ➔ 北角碼頭</div></button>
-          <button class="preset-chip" onclick="applyPreset('trunk_20')"><div class="preset-chip-header"><span class="preset-bar" style="background:#003876;"></span><span>20 窩打老道線</span></div><div class="preset-desc">啟德(沐安街) ➔ 長沙灣(海達)</div></button>
-          <button class="preset-chip" onclick="applyPreset('trunk_20a')"><div class="preset-chip-header"><span class="preset-bar" style="background:#003876;"></span><span>20A 彌敦道線</span></div><div class="preset-desc">高鐵西九龍站 ➔ 啟德郵輪碼頭</div></button>
-          <button class="preset-chip" onclick="applyPreset('trunk_701')"><div class="preset-chip-header"><span class="preset-bar" style="background:#003876;"></span><span>701 西九龍線</span></div><div class="preset-desc">海麗邨 ➔ 旺角</div></button>
-          <button class="preset-chip" onclick="applyPreset('trunk_50')"><div class="preset-chip-header"><span class="preset-bar" style="background:#003876;"></span><span>50 屯門線</span></div><div class="preset-desc">屯門(菁田及和田) ➔ 尖沙咀</div></button>
-          <button class="preset-chip" onclick="applyPreset('trunk_56')"><div class="preset-chip-header"><span class="preset-bar" style="background:#003876;"></span><span>56 新界北環線</span></div><div class="preset-desc">屯門(和田及菁田) ➔ 上水</div></button>
-          <button class="preset-chip" onclick="applyPreset('trunk_79x')"><div class="preset-chip-header"><span class="preset-bar" style="background:#003876;"></span><span>79X 皇后山線</span></div><div class="preset-desc">粉嶺皇后山 ➔ 長沙灣</div></button>
-          <button class="preset-chip" onclick="applyPreset('trunk_793')"><div class="preset-chip-header"><span class="preset-bar" style="background:#003876;"></span><span>793 九龍東西線</span></div><div class="preset-desc">將軍澳工業邨 ➔ 蘇屋</div></button>
-          <button class="preset-chip" onclick="applyPreset('trunk_798')"><div class="preset-chip-header"><span class="preset-bar" style="background:#003876;"></span><span>798 將沙線</span></div><div class="preset-desc">調景嶺站 ➔ 火炭(駿洋邨)</div></button>
+          <button type="button" class="preset-chip" onclick="applyPreset('trunk_2a')"><div class="preset-chip-header"><span class="preset-bar" style="background:#003876;"></span><span>2A 英皇道線</span></div><div class="preset-desc">耀東邨 ➔ 會展站</div></button>
+          <button type="button" class="preset-chip" onclick="applyPreset('trunk_4')"><div class="preset-chip-header"><span class="preset-bar" style="background:#003876;"></span><span>4 薄扶林線</span></div><div class="preset-desc">黃竹坑 ➔ 中環(交易廣場)</div></button>
+          <button type="button" class="preset-chip" onclick="applyPreset('trunk_38')"><div class="preset-chip-header"><span class="preset-bar" style="background:#003876;"></span><span>38 南區線</span></div><div class="preset-desc">置富花園 ➔ 北角碼頭</div></button>
+          <button type="button" class="preset-chip" onclick="applyPreset('trunk_82')"><div class="preset-chip-header"><span class="preset-bar" style="background:#003876;"></span><span>82 東區線</span></div><div class="preset-desc">小西灣(藍灣半島) ➔ 北角碼頭</div></button>
+          <button type="button" class="preset-chip" onclick="applyPreset('trunk_20')"><div class="preset-chip-header"><span class="preset-bar" style="background:#003876;"></span><span>20 窩打老道線</span></div><div class="preset-desc">啟德(沐安街) ➔ 長沙灣(海達)</div></button>
+          <button type="button" class="preset-chip" onclick="applyPreset('trunk_20a')"><div class="preset-chip-header"><span class="preset-bar" style="background:#003876;"></span><span>20A 彌敦道線</span></div><div class="preset-desc">高鐵西九龍站 ➔ 啟德郵輪碼頭</div></button>
+          <button type="button" class="preset-chip" onclick="applyPreset('trunk_701')"><div class="preset-chip-header"><span class="preset-bar" style="background:#003876;"></span><span>701 西九龍線</span></div><div class="preset-desc">海麗邨 ➔ 旺角</div></button>
+          <button type="button" class="preset-chip" onclick="applyPreset('trunk_50')"><div class="preset-chip-header"><span class="preset-bar" style="background:#003876;"></span><span>50 屯門線</span></div><div class="preset-desc">屯門(菁田及和田) ➔ 尖沙咀</div></button>
+          <button type="button" class="preset-chip" onclick="applyPreset('trunk_56')"><div class="preset-chip-header"><span class="preset-bar" style="background:#003876;"></span><span>56 新界北環線</span></div><div class="preset-desc">屯門(和田及菁田) ➔ 上水</div></button>
+          <button type="button" class="preset-chip" onclick="applyPreset('trunk_79x')"><div class="preset-chip-header"><span class="preset-bar" style="background:#003876;"></span><span>79X 皇后山線</span></div><div class="preset-desc">粉嶺皇后山 ➔ 長沙灣</div></button>
+          <button type="button" class="preset-chip" onclick="applyPreset('trunk_793')"><div class="preset-chip-header"><span class="preset-bar" style="background:#003876;"></span><span>793 九龍東西線</span></div><div class="preset-desc">將軍澳工業邨 ➔ 蘇屋</div></button>
+          <button type="button" class="preset-chip" onclick="applyPreset('trunk_798')"><div class="preset-chip-header"><span class="preset-bar" style="background:#003876;"></span><span>798 將沙線</span></div><div class="preset-desc">調景嶺站 ➔ 火炭(駿洋邨)</div></button>
         </div>
 
         <div class="preset-tab-panel" id="tab_kmb">
-          <button class="preset-chip" onclick="applyPreset('kmb_960')"><div class="preset-chip-header"><span class="preset-bar" style="background:linear-gradient(135deg, #c8102e 60%, #ffffff 60%);"></span><span>城市脈搏紅巴 (960)</span></div><div class="preset-desc">屯門(建生) ➔ 灣仔北</div></button>
-          <button class="preset-chip" onclick="applyPreset('kmb_968')"><div class="preset-chip-header"><span class="preset-bar" style="background:linear-gradient(135deg, #c8102e 55%, #007a33 55%);"></span><span>西隧皇牌綠豬紙 (968)</span></div><div class="preset-desc">元朗(西) ➔ 銅鑼灣(天后)</div></button>
-          <button class="preset-chip" onclick="applyPreset('kmb_1a')"><div class="preset-chip-header"><span class="preset-bar" style="background:linear-gradient(135deg, #f5d77f 60%, #4a2e0b 60%);"></span><span>千禧香檳金巴 (1A)</span></div><div class="preset-desc">尖沙咀碼頭 ➔ 中秀茂坪</div></button>
-          <button class="preset-chip" onclick="applyPreset('kmb_b1')"><div class="preset-chip-header"><span class="preset-bar" style="background:linear-gradient(135deg, #ffd100 50%, #c8102e 50%);"></span><span>落馬洲口岸線 (B1)</span></div><div class="preset-desc">天水圍(天慈) ➔ 落馬洲站</div></button>
-          <button class="preset-chip" onclick="applyPreset('kmb_b9')"><div class="preset-chip-header"><span class="preset-bar" style="background:linear-gradient(135deg, #ffdd00 50%, #8b0000 50%);"></span><span>香園圍口岸線 (B9)</span></div><div class="preset-desc">屯門站 ➔ 香園圍口岸</div></button>
-          <button class="preset-chip" onclick="applyPreset('kmb_290a')"><div class="preset-chip-header"><span class="preset-bar" style="background:linear-gradient(135deg, #4caf50 55%, #1b5e20 55%);"></span><span>電光綠純電巴 (290A)</span></div><div class="preset-desc">將軍澳(彩明) ➔ 荃灣西站</div></button>
-          <button class="preset-chip" onclick="applyPreset('kmb_hotdog')"><div class="preset-chip-header"><span class="preset-bar" style="background:linear-gradient(135deg, #f0e68c 50%, #8b0000 50%);"></span><span>經典熱狗塗裝 (16)</span></div><div class="preset-desc">藍田(廣田邨) ➔ 旺角(柏景灣)</div></button>
-          <button class="preset-chip" onclick="applyPreset('kmb_white')"><div class="preset-chip-header"><span class="preset-bar" style="background:linear-gradient(135deg, #ffffff 65%, #c8102e 65%);"></span><span>九巴經典白板 (6C)</span></div><div class="preset-desc">美孚 ➔ 九龍城碼頭</div></button>
-          <button class="preset-chip" onclick="applyPreset('kmb_p960')"><div class="preset-chip-header"><span class="preset-bar" style="background:linear-gradient(135deg, #ffd700 45%, #1a1a1a 45%);"></span><span>星級尊線黑金 (P960)</span></div><div class="preset-desc">屯門(兆康站) ➔ 灣仔北</div></button>
+          <button type="button" class="preset-chip" onclick="applyPreset('kmb_960')"><div class="preset-chip-header"><span class="preset-bar" style="background:linear-gradient(135deg, #c8102e 60%, #ffffff 60%);"></span><span>城市脈搏紅巴 (960)</span></div><div class="preset-desc">屯門(建生) ➔ 灣仔北</div></button>
+          <button type="button" class="preset-chip" onclick="applyPreset('kmb_968')"><div class="preset-chip-header"><span class="preset-bar" style="background:linear-gradient(135deg, #c8102e 55%, #007a33 55%);"></span><span>西隧皇牌綠豬紙 (968)</span></div><div class="preset-desc">元朗(西) ➔ 銅鑼灣(天后)</div></button>
+          <button type="button" class="preset-chip" onclick="applyPreset('kmb_1a')"><div class="preset-chip-header"><span class="preset-bar" style="background:linear-gradient(135deg, #f5d77f 60%, #4a2e0b 60%);"></span><span>千禧香檳金巴 (1A)</span></div><div class="preset-desc">尖沙咀碼頭 ➔ 中秀茂坪</div></button>
+          <button type="button" class="preset-chip" onclick="applyPreset('kmb_b1')"><div class="preset-chip-header"><span class="preset-bar" style="background:linear-gradient(135deg, #ffd100 50%, #c8102e 50%);"></span><span>落馬洲口岸線 (B1)</span></div><div class="preset-desc">天水圍(天慈) ➔ 落馬洲站</div></button>
+          <button type="button" class="preset-chip" onclick="applyPreset('kmb_b9')"><div class="preset-chip-header"><span class="preset-bar" style="background:linear-gradient(135deg, #ffdd00 50%, #8b0000 50%);"></span><span>香園圍口岸線 (B9)</span></div><div class="preset-desc">屯門站 ➔ 香園圍口岸</div></button>
+          <button type="button" class="preset-chip" onclick="applyPreset('kmb_290a')"><div class="preset-chip-header"><span class="preset-bar" style="background:linear-gradient(135deg, #4caf50 55%, #1b5e20 55%);"></span><span>電光綠純電巴 (290A)</span></div><div class="preset-desc">將軍澳(彩明) ➔ 荃灣西站</div></button>
+          <button type="button" class="preset-chip" onclick="applyPreset('kmb_hotdog')"><div class="preset-chip-header"><span class="preset-bar" style="background:linear-gradient(135deg, #f0e68c 50%, #8b0000 50%);"></span><span>經典熱狗塗裝 (16)</span></div><div class="preset-desc">藍田(廣田邨) ➔ 旺角(柏景灣)</div></button>
+          <button type="button" class="preset-chip" onclick="applyPreset('kmb_white')"><div class="preset-chip-header"><span class="preset-bar" style="background:linear-gradient(135deg, #ffffff 65%, #c8102e 65%);"></span><span>九巴經典白板 (6C)</span></div><div class="preset-desc">美孚 ➔ 九龍城碼頭</div></button>
+          <button type="button" class="preset-chip" onclick="applyPreset('kmb_p960')"><div class="preset-chip-header"><span class="preset-bar" style="background:linear-gradient(135deg, #ffd700 45%, #1a1a1a 45%);"></span><span>星級尊線黑金 (P960)</span></div><div class="preset-desc">屯門(兆康站) ➔ 灣仔北</div></button>
         </div>
 
         <div class="preset-tab-panel" id="tab_lwb">
-          <button class="preset-chip" onclick="applyPreset('lwb_a31')"><div class="preset-chip-header"><span class="preset-bar" style="background:linear-gradient(135deg, #ea5b0c 60%, #ffffff 60%);"></span><span>陽光橙白塗裝 (A31)</span></div><div class="preset-desc">荃灣(如心廣場) ➔ 機場</div></button>
-          <button class="preset-chip" onclick="applyPreset('lwb_a41')"><div class="preset-chip-header"><span class="preset-bar" style="background:linear-gradient(135deg, #ff8800 50%, #b33c00 50%);"></span><span>初代飛龍橙金 (A41)</span></div><div class="preset-desc">沙田(碩門邨) ➔ 機場</div></button>
-          <button class="preset-chip" onclick="applyPreset('lwb_e36')"><div class="preset-chip-header"><span class="preset-bar" style="background:linear-gradient(135deg, #ffd100 50%, #ea5b0c 50%);"></span><span>北大嶼山對外線 (E36)</span></div><div class="preset-desc">元朗(八鄉路) ➔ 機場(西岸路)</div></button>
-          <button class="preset-chip" onclick="applyPreset('lwb_s1')"><div class="preset-chip-header"><span class="preset-bar" style="background:linear-gradient(135deg, #00a3e0 50%, #ea5b0c 50%);"></span><span>機場穿梭巴士 (S1)</span></div><div class="preset-desc">東涌站 ➔ 機場博覽館</div></button>
-          <button class="preset-chip" onclick="applyPreset('lwb_na33')"><div class="preset-chip-header"><span class="preset-bar" style="background:#111111; border:1px solid #ff7700;"></span><span>深宵特快黑橙 (NA33)</span></div><div class="preset-desc">國泰城 ➔ 屯門(富泰)</div></button>
-          <button class="preset-chip" onclick="applyPreset('lwb_r33')"><div class="preset-chip-header"><span class="preset-bar" style="background:linear-gradient(135deg, #e6007e 50%, #4a154b 50%);"></span><span>迪士尼專線 (R33)</span></div><div class="preset-desc">屯門站 ➔ 迪士尼樂園</div></button>
+          <button type="button" class="preset-chip" onclick="applyPreset('lwb_a31')"><div class="preset-chip-header"><span class="preset-bar" style="background:linear-gradient(135deg, #ea5b0c 60%, #ffffff 60%);"></span><span>陽光橙白塗裝 (A31)</span></div><div class="preset-desc">荃灣(如心廣場) ➔ 機場</div></button>
+          <button type="button" class="preset-chip" onclick="applyPreset('lwb_a41')"><div class="preset-chip-header"><span class="preset-bar" style="background:linear-gradient(135deg, #ff8800 50%, #b33c00 50%);"></span><span>初代飛龍橙金 (A41)</span></div><div class="preset-desc">沙田(碩門邨) ➔ 機場</div></button>
+          <button type="button" class="preset-chip" onclick="applyPreset('lwb_e36')"><div class="preset-chip-header"><span class="preset-bar" style="background:linear-gradient(135deg, #ffd100 50%, #ea5b0c 50%);"></span><span>北大嶼山對外線 (E36)</span></div><div class="preset-desc">元朗(八鄉路) ➔ 機場(西岸路)</div></button>
+          <button type="button" class="preset-chip" onclick="applyPreset('lwb_s1')"><div class="preset-chip-header"><span class="preset-bar" style="background:linear-gradient(135deg, #00a3e0 50%, #ea5b0c 50%);"></span><span>機場穿梭巴士 (S1)</span></div><div class="preset-desc">東涌站 ➔ 機場博覽館</div></button>
+          <button type="button" class="preset-chip" onclick="applyPreset('lwb_na33')"><div class="preset-chip-header"><span class="preset-bar" style="background:#111111; border:1px solid #ff7700;"></span><span>深宵特快黑橙 (NA33)</span></div><div class="preset-desc">國泰城 ➔ 屯門(富泰)</div></button>
+          <button type="button" class="preset-chip" onclick="applyPreset('lwb_r33')"><div class="preset-chip-header"><span class="preset-bar" style="background:linear-gradient(135deg, #e6007e 50%, #4a154b 50%);"></span><span>迪士尼專線 (R33)</span></div><div class="preset-desc">屯門站 ➔ 迪士尼樂園</div></button>
         </div>
 
         <div class="preset-tab-panel" id="tab_nlb">
-          <button class="preset-chip" onclick="applyPreset('nlb_11')"><div class="preset-chip-header"><span class="preset-bar" style="background:linear-gradient(135deg, #008037 60%, #ffffff 60%);"></span><span>嶼南綠白塗裝 (11)</span></div><div class="preset-desc">東涌站 ➔ 大澳</div></button>
-          <button class="preset-chip" onclick="applyPreset('nlb_3m')"><div class="preset-chip-header"><span class="preset-bar" style="background:#008037;"></span><span>東涌道過山線 (3M)</span></div><div class="preset-desc">梅窩碼頭 ➔ 東涌站</div></button>
-          <button class="preset-chip" onclick="applyPreset('nlb_23')"><div class="preset-chip-header"><span class="preset-bar" style="background:linear-gradient(135deg, #ffd100 50%, #008037 50%);"></span><span>昂坪寶蓮寺線 (23)</span></div><div class="preset-desc">東涌達東路 ➔ 昂坪</div></button>
-          <button class="preset-chip" onclick="applyPreset('nlb_b6')"><div class="preset-chip-header"><span class="preset-bar" style="background:linear-gradient(135deg, #0055a5 60%, #008037 60%);"></span><span>大橋口岸藍綠 (B6)</span></div><div class="preset-desc">滿東邨 ➔ 港珠澳大橋口岸</div></button>
-          <button class="preset-chip" onclick="applyPreset('nlb_b2p')"><div class="preset-chip-header"><span class="preset-bar" style="background:linear-gradient(135deg, #ffd200 50%, #003876 50%);"></span><span>深圳灣口岸線 (B2P)</span></div><div class="preset-desc">天慈邨 ➔ 深圳灣口岸</div></button>
-          <button class="preset-chip" onclick="applyPreset('nlb_1')"><div class="preset-chip-header"><span class="preset-bar" style="background:linear-gradient(135deg, #76ff03 50%, #004d25 50%);"></span><span>梅窩大澳幹線 (1)</span></div><div class="preset-desc">梅窩碼頭 ➔ 大澳</div></button>
+          <button type="button" class="preset-chip" onclick="applyPreset('nlb_11')"><div class="preset-chip-header"><span class="preset-bar" style="background:linear-gradient(135deg, #008037 60%, #ffffff 60%);"></span><span>嶼南綠白塗裝 (11)</span></div><div class="preset-desc">東涌站 ➔ 大澳</div></button>
+          <button type="button" class="preset-chip" onclick="applyPreset('nlb_3m')"><div class="preset-chip-header"><span class="preset-bar" style="background:#008037;"></span><span>東涌道過山線 (3M)</span></div><div class="preset-desc">梅窩碼頭 ➔ 東涌站</div></button>
+          <button type="button" class="preset-chip" onclick="applyPreset('nlb_23')"><div class="preset-chip-header"><span class="preset-bar" style="background:linear-gradient(135deg, #ffd100 50%, #008037 50%);"></span><span>昂坪寶蓮寺線 (23)</span></div><div class="preset-desc">東涌達東路 ➔ 昂坪</div></button>
+          <button type="button" class="preset-chip" onclick="applyPreset('nlb_b6')"><div class="preset-chip-header"><span class="preset-bar" style="background:linear-gradient(135deg, #0055a5 60%, #008037 60%);"></span><span>大橋口岸藍綠 (B6)</span></div><div class="preset-desc">滿東邨 ➔ 港珠澳大橋口岸</div></button>
+          <button type="button" class="preset-chip" onclick="applyPreset('nlb_b2p')"><div class="preset-chip-header"><span class="preset-bar" style="background:linear-gradient(135deg, #ffd200 50%, #003876 50%);"></span><span>深圳灣口岸線 (B2P)</span></div><div class="preset-desc">天慈邨 ➔ 深圳灣口岸</div></button>
+          <button type="button" class="preset-chip" onclick="applyPreset('nlb_1')"><div class="preset-chip-header"><span class="preset-bar" style="background:linear-gradient(135deg, #76ff03 50%, #004d25 50%);"></span><span>梅窩大澳幹線 (1)</span></div><div class="preset-desc">梅窩碼頭 ➔ 大澳</div></button>
         </div>
 
         <div class="preset-tab-panel" id="tab_mtr">
-          <button class="preset-chip" onclick="applyPreset('mtr_k52')"><div class="preset-chip-header"><span class="preset-bar" style="background:linear-gradient(135deg, #ffffff 45%, #001f4d 45%, #001f4d 75%, #e60012 75%);"></span><span>港鐵新塗裝 (K52)</span></div><div class="preset-desc">屯門站 ➔ 龍鼓灘</div></button>
-          <button class="preset-chip" onclick="applyPreset('mtr_k65')"><div class="preset-chip-header"><span class="preset-bar" style="background:#0055a5;"></span><span>流浮山接駁線 (K65)</span></div><div class="preset-desc">元朗站 ➔ 流浮山</div></button>
-          <button class="preset-chip" onclick="applyPreset('mtr_k76')"><div class="preset-chip-header"><span class="preset-bar" style="background:#0055a5;"></span><span>天水圍接駁線 (K76)</span></div><div class="preset-desc">天恆 ➔ 天水圍站</div></button>
-          <button class="preset-chip" onclick="applyPreset('mtr_k12')"><div class="preset-chip-header"><span class="preset-bar" style="background:linear-gradient(135deg, #66ccff 50%, #002244 50%);"></span><span>大埔東鐵接駁 (K12)</span></div><div class="preset-desc">大埔墟站 ➔ 八號花園</div></button>
-          <button class="preset-chip" onclick="applyPreset('mtr_k73')"><div class="preset-chip-header"><span class="preset-bar" style="background:linear-gradient(135deg, #ffd100 50%, #4a154b 50%);"></span><span>港鐵黃紫波浪 (K73)</span></div><div class="preset-desc">天恆 ➔ 元朗(西)</div></button>
-          <button class="preset-chip" onclick="applyPreset('kcr_retro_506')"><div class="preset-chip-header"><span class="preset-bar" style="background:linear-gradient(135deg, #003366 55%, #c8102e 55%);"></span><span>九鐵經典塗裝 (506)</span></div><div class="preset-desc">屯門碼頭 ➔ 兆麟</div></button>
+          <button type="button" class="preset-chip" onclick="applyPreset('mtr_k52')"><div class="preset-chip-header"><span class="preset-bar" style="background:linear-gradient(135deg, #ffffff 45%, #001f4d 45%, #001f4d 75%, #e60012 75%);"></span><span>港鐵新塗裝 (K52)</span></div><div class="preset-desc">屯門站 ➔ 龍鼓灘</div></button>
+          <button type="button" class="preset-chip" onclick="applyPreset('mtr_k65')"><div class="preset-chip-header"><span class="preset-bar" style="background:#0055a5;"></span><span>流浮山接駁線 (K65)</span></div><div class="preset-desc">元朗站 ➔ 流浮山</div></button>
+          <button type="button" class="preset-chip" onclick="applyPreset('mtr_k76')"><div class="preset-chip-header"><span class="preset-bar" style="background:#0055a5;"></span><span>天水圍接駁線 (K76)</span></div><div class="preset-desc">天恆 ➔ 天水圍站</div></button>
+          <button type="button" class="preset-chip" onclick="applyPreset('mtr_k12')"><div class="preset-chip-header"><span class="preset-bar" style="background:linear-gradient(135deg, #66ccff 50%, #002244 50%);"></span><span>大埔東鐵接駁 (K12)</span></div><div class="preset-desc">大埔墟站 ➔ 八號花園</div></button>
+          <button type="button" class="preset-chip" onclick="applyPreset('mtr_k73')"><div class="preset-chip-header"><span class="preset-bar" style="background:linear-gradient(135deg, #ffd100 50%, #4a154b 50%);"></span><span>港鐵黃紫波浪 (K73)</span></div><div class="preset-desc">天恆 ➔ 元朗(西)</div></button>
+          <button type="button" class="preset-chip" onclick="applyPreset('kcr_retro_506')"><div class="preset-chip-header"><span class="preset-bar" style="background:linear-gradient(135deg, #003366 55%, #c8102e 55%);"></span><span>九鐵經典塗裝 (506)</span></div><div class="preset-desc">屯門碼頭 ➔ 兆麟</div></button>
         </div>
 
         <div class="presets-title" style="margin-top:4px;">📐 選擇封面排版風格 (Layout Styles)</div>
         <div class="layout-switcher">
-          <button class="layout-btn" id="btnLayoutClassic" onclick="setLayoutMode('classic')">
+          <button type="button" class="layout-btn" id="btnLayoutClassic" onclick="setLayoutMode('classic')">
             <span>🔲 經典雙橫條</span>
             <span style="font-size:10px; color:var(--text-muted);">頂底色條標題</span>
           </button>
-          <button class="layout-btn active" id="btnLayoutModern" onclick="setLayoutMode('modern')">
+          <button type="button" class="layout-btn active" id="btnLayoutModern" onclick="setLayoutMode('modern')">
             <span>✨ 現代全幅沉浸</span>
             <span style="font-size:10px; color:var(--text-muted);">無遮擋微暗角</span>
           </button>
-          <button class="layout-btn" id="btnLayoutLed" onclick="setLayoutMode('led')">
+          <button type="button" class="layout-btn" id="btnLayoutLed" onclick="setLayoutMode('led')">
             <span>📟 巴士電牌 LED</span>
             <span style="font-size:10px; color:var(--text-muted);">發光矩陣框</span>
           </button>
-          <button class="layout-btn" id="btnLayoutSidebar" onclick="setLayoutMode('sidebar')">
+          <button type="button" class="layout-btn" id="btnLayoutSidebar" onclick="setLayoutMode('sidebar')">
             <span>📑 側邊站牌欄</span>
             <span style="font-size:10px; color:var(--text-muted);">垂直導覽風格</span>
           </button>
@@ -1225,20 +1261,20 @@
 
         <div class="form-row">
           <div class="form-group">
-            <label>畫質標籤 (Badge)</label>
+            <label for="topBadge">畫質標籤 (Badge)</label>
             <input type="text" id="topBadge" value="1080P 60fps" placeholder="例如: 1080P 60fps / 4K 60fps">
           </div>
           <div class="form-group">
-            <label>標籤字色 / 框色</label>
+            <label for="topBadgeColor">標籤字色 / 框色</label>
             <input type="color" id="topBadgeColor" value="#ffd100">
           </div>
         </div>
 
         <div class="form-group">
-          <label>頂部文字標準（格式：XXX上/下層展望•經XXX•XXX）</label>
+          <label for="topText">頂部文字標準（格式：XXX上/下層展望•經XXX•XXX）</label>
           <input type="text" id="topText" value="Cityflyer 上層展望 • 經黃大仙 • 鑽石山 • 九龍灣 • 觀塘 • 坑口">
           <div class="deck-quickbar">
-            <span style="font-size:11px; color:#9aa5b8; font-weight:700;">快速插入：</span>
+            <span style="font-size:11px; color:#9CA3AF; font-weight:700;">快速插入：</span>
             <button type="button" class="deck-btn" onclick="injectDeck('上層展望')">🏙️ 上層展望</button>
             <button type="button" class="deck-btn" onclick="injectDeck('下層展望')">🚍 下層展望</button>
             <button type="button" class="deck-btn" onclick="injectDeck('前面展望')">🎥 前面展望</button>
@@ -1247,7 +1283,7 @@
 
         <div class="form-row">
           <div class="form-group">
-            <label>字體粗細 (Weight)</label>
+            <label for="topTextWeight">字體粗細 (Weight)</label>
             <select id="topTextWeight">
               <option value="900" selected>900 (極粗 Extra Black)</option>
               <option value="800">800 (特粗 Heavy)</option>
@@ -1268,22 +1304,22 @@
 
         <div class="form-row">
           <div class="form-group">
-            <label>頂部色條底色</label>
+            <label for="topBarColor">頂部色條底色</label>
             <input type="color" id="topBarColor" value="#d91a2a">
           </div>
           <div class="form-group">
-            <label>頂部條透明度</label>
+            <label for="topBarOpacity">頂部條透明度</label>
             <input type="range" id="topBarOpacity" min="0.4" max="1" step="0.05" value="0.95">
           </div>
         </div>
 
         <div class="form-row">
           <div class="form-group">
-            <label>文字水平位移 (X) <span class="val-hint" id="valTopOffsetX">0px</span></label>
+            <label for="topTextOffsetX">文字水平位移 (X) <span class="val-hint" id="valTopOffsetX">0px</span></label>
             <input type="range" id="topTextOffsetX" min="-500" max="500" step="2" value="0">
           </div>
           <div class="form-group">
-            <label>文字垂直位移 (Y) <span class="val-hint" id="valTopOffsetY">0px</span></label>
+            <label for="topTextOffsetY">文字垂直位移 (Y) <span class="val-hint" id="valTopOffsetY">0px</span></label>
             <input type="range" id="topTextOffsetY" min="-60" max="60" step="1" value="0">
           </div>
         </div>
@@ -1298,14 +1334,14 @@
         
         <div class="form-row">
           <div class="form-group">
-            <label>顯示 Logo</label>
+            <label for="logoEnabled">顯示 Logo</label>
             <select id="logoEnabled">
               <option value="1">開啟 Logo</option>
               <option value="0" selected>關閉 Logo</option>
             </select>
           </div>
           <div class="form-group">
-            <label>Logo 尺寸 <span class="val-hint" id="valLogoSize">170px</span></label>
+            <label for="logoSize">Logo 尺寸 <span class="val-hint" id="valLogoSize">170px</span></label>
             <input type="range" id="logoSize" min="40" max="350" value="170">
           </div>
         </div>
@@ -1335,19 +1371,19 @@
 
         <div class="form-row">
           <div class="form-group">
-            <label>Logo 水平位置 (X) <span class="val-hint" id="valLogoOffsetX">0px</span></label>
+            <label for="logoOffsetX">Logo 水平位置 (X) <span class="val-hint" id="valLogoOffsetX">0px</span></label>
             <input type="range" id="logoOffsetX" min="-1800" max="1800" step="2" value="0">
           </div>
           <div class="form-group">
-            <label>Logo 垂直位置 (Y) <span class="val-hint" id="valLogoOffsetY">0px</span></label>
+            <label for="logoOffsetY">Logo 垂直位置 (Y) <span class="val-hint" id="valLogoOffsetY">0px</span></label>
             <input type="range" id="logoOffsetY" min="-900" max="900" step="2" value="0">
           </div>
         </div>
         <div class="pos-btn-group">
-          <button class="btn-xs" onclick="alignLogo('topRight')">右上角</button>
-          <button class="btn-xs" onclick="alignLogo('topLeft')">左上角</button>
-          <button class="btn-xs" onclick="alignLogo('bottomRight')">右下角</button>
-          <button class="btn-xs" onclick="resetPos('logoOffsetX', 'logoOffsetY')">重設位置</button>
+          <button type="button" class="btn-xs" onclick="alignLogo('topRight')">右上角</button>
+          <button type="button" class="btn-xs" onclick="alignLogo('topLeft')">左上角</button>
+          <button type="button" class="btn-xs" onclick="alignLogo('bottomRight')">右下角</button>
+          <button type="button" class="btn-xs" onclick="resetPos('logoOffsetX', 'logoOffsetY')">重設位置</button>
         </div>
       </div>
 
@@ -1359,29 +1395,29 @@
         </div>
         <div class="upload-zone" id="uploadZone">
           <input type="file" id="imageInput" accept="image/*" style="display:none;">
-          <svg width="26" height="26" fill="none" stroke="#ffd100" stroke-width="2" viewBox="0 0 24 24"><path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+          <svg width="26" height="26" fill="none" stroke="#E8A817" stroke-width="2" viewBox="0 0 24 24"><path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
           <div class="up-title">點擊上傳 / 拖曳圖片 / 直接 Ctrl+V 貼上</div>
           <div class="up-subtitle">支援 JPG, PNG, WEBP 高清截圖</div>
         </div>
 
         <div class="form-row">
           <div class="form-group">
-            <label>圖片縮放 <span class="val-hint" id="valScale">1.0x</span></label>
+            <label for="imgScale">圖片縮放 <span class="val-hint" id="valScale">1.0x</span></label>
             <input type="range" id="imgScale" min="0.3" max="3" step="0.01" value="1">
           </div>
           <div class="form-group">
-            <label>遮罩 / 暗角濃度 <span class="val-hint" id="valVignette">15%</span></label>
+            <label for="vignetteOpacity">遮罩 / 暗角濃度 <span class="val-hint" id="valVignette">15%</span></label>
             <input type="range" id="vignetteOpacity" min="0" max="0.7" step="0.05" value="0.15">
           </div>
         </div>
 
         <div class="form-row">
           <div class="form-group">
-            <label>水平位置 (X) <span class="val-hint" id="valOffsetX">0px</span></label>
+            <label for="imgOffsetX">水平位置 (X) <span class="val-hint" id="valOffsetX">0px</span></label>
             <input type="range" id="imgOffsetX" min="-1000" max="1000" step="2" value="0">
           </div>
           <div class="form-group">
-            <label>垂直位置 (Y) <span class="val-hint" id="valOffsetY">0px</span></label>
+            <label for="imgOffsetY">垂直位置 (Y) <span class="val-hint" id="valOffsetY">0px</span></label>
             <input type="range" id="imgOffsetY" min="-1000" max="1000" step="2" value="0">
           </div>
         </div>
@@ -1395,18 +1431,18 @@
         </div>
         
         <div class="form-group">
-          <label>路線名稱 / 標題文字</label>
+          <label for="routeTitle">路線名稱 / 標題文字</label>
           <input type="text" id="routeTitle" value="城巴 Cityflyer A29" placeholder="例如: 城巴 Cityflyer A29 或 城巴 43R">
         </div>
 
         <div class="form-group">
-          <label>副標題 / 經由 (可選)</label>
+          <label for="routeSubTitle">副標題 / 經由 (可選)</label>
           <input type="text" id="routeSubTitle" value="" placeholder="例如: 紅磡海底隧道特快線">
         </div>
 
         <div class="form-row-3">
           <div class="form-group">
-            <label>字型選擇</label>
+            <label for="routeFont">字型選擇</label>
             <select id="routeFont">
               <option value="'Dela Gothic One', sans-serif" selected>Dela Gothic (重磅日系/巴士)</option>
               <option value="'Noto Sans TC', sans-serif">Noto Sans TC (繁體黑體)</option>
@@ -1416,17 +1452,17 @@
             </select>
           </div>
           <div class="form-group">
-            <label>主字色</label>
+            <label for="routeTextColor">主字色</label>
             <input type="color" id="routeTextColor" value="#ffd100">
           </div>
           <div class="form-group">
-            <label>外框描邊色</label>
+            <label for="routeStrokeColor">外框描邊色</label>
             <input type="color" id="routeStrokeColor" value="#b30006">
           </div>
         </div>
 
         <div class="type-tags-container" style="margin-top:2px;">
-          <div class="type-category-label" style="font-size:11px; color:#ffd100; font-weight:800;">🎨 各大巴士公司標題字色＋外框描邊快速套用：</div>
+          <div class="type-category-label" style="font-size:11px; color:var(--accent); font-weight:800;">🎨 各大巴士公司標題字色＋外框描邊快速套用：</div>
           <div class="type-tag-list">
             <button type="button" class="type-tag-btn" onclick="setTitleColors('#f3e5ab', '#5c1d24', '城巴1979忌廉棗紅')"><span class="tag-color-dot" style="background:#f3e5ab; border:2px solid #5c1d24;"></span>城巴忌廉棗紅</button>
             <button type="button" class="type-tag-btn" onclick="setTitleColors('#ffd100', '#b30006', '城巴黃字紅框')"><span class="tag-color-dot" style="background:#ffd100; border:2px solid #b30006;"></span>城巴黃字紅框</button>
@@ -1447,22 +1483,22 @@
 
         <div class="form-row">
           <div class="form-group">
-            <label>字體大小 <span class="val-hint" id="valRouteFontSize">92px</span></label>
+            <label for="routeFontSize">字體大小 <span class="val-hint" id="valRouteFontSize">92px</span></label>
             <input type="range" id="routeFontSize" min="40" max="150" value="92">
           </div>
           <div class="form-group">
-            <label>斜體傾斜度 <span class="val-hint" id="valRouteSlant">-6°</span></label>
+            <label for="routeSlant">斜體傾斜度 <span class="val-hint" id="valRouteSlant">-6°</span></label>
             <input type="range" id="routeSlant" min="-25" max="15" step="1" value="-6">
           </div>
         </div>
 
         <div class="form-row">
           <div class="form-group">
-            <label>水平位置 (X 位移) <span class="val-hint" id="valRouteOffsetX">0px</span></label>
+            <label for="routeOffsetX">水平位置 (X 位移) <span class="val-hint" id="valRouteOffsetX">0px</span></label>
             <input type="range" id="routeOffsetX" min="-1200" max="600" step="2" value="0">
           </div>
           <div class="form-group">
-            <label>垂直位置 (Y 位移) <span class="val-hint" id="valRouteOffsetY">0px</span></label>
+            <label for="routeOffsetY">垂直位置 (Y 位移) <span class="val-hint" id="valRouteOffsetY">0px</span></label>
             <input type="range" id="routeOffsetY" min="-300" max="800" step="2" value="0">
           </div>
         </div>
@@ -1477,17 +1513,17 @@
         
         <div class="form-row">
           <div class="form-group">
-            <label>車種別 / 標籤文字</label>
+            <label for="serviceType">車種別 / 標籤文字</label>
             <input type="text" id="serviceType" value="城巴機場快線">
           </div>
           <div class="form-group">
-            <label>車種填色</label>
+            <label for="serviceColor">車種填色</label>
             <input type="color" id="serviceColor" value="#ffd100">
           </div>
         </div>
 
         <div class="type-tags-container">
-          <div class="type-category-label" style="font-size:11px; color:#ffd100; font-weight:800;">🏷️ 全港五大巴士公司官方路線豬紙顏色標準：</div>
+          <div class="type-category-label" style="font-size:11px; color:var(--accent); font-weight:800;">🏷️ 全港五大巴士公司官方路線豬紙顏色標準：</div>
           <div class="service-company-tabs">
             <button type="button" class="service-tab-btn active" id="srvTab_all" onclick="filterServiceTags('all')">🌐 全部公司</button>
             <button type="button" class="service-tab-btn" id="srvTab_kmb" onclick="filterServiceTags('kmb')">🔴 九巴 KMB</button>
@@ -1544,11 +1580,11 @@
 
         <div class="form-row-3" style="margin-top:6px;">
           <div class="form-group">
-            <label>起點站 (Origin)</label>
+            <label for="stationOrigin">起點站 (Origin)</label>
             <input type="text" id="stationOrigin" value="機場">
           </div>
           <div class="form-group">
-            <label>箭頭符號</label>
+            <label for="routeArrow">箭頭符號</label>
             <select id="routeArrow">
               <option value="➔" selected>➔ (粗黑箭頭)</option>
               <option value="→">→ (細箭頭)</option>
@@ -1557,14 +1593,14 @@
             </select>
           </div>
           <div class="form-group">
-            <label>訖點站 (Dest)</label>
+            <label for="stationDest">訖點站 (Dest)</label>
             <input type="text" id="stationDest" value="將軍澳 (寶琳)">
           </div>
         </div>
 
         <div class="form-row">
           <div class="form-group">
-            <label>站名字體</label>
+            <label for="stationFont">站名字體</label>
             <select id="stationFont">
               <option value="'Noto Sans TC', sans-serif" selected>Noto Sans TC (繁體黑體)</option>
               <option value="'Dela Gothic One', sans-serif">Dela Gothic (重磅日系/巴士)</option>
@@ -1574,24 +1610,24 @@
             </select>
           </div>
           <div class="form-group">
-            <label>站名字體大小 <span class="val-hint" id="valStationFontSize">110px</span></label>
+            <label for="stationFontSize">站名字體大小 <span class="val-hint" id="valStationFontSize">110px</span></label>
             <input type="range" id="stationFontSize" min="50" max="160" value="110">
           </div>
         </div>
         <div class="form-row">
           <div class="form-group">
-            <label>站名傾斜度 <span class="val-hint" id="valStationSlant">-6°</span></label>
+            <label for="stationSlant">站名傾斜度 <span class="val-hint" id="valStationSlant">-6°</span></label>
             <input type="range" id="stationSlant" min="-25" max="15" step="1" value="-6">
           </div>
         </div>
 
         <div class="form-row">
           <div class="form-group">
-            <label>水平位置 (X 位移) <span class="val-hint" id="valMainRouteOffsetX">20px</span></label>
+            <label for="mainRouteOffsetX">水平位置 (X 位移) <span class="val-hint" id="valMainRouteOffsetX">20px</span></label>
             <input type="range" id="mainRouteOffsetX" min="-600" max="1200" step="2" value="20">
           </div>
           <div class="form-group">
-            <label>垂直位置 (Y 位移) <span class="val-hint" id="valMainRouteOffsetY">0px</span></label>
+            <label for="mainRouteOffsetY">垂直位置 (Y 位移) <span class="val-hint" id="valMainRouteOffsetY">0px</span></label>
             <input type="range" id="mainRouteOffsetY" min="-800" max="300" step="2" value="0">
           </div>
         </div>
@@ -1605,28 +1641,28 @@
         </div>
         
         <div class="form-group">
-          <label>車型 / 途經站數 / 行車數據</label>
+          <label for="bottomText">車型 / 途經站數 / 行車數據</label>
           <input type="text" id="bottomText" value="Alexander Dennis Enviro500 12.8M Coach (6840)">
         </div>
 
         <div class="form-row">
           <div class="form-group">
-            <label>底部條底色</label>
+            <label for="bottomBarColor">底部條底色</label>
             <input type="color" id="bottomBarColor" value="#d91a2a">
           </div>
           <div class="form-group">
-            <label>基準字體大小 <span class="val-hint" id="valBottomFontSize">42px</span></label>
+            <label for="bottomFontSize">基準字體大小 <span class="val-hint" id="valBottomFontSize">42px</span></label>
             <input type="range" id="bottomFontSize" min="20" max="60" value="42">
           </div>
         </div>
 
         <div class="form-row">
           <div class="form-group">
-            <label>文字水平位移 (X) <span class="val-hint" id="valBottomOffsetX">0px</span></label>
+            <label for="bottomOffsetX">文字水平位移 (X) <span class="val-hint" id="valBottomOffsetX">0px</span></label>
             <input type="range" id="bottomOffsetX" min="-500" max="1000" step="2" value="0">
           </div>
           <div class="form-group">
-            <label>文字垂直位移 (Y) <span class="val-hint" id="valBottomOffsetY">0px</span></label>
+            <label for="bottomOffsetY">文字垂直位移 (Y) <span class="val-hint" id="valBottomOffsetY">0px</span></label>
             <input type="range" id="bottomOffsetY" min="-50" max="50" step="1" value="0">
           </div>
         </div>
@@ -1635,7 +1671,7 @@
     </div>
   </div>
 
-  <div id="toast" class="toast"></div>
+  <div id="toast" role="status" aria-live="polite" class="toast"></div>
 
   <script>
     const canvas = document.getElementById('thumbCanvas');
@@ -1644,7 +1680,7 @@
     let bgImage = null;
     let logoImage = null;
     let currentLayoutMode = 'modern';
-    let linkedClipContext = null; // Stores incoming TransitDeck clip metadata
+    let linkedClipContext = null;
 
     const presetLogos = {
       kmb_red: `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 65"><rect width="200" height="65" rx="10" fill="%23c8102e"/><text x="100" y="46" fill="%23ffffff" font-family="Arial,sans-serif" font-weight="900" font-size="38" text-anchor="middle" letter-spacing="3">KMB</text></svg>`,
@@ -2164,12 +2200,12 @@
         ctx.restore();
       } else {
         const grad = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
-        grad.addColorStop(0, '#1c2233');
-        grad.addColorStop(1, '#0e121c');
+        grad.addColorStop(0, '#191C23');
+        grad.addColorStop(1, '#0A0B0D');
         ctx.fillStyle = grad;
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.35)';
+        ctx.fillStyle = 'rgba(244, 244, 240, 0.35)';
         ctx.font = '900 42px "Noto Sans TC", sans-serif';
         ctx.textAlign = 'center';
         ctx.fillText('📷 請於右側上傳或貼上背景車輛圖片 (支援 Ctrl+V)', canvas.width / 2, canvas.height / 2);
@@ -2473,7 +2509,7 @@
       if (isDragging && dragTarget && hitBoxes[dragTarget]) {
         const b = hitBoxes[dragTarget];
         ctx.save();
-        ctx.strokeStyle = '#ffd100';
+        ctx.strokeStyle = '#E8A817';
         ctx.lineWidth = 4;
         ctx.setLineDash([12, 8]);
         ctx.strokeRect(b.x, b.y, b.w, b.h);
@@ -2701,7 +2737,7 @@
     });
 
     // =========================================================================
-    // TRANSITDECK TWO-WAY INTEGRATION (Receive Clip Context & Save Cover Back)
+    // TRANSITDECK TWO-WAY INTEGRATION (Auto-Receive All Entered Data & Return)
     // =========================================================================
     const BRIDGE_DRAFT_KEY = 'transitdeck_thumb_draft_clip';
     const BRIDGE_RESULT_KEY = 'transitdeck_thumb_generated_result';
@@ -2716,9 +2752,8 @@
         const pill = document.getElementById('linkedClipIndicator');
         const label = document.getElementById('linkedClipLabel');
         pill.classList.add('active');
-        label.textContent = `${clip.route || '未命名'} ${clip.direction || ''}`.trim();
+        label.textContent = `${clip.route || '未命名'} ${clip.destBilingual || clip.direction || ''}`.trim();
 
-        // Map TransitDeck operator to company theme
         const opToTheme = {
           KMB: 'kmb_red',
           CTB: 'ctb_blue',
@@ -2735,31 +2770,43 @@
         const opPrefixMap = { KMB: '九巴', CTB: '城巴', LWB: '龍運', NLB: '嶼巴', MTR: '港鐵', OMSI: 'OMSI 2 ', PIDS: '報站機模擬 ', OTHER: '' };
         const prefix = opPrefixMap[clip.operator] ?? '';
         const cleanRoute = (clip.route || '').trim();
-        const deckLabel = clip.deck === '下層' ? '下層展望' : '上層展望';
+        const deckLabel = (clip.deck || '上層展望').includes('下層') ? '下層展望' : '上層展望';
+        const bracketNote = (clip.bracketTag || '').trim();
+
+        // Extract Chinese station name before English letters for clean Cantonese cover display
+        const extractZhPlace = (str) => {
+          if (!str) return '';
+          const zhMatch = str.match(/^[\u4e00-\u9fa5\d（）()·]+(?:\s+[\u4e00-\u9fa5\d（）()·]+)*/);
+          return zhMatch ? zhMatch[0].trim() : str.trim();
+        };
+
+        const originZh = extractZhPlace(clip.originBilingual || clip.location || '');
+        const destZh = extractZhPlace((clip.destBilingual || clip.direction || '').replace(/^往/, ''));
 
         if (cleanRoute) {
           document.getElementById('routeTitle').value = `${prefix}${cleanRoute}路線`;
-          const viaText = clip.location ? `•經${clip.location}` : '';
-          document.getElementById('topText').value = `${prefix}${cleanRoute}線${deckLabel}${viaText}`;
+          const viaPart = clip.location ? `•經${clip.location}` : (bracketNote ? `•${bracketNote}` : '');
+          document.getElementById('topText').value = `${prefix}${cleanRoute}線${deckLabel}${viaPart}`;
         }
 
-        if (clip.direction) {
-          const cleanDest = clip.direction.replace(/^往/, '').trim();
-          document.getElementById('stationDest').value = cleanDest || clip.direction;
-        }
-        if (clip.location) {
-          document.getElementById('stationOrigin').value = clip.location;
-        }
-        if (clip.model || clip.plate) {
-          document.getElementById('bottomText').value = [clip.model, clip.plate ? `(${clip.plate})` : ''].filter(Boolean).join(' ');
-        }
-        if (clip.operator === 'OMSI') {
+        if (bracketNote) {
+          document.getElementById('serviceType').value = bracketNote;
+        } else if (clip.operator === 'OMSI') {
           document.getElementById('serviceType').value = 'OMSI 2 模擬';
         } else if (clip.operator === 'PIDS') {
           document.getElementById('serviceType').value = '報站機模擬';
         }
 
-        // If clip already has a cover image URL or dataURL, preload it as background
+        if (originZh) {
+          document.getElementById('stationOrigin').value = originZh;
+        }
+        if (destZh) {
+          document.getElementById('stationDest').value = destZh;
+        }
+        if (clip.model || clip.plate) {
+          document.getElementById('bottomText').value = [clip.model, clip.plate ? `(${clip.plate})` : ''].filter(Boolean).join(' ');
+        }
+
         if (clip.cover && clip.cover.startsWith('data:image')) {
           const img = new Image();
           img.onload = function() {
@@ -2780,7 +2827,6 @@
       }
     }
 
-    // Compress 1920x1080 Canvas to 1280x720 JPEG (0.82 quality) for fast Firestore sync
     function exportCompressedCoverDataUrl() {
       const exportCanvas = document.createElement('canvas');
       exportCanvas.width = 1280;
@@ -2798,8 +2844,8 @@
         const destVal = document.getElementById('stationDest').value.trim();
         const bottomVal = document.getElementById('bottomText').value.trim();
         const topVal = document.getElementById('topText').value.trim();
+        const serviceVal = document.getElementById('serviceType').value.trim();
 
-        // Infer operator from routeTitle if creating fresh
         let inferredOp = linkedClipContext?.operator || 'CTB';
         if (!linkedClipContext) {
           if (/九巴|KMB/i.test(routeTitleVal)) inferredOp = 'KMB';
@@ -2818,11 +2864,15 @@
           cover: compressedCover,
           operator: inferredOp,
           route: routeCodeOnly,
+          bracketTag: linkedClipContext?.bracketTag || serviceVal,
+          originBilingual: linkedClipContext?.originBilingual || originVal,
+          destBilingual: linkedClipContext?.destBilingual || destVal,
           direction: destVal ? `往${destVal}` : (linkedClipContext?.direction || ''),
           location: originVal || linkedClipContext?.location || '',
           model: linkedClipContext?.model || bottomVal,
+          plate: linkedClipContext?.plate || '',
           title: linkedClipContext?.title || topVal,
-          deck: topVal.includes('下層') ? '下層' : '上層',
+          deck: topVal.includes('下層') ? '下層展望' : '上層展望',
           savedAt: Date.now()
         };
 

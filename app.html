@@ -2,9 +2,9 @@
 <html lang="zh-HK" class="dark">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>TransitDeck — 行車記錄片與模擬遊戲片管理庫</title>
-  <meta name="description" content="專為拍巴士、鐵路行車記錄片同 OMSI 2 / 報站機遊戲片的創作者設計的雲端影片庫，支援 1005.idv.hk 車牌查詢、封面生成器、CSV 匯出及 YouTube 頻道自動同步。" />
+  <meta name="description" content="專為拍巴士、鐵路行車記錄片同 OMSI 2 / 報站機遊戲片的創作者設計的雲端影片庫，支援 1005.idv.hk 車牌查詢、自動標題生成、封面生成器及 YouTube 頻道全量同步。" />
   <meta name="theme-color" content="#0A0B0D" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -33,7 +33,7 @@
             panelHover: '#222630',
             line: '#262A34',
             cream: '#F4F4F0',
-            muted: '#8E939E',
+            muted: '#9CA3AF',
             led: '#E8A817',
             ledDim: '#3A2B0A',
             kmb: '#D92B2B',
@@ -150,9 +150,9 @@
     })();
   </script>
 
-  <!-- Inline Notification Banner -->
-  <div id="toastBanner" class="fixed bottom-5 right-5 z-50 hidden max-w-sm transform transition-all duration-300 ease-dispatch">
-    <div id="toastBox" class="flex items-center gap-3 px-4 py-3 rounded-xl bg-panel border border-line shadow-2xl text-sm text-cream">
+  <!-- Inline Notification Banner (ARIA Live Region) -->
+  <div id="toastBanner" role="status" aria-live="polite" class="fixed bottom-5 right-5 left-5 sm:left-auto z-50 hidden sm:max-w-sm transform transition-all duration-300 ease-dispatch">
+    <div id="toastBox" class="flex items-center gap-3 px-4 py-3.5 rounded-xl bg-panel border border-line shadow-2xl text-sm text-cream">
       <i id="toastIcon" class="ph ph-check-circle text-lg text-led shrink-0"></i>
       <span id="toastText" class="leading-snug">操作已完成</span>
     </div>
@@ -163,41 +163,41 @@
     <div class="max-w-7xl mx-auto px-3 sm:px-6 h-16 flex items-center justify-between gap-2">
       <!-- Brand Identity -->
       <div class="flex items-center gap-2 sm:gap-3 min-w-0">
-        <a href="./index.html" title="返回介紹頁" class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-led flex flex-col justify-between p-1.5 shrink-0 hover:opacity-90 transition-opacity">
+        <a href="./index.html" aria-label="返回 TransitDeck 首頁" class="w-9 h-9 rounded-lg bg-led flex flex-col justify-between p-1.5 shrink-0 hover:opacity-90 transition-opacity focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cream">
           <div class="w-full h-2 bg-asphalt rounded-[3px]"></div>
           <div class="w-full h-2 bg-asphalt rounded-[3px]"></div>
         </a>
         <div class="flex items-center gap-1.5 sm:gap-2 min-w-0">
           <h1 class="text-base sm:text-xl font-bold tracking-tight text-cream whitespace-nowrap">TransitDeck</h1>
-          <span id="syncModeBadge" class="inline-flex items-center gap-1 px-1.5 sm:px-2 py-0.5 rounded-md text-[11px] sm:text-xs font-mono bg-depot border border-line text-muted whitespace-nowrap shrink-0">
+          <span id="syncModeBadge" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-mono bg-depot border border-line text-muted whitespace-nowrap shrink-0">
             <span id="syncDot" class="w-1.5 h-1.5 rounded-full bg-amber-400 shrink-0"></span>
             <span id="syncLabel">本機</span>
           </span>
         </div>
       </div>
 
-      <!-- Primary Actions -->
+      <!-- Primary Actions (All >= 40px touch target) -->
       <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
-        <a href="./thumbnail.html" id="btnOpenThumbnailStudio" title="打開巴士前面展望封面生成器"
-          class="inline-flex items-center justify-center gap-1.5 px-2.5 sm:px-3 py-2 rounded-lg bg-depot hover:bg-panelHover active:scale-[0.98] border border-line text-xs sm:text-sm font-medium text-cream transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-led">
+        <a href="./thumbnail.html" id="btnOpenThumbnailStudio" aria-label="打開巴士前面展望封面生成器"
+          class="min-h-[40px] inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg bg-depot hover:bg-panelHover active:scale-[0.98] border border-line text-xs sm:text-sm font-medium text-cream transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-led">
           <i class="ph ph-paint-brush-broad text-base text-led shrink-0"></i>
           <span class="hidden md:inline">封面生成器</span>
         </a>
 
-        <button id="btnOpenYtSync" type="button" title="連接 YouTube 頻道"
-          class="inline-flex items-center justify-center gap-1.5 px-2.5 sm:px-3 py-2 rounded-lg bg-depot hover:bg-panelHover active:scale-[0.98] border border-line text-xs sm:text-sm font-medium text-cream transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-led">
+        <button id="btnOpenYtSync" type="button" aria-label="連接 YouTube 頻道"
+          class="min-h-[40px] inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg bg-depot hover:bg-panelHover active:scale-[0.98] border border-line text-xs sm:text-sm font-medium text-cream transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-led">
           <i class="ph ph-youtube-logo text-base text-red-500 shrink-0"></i>
           <span id="ytHeaderBtnText" class="hidden sm:inline max-w-[140px] truncate">連接 YouTube</span>
         </button>
 
-        <button id="btnAuthAction" type="button" title="Google 帳號雲端同步"
-          class="inline-flex items-center justify-center gap-1.5 px-2.5 sm:px-3 py-2 rounded-lg bg-depot hover:bg-panelHover active:scale-[0.98] border border-line text-xs sm:text-sm font-medium text-cream transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-led">
+        <button id="btnAuthAction" type="button" aria-label="Google 帳號雲端同步"
+          class="min-h-[40px] inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg bg-depot hover:bg-panelHover active:scale-[0.98] border border-line text-xs sm:text-sm font-medium text-cream transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-led">
           <i id="authIcon" class="ph ph-cloud-arrow-up text-base text-led shrink-0"></i>
           <span id="authLabel" class="hidden lg:inline">登入同步</span>
         </button>
 
         <button id="btnNewClip" type="button"
-          class="inline-flex items-center justify-center gap-1.5 px-3 sm:px-3.5 py-2 rounded-lg bg-led hover:bg-amber-400 active:scale-[0.98] text-xs sm:text-sm font-semibold text-asphalt transition-all duration-200 whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cream">
+          class="min-h-[40px] inline-flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-lg bg-led hover:bg-amber-400 active:scale-[0.98] text-xs sm:text-sm font-semibold text-asphalt transition-all duration-200 whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cream">
           <i class="ph ph-plus-bold text-sm sm:text-base"></i>
           <span>新增紀錄</span>
         </button>
@@ -220,7 +220,7 @@
 
           <div class="grid grid-cols-2 lg:grid-cols-1 gap-2" id="statusFilterList">
             <button type="button" data-status="all"
-              class="status-tab active flex items-center justify-between px-3 py-2.5 rounded-xl bg-panel border border-led/60 text-left text-sm font-medium text-cream transition-all duration-200">
+              class="status-tab active min-h-[42px] flex items-center justify-between px-3 py-2.5 rounded-xl bg-panel border border-led/60 text-left text-sm font-medium text-cream transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-led">
               <span class="flex items-center gap-2">
                 <i class="ph ph-stack text-led"></i>
                 <span>全部影片</span>
@@ -229,7 +229,7 @@
             </button>
 
             <button type="button" data-status="untransferred"
-              class="status-tab flex items-center justify-between px-3 py-2.5 rounded-xl bg-asphalt/60 hover:bg-panel border border-line text-left text-sm font-medium text-muted hover:text-cream transition-all duration-200">
+              class="status-tab min-h-[42px] flex items-center justify-between px-3 py-2.5 rounded-xl bg-asphalt/60 hover:bg-panel border border-line text-left text-sm font-medium text-muted hover:text-cream transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-led">
               <span class="flex items-center gap-2">
                 <i class="ph ph-sd-card text-rose-400"></i>
                 <span>未傳入電腦</span>
@@ -238,7 +238,7 @@
             </button>
 
             <button type="button" data-status="transferred"
-              class="status-tab flex items-center justify-between px-3 py-2.5 rounded-xl bg-asphalt/60 hover:bg-panel border border-line text-left text-sm font-medium text-muted hover:text-cream transition-all duration-200">
+              class="status-tab min-h-[42px] flex items-center justify-between px-3 py-2.5 rounded-xl bg-asphalt/60 hover:bg-panel border border-line text-left text-sm font-medium text-muted hover:text-cream transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-led">
               <span class="flex items-center gap-2">
                 <i class="ph ph-hard-drive text-sky-400"></i>
                 <span>已傳入待剪</span>
@@ -247,7 +247,7 @@
             </button>
 
             <button type="button" data-status="ready"
-              class="status-tab flex items-center justify-between px-3 py-2.5 rounded-xl bg-asphalt/60 hover:bg-panel border border-line text-left text-sm font-medium text-muted hover:text-cream transition-all duration-200">
+              class="status-tab min-h-[42px] flex items-center justify-between px-3 py-2.5 rounded-xl bg-asphalt/60 hover:bg-panel border border-line text-left text-sm font-medium text-muted hover:text-cream transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-led">
               <span class="flex items-center gap-2">
                 <i class="ph ph-film-slate text-amber-400"></i>
                 <span>已剪待上載</span>
@@ -256,7 +256,7 @@
             </button>
 
             <button type="button" data-status="uploaded"
-              class="status-tab col-span-2 lg:col-span-1 flex items-center justify-between px-3 py-2.5 rounded-xl bg-asphalt/60 hover:bg-panel border border-line text-left text-sm font-medium text-muted hover:text-cream transition-all duration-200">
+              class="status-tab col-span-2 lg:col-span-1 min-h-[42px] flex items-center justify-between px-3 py-2.5 rounded-xl bg-asphalt/60 hover:bg-panel border border-line text-left text-sm font-medium text-muted hover:text-cream transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-led">
               <span class="flex items-center gap-2">
                 <i class="ph ph-check-circle text-emerald-400"></i>
                 <span>已上載 YouTube</span>
@@ -269,24 +269,39 @@
         <!-- Search & Category / Operator Filter -->
         <section class="p-4 rounded-2xl bg-depot border border-line space-y-3">
           <div class="relative">
+            <label for="searchInput" class="sr-only">搜尋影片紀錄</label>
             <i class="ph ph-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-muted text-base"></i>
-            <input id="searchInput" type="text" placeholder="搜尋標題、路線、車牌、地圖..."
-              class="w-full pl-9 pr-3 py-2 rounded-xl bg-asphalt border border-line text-sm text-cream placeholder:text-muted focus:outline-none focus:border-led transition-colors" />
+            <input id="searchInput" type="text" placeholder="搜尋標題、路線、車牌、起訖站..."
+              class="w-full min-h-[40px] pl-9 pr-3 py-2 rounded-xl bg-asphalt border border-line text-sm text-cream placeholder:text-muted focus:outline-none focus:border-led transition-colors" />
           </div>
 
           <div class="space-y-2">
             <div class="text-xs text-muted">營運商與遊戲類別篩選</div>
             <div class="flex flex-wrap gap-1.5" id="operatorFilterGroup">
-              <button type="button" data-op="ALL" class="op-filter-btn px-2.5 py-1 rounded-lg text-xs font-medium bg-led text-asphalt">全部</button>
-              <button type="button" data-op="KMB" class="op-filter-btn px-2.5 py-1 rounded-lg text-xs font-medium bg-asphalt border border-line text-muted hover:text-cream">九巴</button>
-              <button type="button" data-op="CTB" class="op-filter-btn px-2.5 py-1 rounded-lg text-xs font-medium bg-asphalt border border-line text-muted hover:text-cream">城巴</button>
-              <button type="button" data-op="LWB" class="op-filter-btn px-2.5 py-1 rounded-lg text-xs font-medium bg-asphalt border border-line text-muted hover:text-cream">龍運</button>
-              <button type="button" data-op="NLB" class="op-filter-btn px-2.5 py-1 rounded-lg text-xs font-medium bg-asphalt border border-line text-muted hover:text-cream">嶼巴</button>
-              <button type="button" data-op="MTR" class="op-filter-btn px-2.5 py-1 rounded-lg text-xs font-medium bg-asphalt border border-line text-muted hover:text-cream">港鐵</button>
-              <button type="button" data-op="OMSI" class="op-filter-btn px-2.5 py-1 rounded-lg text-xs font-medium bg-asphalt border border-line text-muted hover:text-cream">OMSI 2</button>
-              <button type="button" data-op="PIDS" class="op-filter-btn px-2.5 py-1 rounded-lg text-xs font-medium bg-asphalt border border-line text-muted hover:text-cream">報站機模擬</button>
+              <button type="button" data-op="ALL" class="op-filter-btn min-h-[34px] px-3 py-1 rounded-lg text-xs font-medium bg-led text-asphalt">全部</button>
+              <button type="button" data-op="KMB" class="op-filter-btn min-h-[34px] px-3 py-1 rounded-lg text-xs font-medium bg-asphalt border border-line text-muted hover:text-cream">九巴</button>
+              <button type="button" data-op="CTB" class="op-filter-btn min-h-[34px] px-3 py-1 rounded-lg text-xs font-medium bg-asphalt border border-line text-muted hover:text-cream">城巴</button>
+              <button type="button" data-op="LWB" class="op-filter-btn min-h-[34px] px-3 py-1 rounded-lg text-xs font-medium bg-asphalt border border-line text-muted hover:text-cream">龍運</button>
+              <button type="button" data-op="NLB" class="op-filter-btn min-h-[34px] px-3 py-1 rounded-lg text-xs font-medium bg-asphalt border border-line text-muted hover:text-cream">嶼巴</button>
+              <button type="button" data-op="MTR" class="op-filter-btn min-h-[34px] px-3 py-1 rounded-lg text-xs font-medium bg-asphalt border border-line text-muted hover:text-cream">港鐵</button>
+              <button type="button" data-op="OMSI" class="op-filter-btn min-h-[34px] px-3 py-1 rounded-lg text-xs font-medium bg-asphalt border border-line text-muted hover:text-cream">OMSI 2</button>
+              <button type="button" data-op="PIDS" class="op-filter-btn min-h-[34px] px-3 py-1 rounded-lg text-xs font-medium bg-asphalt border border-line text-muted hover:text-cream">報站機模擬</button>
             </div>
           </div>
+        </section>
+
+        <!-- 1005.idv.hk Local Fleet Cache DB Status Card -->
+        <section class="p-4 rounded-2xl bg-depot border border-line space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="inline-flex items-center gap-1.5 text-xs font-semibold text-cream">
+              <i class="ph ph-database text-led text-sm"></i>
+              <span>1005.idv.hk 車隊快取庫</span>
+            </span>
+            <span id="fleetDbCountBadge" class="font-mono text-xs text-led font-tabular">已存 0 部</span>
+          </div>
+          <p class="text-xs text-muted leading-relaxed">
+            凡查詢過之車牌與車型會自動存入本地資料庫，下次輸入車牌即秒速自動填入。
+          </p>
         </section>
 
         <!-- Connected YouTube Channel Quick Bar -->
@@ -296,26 +311,26 @@
               <i class="ph ph-youtube-logo text-red-500 text-base shrink-0"></i>
               <span id="connectedChannelLabel" class="truncate">已連接頻道</span>
             </span>
-            <button id="btnQuickSyncNow" type="button" class="text-xs text-led hover:underline font-medium shrink-0">立即同步</button>
+            <button id="btnQuickSyncNow" type="button" class="text-xs text-led hover:underline font-medium shrink-0 py-1 px-2">立即同步</button>
           </div>
-          <p id="lastSyncTimeText" class="text-[11px] font-mono text-muted">尚未執行自動同步</p>
+          <p id="lastSyncTimeText" class="text-xs font-mono text-muted">尚未執行自動同步</p>
         </section>
 
         <!-- Quick Backup Tools (CSV Export + JSON Export/Import) -->
         <section class="p-4 rounded-2xl bg-depot border border-line space-y-2">
           <div class="text-xs text-muted">本地備份與資料匯出</div>
           <button id="btnExportCsv" type="button"
-            class="w-full inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl bg-panel hover:bg-panelHover border border-led/40 text-xs font-semibold text-led transition-colors">
+            class="w-full min-h-[40px] inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl bg-panel hover:bg-panelHover border border-led/40 text-xs font-semibold text-led transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-led">
             <i class="ph ph-file-csv text-base"></i>
             <span>匯出 CSV 備份</span>
           </button>
           <div class="flex items-center justify-between gap-2">
             <button id="btnExportJson" type="button"
-              class="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl bg-asphalt hover:bg-panelHover border border-line text-xs font-medium text-muted hover:text-cream transition-colors">
+              class="flex-1 min-h-[38px] inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl bg-asphalt hover:bg-panelHover border border-line text-xs font-medium text-muted hover:text-cream transition-colors">
               <i class="ph ph-download-simple text-sm"></i>
               <span>匯出 JSON</span>
             </button>
-            <label class="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl bg-asphalt hover:bg-panelHover border border-line text-xs font-medium text-muted hover:text-cream transition-colors cursor-pointer">
+            <label class="flex-1 min-h-[38px] inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl bg-asphalt hover:bg-panelHover border border-line text-xs font-medium text-muted hover:text-cream transition-colors cursor-pointer">
               <i class="ph ph-upload-simple text-sm"></i>
               <span>匯入還原</span>
               <input id="inputImportJson" type="file" accept=".json" class="hidden" />
@@ -336,7 +351,7 @@
             <!-- Sort Selector -->
             <div class="relative">
               <select id="sortSelect" aria-label="排序方式"
-                class="appearance-none pl-3 pr-8 py-1.5 rounded-xl bg-depot border border-line text-xs font-medium text-cream focus:outline-none focus:border-led cursor-pointer">
+                class="min-h-[38px] appearance-none pl-3 pr-8 py-1.5 rounded-xl bg-depot border border-line text-xs font-medium text-cream focus:outline-none focus:border-led cursor-pointer">
                 <option value="date_desc">時間先後：由新至舊</option>
                 <option value="date_asc">時間先後：由舊至新</option>
                 <option value="title_asc">名稱排序：A → Z</option>
@@ -348,12 +363,12 @@
 
             <!-- View Mode Switch -->
             <div class="flex items-center gap-1 bg-depot p-1 rounded-xl border border-line">
-              <button id="btnViewDispatch" type="button" title="列表檢視"
-                class="px-2.5 py-1 rounded-lg text-xs font-medium bg-panel text-cream border border-line">
+              <button id="btnViewDispatch" type="button" aria-label="切換為列表檢視" title="列表檢視"
+                class="min-w-[34px] min-h-[30px] px-2.5 py-1 rounded-lg text-xs font-medium bg-panel text-cream border border-line">
                 <i class="ph ph-rows text-sm"></i>
               </button>
-              <button id="btnViewGrid" type="button" title="封面網格檢視"
-                class="px-2.5 py-1 rounded-lg text-xs font-medium text-muted hover:text-cream">
+              <button id="btnViewGrid" type="button" aria-label="切換為封面網格檢視" title="封面網格檢視"
+                class="min-w-[34px] min-h-[30px] px-2.5 py-1 rounded-lg text-xs font-medium text-muted hover:text-cream">
                 <i class="ph ph-squares-four text-sm"></i>
               </button>
             </div>
@@ -380,22 +395,22 @@
           <div class="max-w-md mx-auto space-y-1.5">
             <h3 class="text-lg font-semibold text-cream">影片庫暫時未有符合條件的紀錄</h3>
             <p class="text-sm text-muted leading-relaxed">
-              用電話影完封面圖並記錄標題名、車牌同拍攝地點，亦可使用專屬「封面生成器」製作五大巴士公司前面展望封面並一鍵存入影片庫。
+              填寫路線號碼、公司名同起終點中英文即可自動生成標準 YouTube 標題，並一鍵帶去封面生成器製作封面！
             </p>
           </div>
           <div class="pt-2 flex flex-wrap items-center justify-center gap-3">
             <button id="btnEmptyAdd" type="button"
-              class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-led hover:bg-amber-400 text-sm font-semibold text-asphalt transition-colors">
+              class="min-h-[42px] inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-led hover:bg-amber-400 text-sm font-semibold text-asphalt transition-colors">
               <i class="ph ph-plus-bold"></i>
               <span>建立拍片 / 遊戲片紀錄</span>
             </button>
             <a href="./thumbnail.html"
-              class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-panel hover:bg-panelHover border border-line text-sm font-medium text-cream transition-colors">
+              class="min-h-[42px] inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-panel hover:bg-panelHover border border-line text-sm font-medium text-cream transition-colors">
               <i class="ph ph-paint-brush-broad text-led"></i>
               <span>開啟封面生成器</span>
             </a>
             <button id="btnEmptyYt" type="button"
-              class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-panel hover:bg-panelHover border border-line text-sm font-medium text-cream transition-colors">
+              class="min-h-[42px] inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-panel hover:bg-panelHover border border-line text-sm font-medium text-cream transition-colors">
               <i class="ph ph-youtube-logo text-red-500"></i>
               <span>連接 YouTube 自動讀取</span>
             </button>
@@ -413,14 +428,14 @@
   <footer class="border-t border-line py-6 mt-12">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-muted">
       <div>TransitDeck © 2026 | Powered by SZPTF</div>
-      <div class="font-mono">Bus · Rail · OMSI 2 · PIDS Video Manager · Thumbnail Studio</div>
+      <div class="font-mono">Bus · Rail · OMSI 2 · PIDS Video Manager · 1005.idv.hk Fleet DB</div>
     </div>
   </footer>
 
   <!-- ===================================================================== -->
   <!-- MODAL 1: ADD / EDIT CLIP                                              -->
   <!-- ===================================================================== -->
-  <div id="clipModal" class="fixed inset-0 z-40 hidden bg-black/80 backdrop-blur-sm overflow-y-auto">
+  <div id="clipModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" class="fixed inset-0 z-40 hidden bg-black/80 backdrop-blur-sm overflow-y-auto">
     <div class="min-h-screen px-3 sm:px-6 py-4 sm:py-8 flex items-center justify-center">
       <div class="w-full max-w-4xl rounded-2xl bg-depot border border-line shadow-2xl overflow-hidden">
         <div class="px-5 py-4 border-b border-line flex items-center justify-between">
@@ -428,8 +443,8 @@
             <span class="w-2.5 h-2.5 rounded-full bg-led"></span>
             <h2 id="modalTitle" class="text-base sm:text-lg font-semibold text-cream">新增行車記錄片 / 遊戲片</h2>
           </div>
-          <button id="btnCloseModal" type="button"
-            class="w-8 h-8 rounded-lg bg-panel hover:bg-panelHover border border-line flex items-center justify-center text-muted hover:text-cream transition-colors">
+          <button id="btnCloseModal" type="button" aria-label="關閉視窗"
+            class="w-9 h-9 rounded-lg bg-panel hover:bg-panelHover border border-line flex items-center justify-center text-muted hover:text-cream transition-colors">
             <i class="ph ph-x text-base"></i>
           </button>
         </div>
@@ -438,16 +453,16 @@
           <input type="hidden" id="clipId" />
           <input type="hidden" id="ytVideoIdHidden" />
 
-          <!-- Left / Top Column: Cover Image Upload & Live Preview -->
+          <!-- Left Column: Cover Image & Send to Thumbnail Generator -->
           <div class="lg:col-span-5 space-y-3">
             <div class="flex items-center justify-between gap-2">
-              <label class="text-sm font-medium text-cream">封面圖 / 遊戲截圖對照</label>
+              <label class="text-sm font-medium text-cream">封面圖 / 遊戲截圖</label>
               <div class="flex items-center gap-3">
-                <button id="btnDesignCoverInModal" type="button" class="text-xs text-led hover:underline font-medium inline-flex items-center gap-1">
+                <button id="btnDesignCoverInModal" type="button" class="text-xs text-led hover:underline font-semibold inline-flex items-center gap-1 py-1">
                   <i class="ph ph-paint-brush-broad"></i>
-                  <span>用封面生成器製作</span>
+                  <span>複製資料去封面生成器</span>
                 </button>
-                <button id="btnClearCover" type="button" class="hidden text-xs text-rose-400 hover:underline">移除</button>
+                <button id="btnClearCover" type="button" class="hidden text-xs text-rose-400 hover:underline py-1">移除</button>
               </div>
             </div>
 
@@ -458,137 +473,177 @@
                 <div class="w-11 h-11 mx-auto rounded-xl bg-panel border border-line flex items-center justify-center text-led group-hover:scale-105 transition-transform">
                   <i class="ph ph-image-square text-2xl"></i>
                 </div>
-                <p class="text-xs sm:text-sm text-cream font-medium">用電話影完封面圖或上載遊戲截圖，方便核對路線與車牌</p>
-                <p class="text-xs text-muted">支援 JPG / PNG / WebP（自動壓縮優化雲端同步）</p>
+                <p class="text-xs sm:text-sm text-cream font-medium">點擊上載封面相片或遊戲截圖</p>
+                <p class="text-xs text-muted">支援 JPG / PNG / WebP（自動壓縮優化同步）</p>
               </div>
               <input id="coverFileInput" type="file" accept="image/*" class="hidden" />
             </div>
 
             <div class="space-y-1">
-              <label for="coverUrlInput" class="text-xs text-muted">或直接貼上封面圖片網址（填入 YouTube 連結時自動抓取）</label>
+              <label for="coverUrlInput" class="text-xs text-muted">封面圖片網址（貼上 YouTube 連結時自動填入）</label>
               <input id="coverUrlInput" type="url" placeholder="https://i.ytimg.com/vi/..."
-                class="w-full px-3 py-2 rounded-xl bg-asphalt border border-line text-xs font-mono text-cream placeholder:text-muted focus:outline-none focus:border-led" />
+                class="w-full min-h-[38px] px-3 py-2 rounded-xl bg-asphalt border border-line text-xs font-mono text-cream placeholder:text-muted focus:outline-none focus:border-led" />
             </div>
 
             <div class="space-y-1.5 pt-1">
-              <label id="deckFieldLabel" class="text-xs text-muted">拍攝位置 / 視角</label>
+              <label id="deckFieldLabel" class="text-xs text-muted">展望視角（自動同步至標題 `[ ]`）</label>
               <div class="grid grid-cols-3 gap-2" id="deckSelector">
-                <button type="button" data-deck="上層" class="deck-btn py-2 px-3 rounded-xl bg-led text-asphalt text-xs font-semibold border border-led transition-all">上層</button>
-                <button type="button" data-deck="下層" class="deck-btn py-2 px-3 rounded-xl bg-asphalt text-muted hover:text-cream text-xs font-medium border border-line transition-all">下層</button>
-                <button type="button" data-deck="車外站台" class="deck-btn py-2 px-3 rounded-xl bg-asphalt text-muted hover:text-cream text-xs font-medium border border-line transition-all">車外站台</button>
+                <button type="button" data-deck="上層展望" class="deck-btn min-h-[38px] py-2 px-3 rounded-xl bg-led text-asphalt text-xs font-semibold border border-led transition-all">上層展望</button>
+                <button type="button" data-deck="下層展望" class="deck-btn min-h-[38px] py-2 px-3 rounded-xl bg-asphalt text-muted hover:text-cream text-xs font-medium border border-line transition-all">下層展望</button>
+                <button type="button" data-deck="前面展望" class="deck-btn min-h-[38px] py-2 px-3 rounded-xl bg-asphalt text-muted hover:text-cream text-xs font-medium border border-line transition-all">前面展望</button>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-2.5 pt-1">
+              <div class="space-y-1">
+                <label for="dateInput" class="text-xs text-muted">拍攝 / 錄製日期</label>
+                <input id="dateInput" type="date"
+                  class="w-full min-h-[38px] px-3 py-2 rounded-xl bg-asphalt border border-line text-xs font-mono text-cream focus:outline-none focus:border-led" />
+              </div>
+              <div class="space-y-1">
+                <label id="locationFieldLabel" for="locationInput" class="text-xs text-muted">途經 / 拍攝地點</label>
+                <input id="locationInput" type="text" placeholder="例如 大欖隧道 / 青公"
+                  class="w-full min-h-[38px] px-3 py-2 rounded-xl bg-asphalt border border-line text-xs text-cream placeholder:text-muted focus:outline-none focus:border-led" />
               </div>
             </div>
           </div>
 
-          <!-- Right / Bottom Column: Vehicle / Game Fields -->
-          <div class="lg:col-span-7 space-y-4">
+          <!-- Right Column: Company, Route, Bilingual Origin/Dest, Custom [ ] Tag & 1005.idv.hk DB -->
+          <div class="lg:col-span-7 space-y-3.5">
+            <!-- Company Name Selector -->
             <div class="space-y-1.5">
-              <label class="text-xs text-muted">營運商 / 遊戲類別</label>
+              <label class="text-xs text-muted">公司名 / 遊戲類別 *</label>
               <div class="grid grid-cols-4 gap-1.5" id="operatorFormGroup">
-                <button type="button" data-op="KMB" class="op-select-btn py-2 px-2 rounded-xl bg-kmb text-white text-xs font-semibold border border-transparent transition-all">九巴 KMB</button>
-                <button type="button" data-op="CTB" class="op-select-btn py-2 px-2 rounded-xl bg-asphalt text-muted hover:text-cream text-xs font-medium border border-line transition-all">城巴 CTB</button>
-                <button type="button" data-op="LWB" class="op-select-btn py-2 px-2 rounded-xl bg-asphalt text-muted hover:text-cream text-xs font-medium border border-line transition-all">龍運 LWB</button>
-                <button type="button" data-op="NLB" class="op-select-btn py-2 px-2 rounded-xl bg-asphalt text-muted hover:text-cream text-xs font-medium border border-line transition-all">嶼巴 NLB</button>
-                <button type="button" data-op="MTR" class="op-select-btn py-2 px-2 rounded-xl bg-asphalt text-muted hover:text-cream text-xs font-medium border border-line transition-all">港鐵 MTR</button>
-                <button type="button" data-op="OMSI" class="op-select-btn py-2 px-2 rounded-xl bg-asphalt text-muted hover:text-cream text-xs font-medium border border-line transition-all">OMSI 2</button>
-                <button type="button" data-op="PIDS" class="op-select-btn py-2 px-2 rounded-xl bg-asphalt text-muted hover:text-cream text-xs font-medium border border-line transition-all">報站機模擬</button>
-                <button type="button" data-op="OTHER" class="op-select-btn py-2 px-2 rounded-xl bg-asphalt text-muted hover:text-cream text-xs font-medium border border-line transition-all">其他</button>
+                <button type="button" data-op="KMB" class="op-select-btn min-h-[38px] py-2 px-2 rounded-xl bg-kmb text-white text-xs font-semibold border border-transparent transition-all">九巴 KMB</button>
+                <button type="button" data-op="CTB" class="op-select-btn min-h-[38px] py-2 px-2 rounded-xl bg-asphalt text-muted hover:text-cream text-xs font-medium border border-line transition-all">城巴 CTB</button>
+                <button type="button" data-op="LWB" class="op-select-btn min-h-[38px] py-2 px-2 rounded-xl bg-asphalt text-muted hover:text-cream text-xs font-medium border border-line transition-all">龍運 LWB</button>
+                <button type="button" data-op="NLB" class="op-select-btn min-h-[38px] py-2 px-2 rounded-xl bg-asphalt text-muted hover:text-cream text-xs font-medium border border-line transition-all">嶼巴 NLB</button>
+                <button type="button" data-op="MTR" class="op-select-btn min-h-[38px] py-2 px-2 rounded-xl bg-asphalt text-muted hover:text-cream text-xs font-medium border border-line transition-all">港鐵 MTR</button>
+                <button type="button" data-op="OMSI" class="op-select-btn min-h-[38px] py-2 px-2 rounded-xl bg-asphalt text-muted hover:text-cream text-xs font-medium border border-line transition-all">OMSI 2</button>
+                <button type="button" data-op="PIDS" class="op-select-btn min-h-[38px] py-2 px-2 rounded-xl bg-asphalt text-muted hover:text-cream text-xs font-medium border border-line transition-all">報站機模擬</button>
+                <button type="button" data-op="OTHER" class="op-select-btn min-h-[38px] py-2 px-2 rounded-xl bg-asphalt text-muted hover:text-cream text-xs font-medium border border-line transition-all">其他</button>
               </div>
             </div>
 
+            <!-- Route Number + Custom [ ] Tag -->
             <div class="grid grid-cols-1 sm:grid-cols-12 gap-3">
-              <div class="sm:col-span-5 space-y-1">
-                <label for="routeInput" class="text-xs text-muted">標題名 *</label>
-                <input id="routeInput" type="text" required placeholder="例如 E32 / 42C / 屯馬綫"
-                  class="w-full px-3 py-2 rounded-xl bg-asphalt border border-line text-sm font-mono font-semibold text-led placeholder:text-muted/60 focus:outline-none focus:border-led" />
+              <div class="sm:col-span-4 space-y-1">
+                <label for="routeInput" class="text-xs text-muted">路線號碼 *</label>
+                <input id="routeInput" type="text" required placeholder="例如 B10 / A38 / 948"
+                  class="w-full min-h-[40px] px-3 py-2 rounded-xl bg-asphalt border border-line text-sm font-mono font-semibold text-led placeholder:text-muted/60 focus:outline-none focus:border-led" />
               </div>
-              <div class="sm:col-span-7 space-y-1">
-                <label for="directionInput" class="text-xs text-muted">行車方向 / 目的地</label>
-                <input id="directionInput" type="text" placeholder="例如 往藍田站 / 往長亨 / 往屯門"
-                  class="w-full px-3 py-2 rounded-xl bg-asphalt border border-line text-sm text-cream placeholder:text-muted focus:outline-none focus:border-led" />
+              <div class="sm:col-span-8 space-y-1">
+                <label for="bracketTagInput" class="text-xs text-muted">［ ］亮點內容（自定）</label>
+                <input id="bracketTagInput" type="text" placeholder="例如 車手劈上水廠復古 / 車手爽飛青公 / 青衣大巡遊"
+                  class="w-full min-h-[40px] px-3 py-2 rounded-xl bg-asphalt border border-line text-sm text-cream placeholder:text-muted focus:outline-none focus:border-led" />
               </div>
             </div>
 
+            <!-- Bilingual Origin & Destination (中英名) -->
+            <div class="space-y-1.5">
+              <div class="flex items-center justify-between">
+                <label class="text-xs text-muted">起 / 終點中英名（自動填入標準標題與封面起訖站）</label>
+                <button id="btnSwapTermini" type="button" class="text-xs text-led hover:underline font-medium inline-flex items-center gap-1 py-0.5">
+                  <i class="ph ph-arrows-left-right"></i>
+                  <span>起終點對調</span>
+                </button>
+              </div>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                <div>
+                  <label for="originBilingualInput" class="sr-only">起點中英名</label>
+                  <input id="originBilingualInput" type="text" placeholder="起點：葵芳 葵翠邨 Kwai Fong Kwai Tsui Estate"
+                    class="w-full min-h-[40px] px-3 py-2 rounded-xl bg-asphalt border border-line text-xs sm:text-sm text-cream placeholder:text-muted/70 focus:outline-none focus:border-led" />
+                </div>
+                <div>
+                  <label for="destBilingualInput" class="sr-only">終點中英名</label>
+                  <input id="destBilingualInput" type="text" placeholder="終點：皇崗口岸 Huanggang Port"
+                    class="w-full min-h-[40px] px-3 py-2 rounded-xl bg-asphalt border border-line text-xs sm:text-sm text-cream placeholder:text-muted/70 focus:outline-none focus:border-led" />
+                </div>
+              </div>
+            </div>
+
+            <!-- Auto-Generated YouTube Title Live Preview & Edit -->
+            <div class="p-3 rounded-xl bg-asphalt border border-led/40 space-y-1.5">
+              <div class="flex items-center justify-between gap-2">
+                <label for="titleInput" class="text-xs font-semibold text-led">自動生成 YouTube 標題（可直接微調）</label>
+                <div class="flex items-center gap-2">
+                  <button id="btnRegenerateTitle" type="button" class="text-xs text-muted hover:text-cream underline py-0.5">重設公式</button>
+                  <button id="btnCopyModalYtTitle" type="button" class="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-led/20 text-xs text-led hover:bg-led/30 font-semibold">
+                    <i class="ph ph-copy text-xs"></i>
+                    <span>複製標題</span>
+                  </button>
+                </div>
+              </div>
+              <textarea id="titleInput" rows="2" placeholder="[車手劈上水廠復古•下層展望] 九巴/KMB ROUTE B10 路線 葵芳 葵翠邨 Kwai Fong Kwai Tsui Estate - 皇崗口岸 Huanggang Port 行車片段"
+                class="w-full px-2.5 py-1.5 rounded-lg bg-depot border border-line text-xs sm:text-sm text-cream placeholder:text-muted/60 focus:outline-none focus:border-led leading-relaxed"></textarea>
+            </div>
+
+            <!-- Vehicle Model & Plate with 1005.idv.hk Local Cache DB Lookup -->
             <div class="space-y-1.5">
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div class="space-y-1">
                   <label id="modelFieldLabel" for="modelInput" class="text-xs text-muted">車型 / 遊戲地圖或系統</label>
-                  <input id="modelInput" type="text" placeholder="例如 ADL E500MMC / Winsome E500MMC"
-                    class="w-full px-3 py-2 rounded-xl bg-asphalt border border-line text-sm text-cream placeholder:text-muted focus:outline-none focus:border-led" />
+                  <input id="modelInput" type="text" placeholder="例如 ADL E500MMC / Volvo B8L"
+                    class="w-full min-h-[40px] px-3 py-2 rounded-xl bg-asphalt border border-line text-sm text-cream placeholder:text-muted focus:outline-none focus:border-led" />
                 </div>
                 <div class="space-y-1">
                   <label for="plateInput" class="text-xs text-muted flex items-center justify-between">
-                    <span>車牌 / 車隊編號（選填）</span>
-                    <a href="https://1005.idv.hk/" target="_blank" rel="noopener" class="text-[11px] text-muted hover:text-led underline">1005.idv.hk</a>
+                    <span>車牌 / 車隊編號（查 1005.idv.hk）</span>
+                    <a href="https://1005.idv.hk/" target="_blank" rel="noopener" class="text-xs text-muted hover:text-led underline">1005.idv.hk</a>
                   </label>
                   <div class="flex gap-1.5">
-                    <input id="plateInput" type="text" placeholder="例如 XK 7879 / ATENU1542"
-                      class="flex-1 min-w-0 px-3 py-2 rounded-xl bg-asphalt border border-line text-sm font-mono uppercase text-cream placeholder:text-muted focus:outline-none focus:border-led" />
-                    <button id="btnLookup1005" type="button" title="從 1005.idv.hk 自動讀取巴士營運商與車型"
-                      class="px-2.5 py-2 rounded-xl bg-panel hover:bg-panelHover border border-line text-xs font-medium text-led whitespace-nowrap shrink-0 transition-colors">
+                    <input id="plateInput" type="text" list="fleetHistoryDatalist" placeholder="例如 XK 7879 / ATENU1542"
+                      class="flex-1 min-w-0 min-h-[40px] px-3 py-2 rounded-xl bg-asphalt border border-line text-sm font-mono uppercase text-cream placeholder:text-muted focus:outline-none focus:border-led" />
+                    <datalist id="fleetHistoryDatalist"></datalist>
+                    <button id="btnLookup1005" type="button" title="從 1005.idv.hk 讀取並存入本地車隊資料庫"
+                      class="min-h-[40px] px-3 py-2 rounded-xl bg-panel hover:bg-panelHover border border-line text-xs font-medium text-led whitespace-nowrap shrink-0 transition-colors">
                       查巴士資料
                     </button>
                   </div>
                 </div>
               </div>
-              <div id="lookup1005Status" class="hidden text-[11px] font-mono text-sky-400 px-1"></div>
+              <div id="lookup1005Status" class="hidden text-xs font-mono text-sky-400 px-1"></div>
               <div id="quickModelPills" class="flex flex-wrap gap-1.5 pt-0.5"></div>
             </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <div class="space-y-1">
-                <label for="dateInput" class="text-xs text-muted">拍攝 / 錄製日期</label>
-                <input id="dateInput" type="date"
-                  class="w-full px-3 py-2 rounded-xl bg-asphalt border border-line text-sm font-mono text-cream focus:outline-none focus:border-led" />
+            <!-- Status & YouTube URL -->
+            <div class="grid grid-cols-1 sm:grid-cols-12 gap-3 items-end">
+              <div class="sm:col-span-7 space-y-1">
+                <label class="text-xs text-muted">影片處理進度</label>
+                <div class="grid grid-cols-4 gap-1.5" id="statusFormGroup">
+                  <button type="button" data-st="untransferred" class="st-select-btn min-h-[38px] py-2 px-1.5 rounded-xl bg-rose-500/20 border border-rose-500 text-rose-300 text-xs font-semibold">未傳入電腦</button>
+                  <button type="button" data-st="transferred" class="st-select-btn min-h-[38px] py-2 px-1.5 rounded-xl bg-asphalt border border-line text-muted hover:text-cream text-xs font-medium">已傳入待剪</button>
+                  <button type="button" data-st="ready" class="st-select-btn min-h-[38px] py-2 px-1.5 rounded-xl bg-asphalt border border-line text-muted hover:text-cream text-xs font-medium">已剪待上載</button>
+                  <button type="button" data-st="uploaded" class="st-select-btn min-h-[38px] py-2 px-1.5 rounded-xl bg-asphalt border border-line text-muted hover:text-cream text-xs font-medium">已上載 YT</button>
+                </div>
               </div>
-              <div class="space-y-1">
-                <label id="locationFieldLabel" for="locationInput" class="text-xs text-muted">拍攝地點 / 地圖路線</label>
-                <input id="locationInput" type="text" placeholder="例如 葵興站 / 呈祥道 / HKWestKowloon"
-                  class="w-full px-3 py-2 rounded-xl bg-asphalt border border-line text-sm text-cream placeholder:text-muted focus:outline-none focus:border-led" />
-              </div>
-            </div>
-
-            <div class="space-y-1.5">
-              <label class="text-xs text-muted">影片處理進度</label>
-              <div class="grid grid-cols-2 sm:grid-cols-4 gap-2" id="statusFormGroup">
-                <button type="button" data-st="untransferred" class="st-select-btn py-2 px-2.5 rounded-xl bg-rose-500/20 border border-rose-500 text-rose-300 text-xs font-semibold">未傳入電腦</button>
-                <button type="button" data-st="transferred" class="st-select-btn py-2 px-2.5 rounded-xl bg-asphalt border border-line text-muted hover:text-cream text-xs font-medium">已傳入待剪</button>
-                <button type="button" data-st="ready" class="st-select-btn py-2 px-2.5 rounded-xl bg-asphalt border border-line text-muted hover:text-cream text-xs font-medium">已剪待上載</button>
-                <button type="button" data-st="uploaded" class="st-select-btn py-2 px-2.5 rounded-xl bg-asphalt border border-line text-muted hover:text-cream text-xs font-medium">已上載 YT</button>
-              </div>
-            </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <div class="space-y-1">
-                <label for="titleInput" class="text-xs text-muted flex items-center justify-between">
-                  <span>詳細副標題 / 備註</span>
-                  <button id="btnCopyModalYtTitle" type="button" class="inline-flex items-center gap-1 text-[11px] text-led hover:underline font-medium">
-                    <i class="ph ph-copy text-xs"></i>
-                    <span>複製 YT 標題</span>
-                  </button>
-                </label>
-                <input id="titleInput" type="text" placeholder="例如 [龍運行車] E32 葵芳往機場"
-                  class="w-full px-3 py-2 rounded-xl bg-asphalt border border-line text-sm text-cream placeholder:text-muted focus:outline-none focus:border-led" />
-              </div>
-              <div id="ytUrlFieldWrapper" class="space-y-1">
+              <div id="ytUrlFieldWrapper" class="sm:col-span-5 space-y-1">
                 <label for="ytUrlInput" class="text-xs text-muted flex items-center justify-between">
                   <span>YouTube 影片連結</span>
-                  <span id="ytUrlHintBadge" class="hidden text-[11px] text-emerald-400 font-medium">請貼上已上載網址</span>
+                  <span id="ytUrlHintBadge" class="hidden text-xs text-emerald-400 font-medium">請貼上網址</span>
                 </label>
                 <input id="ytUrlInput" type="url" placeholder="https://www.youtube.com/watch?v=..."
-                  class="w-full px-3 py-2 rounded-xl bg-asphalt border border-line text-sm font-mono text-cream placeholder:text-muted focus:outline-none focus:border-led" />
+                  class="w-full min-h-[38px] px-3 py-2 rounded-xl bg-asphalt border border-line text-xs font-mono text-cream placeholder:text-muted focus:outline-none focus:border-led" />
               </div>
             </div>
 
-            <div class="pt-3 border-t border-line flex items-center justify-end gap-2.5">
-              <button id="btnCancelModal" type="button"
-                class="px-4 py-2 rounded-xl bg-panel hover:bg-panelHover border border-line text-sm font-medium text-cream transition-colors">
-                取消
+            <div class="pt-3 border-t border-line flex flex-wrap items-center justify-between gap-2.5">
+              <button id="btnSaveAndOpenCover" type="button"
+                class="min-h-[40px] inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-panel hover:bg-panelHover border border-led/50 text-xs sm:text-sm font-semibold text-led transition-colors">
+                <i class="ph ph-paint-brush-broad text-base"></i>
+                <span>儲存並去整封面</span>
               </button>
-              <button type="submit"
-                class="px-5 py-2 rounded-xl bg-led hover:bg-amber-400 active:scale-[0.98] text-sm font-semibold text-asphalt transition-all">
-                儲存紀錄
-              </button>
+
+              <div class="flex items-center gap-2 ml-auto">
+                <button id="btnCancelModal" type="button"
+                  class="min-h-[40px] px-4 py-2 rounded-xl bg-panel hover:bg-panelHover border border-line text-sm font-medium text-cream transition-colors">
+                  取消
+                </button>
+                <button type="submit"
+                  class="min-h-[40px] px-5 py-2 rounded-xl bg-led hover:bg-amber-400 active:scale-[0.98] text-sm font-semibold text-asphalt transition-all">
+                  儲存紀錄
+                </button>
+              </div>
             </div>
           </div>
         </form>
@@ -599,14 +654,14 @@
   <!-- ===================================================================== -->
   <!-- MODAL 2: MARK AS UPLOADED & PASTE YOUTUBE URL PROMPT                  -->
   <!-- ===================================================================== -->
-  <div id="markUploadedModal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+  <div id="markUploadedModal" role="dialog" aria-modal="true" aria-labelledby="markModalHeading" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
     <div class="w-full max-w-md rounded-2xl bg-depot border border-line shadow-2xl p-5 space-y-4">
       <div class="flex items-center justify-between">
         <div class="flex items-center gap-2">
           <i class="ph ph-youtube-logo text-xl text-red-500"></i>
-          <h3 class="text-base font-semibold text-cream">標記為已上載 YouTube</h3>
+          <h3 id="markModalHeading" class="text-base font-semibold text-cream">標記為已上載 YouTube</h3>
         </div>
-        <button id="btnCloseMarkModal" type="button" class="w-8 h-8 rounded-lg bg-panel hover:bg-panelHover flex items-center justify-center text-muted hover:text-cream">
+        <button id="btnCloseMarkModal" type="button" aria-label="關閉視窗" class="w-9 h-9 rounded-lg bg-panel hover:bg-panelHover flex items-center justify-center text-muted hover:text-cream">
           <i class="ph ph-x text-base"></i>
         </button>
       </div>
@@ -618,16 +673,16 @@
       <div class="space-y-1.5">
         <label for="quickYtUrlInput" class="text-xs text-cream font-medium">YouTube 影片連結（選填）</label>
         <input id="quickYtUrlInput" type="url" placeholder="https://www.youtube.com/watch?v=... 或 https://youtu.be/..."
-          class="w-full px-3.5 py-2.5 rounded-xl bg-asphalt border border-line text-sm font-mono text-cream placeholder:text-muted focus:outline-none focus:border-led" />
+          class="w-full min-h-[42px] px-3.5 py-2.5 rounded-xl bg-asphalt border border-line text-sm font-mono text-cream placeholder:text-muted focus:outline-none focus:border-led" />
       </div>
 
       <div class="pt-2 flex items-center justify-end gap-2">
         <button id="btnSkipYtUrl" type="button"
-          class="px-3.5 py-2 rounded-xl bg-panel hover:bg-panelHover border border-line text-xs font-medium text-muted hover:text-cream transition-colors">
+          class="min-h-[38px] px-3.5 py-2 rounded-xl bg-panel hover:bg-panelHover border border-line text-xs font-medium text-muted hover:text-cream transition-colors">
           暫不填連結，直接標記
         </button>
         <button id="btnConfirmUploaded" type="button"
-          class="px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-xs font-semibold text-asphalt transition-colors">
+          class="min-h-[38px] px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-xs font-semibold text-asphalt transition-colors">
           確認已上載
         </button>
       </div>
@@ -637,16 +692,16 @@
   <!-- ===================================================================== -->
   <!-- MODAL 3: YOUTUBE CHANNEL FULL ARCHIVE SYNC & SAVE ALL                 -->
   <!-- ===================================================================== -->
-  <div id="ytSyncModal" class="fixed inset-0 z-40 hidden bg-black/80 backdrop-blur-sm overflow-y-auto">
+  <div id="ytSyncModal" role="dialog" aria-modal="true" aria-labelledby="ytSyncHeading" class="fixed inset-0 z-40 hidden bg-black/80 backdrop-blur-sm overflow-y-auto">
     <div class="min-h-screen px-3 sm:px-6 py-4 sm:py-8 flex items-center justify-center">
       <div class="w-full max-w-3xl rounded-2xl bg-depot border border-line shadow-2xl overflow-hidden">
         <div class="px-5 py-4 border-b border-line flex items-center justify-between">
           <div class="flex items-center gap-2.5">
             <i class="ph ph-youtube-logo text-xl text-red-500"></i>
-            <h2 class="text-base sm:text-lg font-semibold text-cream">連接 YouTube 頻道並截取過往所有影片</h2>
+            <h2 id="ytSyncHeading" class="text-base sm:text-lg font-semibold text-cream">連接 YouTube 頻道並截取過往所有影片</h2>
           </div>
-          <button id="btnCloseYtModal" type="button"
-            class="w-8 h-8 rounded-lg bg-panel hover:bg-panelHover border border-line flex items-center justify-center text-muted hover:text-cream">
+          <button id="btnCloseYtModal" type="button" aria-label="關閉視窗"
+            class="w-9 h-9 rounded-lg bg-panel hover:bg-panelHover border border-line flex items-center justify-center text-muted hover:text-cream">
             <i class="ph ph-x text-base"></i>
           </button>
         </div>
@@ -657,10 +712,11 @@
           </p>
 
           <div class="flex flex-col sm:flex-row gap-2.5">
+            <label for="ytChannelInput" class="sr-only">YouTube 頻道 Handle 或 ID</label>
             <input id="ytChannelInput" type="text" placeholder="輸入 @Handle 或 UC 開頭 Channel ID"
-              class="flex-1 px-3.5 py-2.5 rounded-xl bg-asphalt border border-line text-sm font-mono text-cream placeholder:text-muted focus:outline-none focus:border-led" />
+              class="flex-1 min-h-[42px] px-3.5 py-2.5 rounded-xl bg-asphalt border border-line text-sm font-mono text-cream placeholder:text-muted focus:outline-none focus:border-led" />
             <button id="btnFetchYtFeed" type="button"
-              class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-red-600 hover:bg-red-500 active:scale-[0.98] text-sm font-semibold text-white transition-all shrink-0">
+              class="min-h-[42px] inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-red-600 hover:bg-red-500 active:scale-[0.98] text-sm font-semibold text-white transition-all shrink-0">
               <i class="ph ph-arrows-clockwise text-base"></i>
               <span>連接並抓取過往全部影片</span>
             </button>
@@ -671,7 +727,7 @@
               <input id="chkAutoSyncOnLoad" type="checkbox" checked class="accent-amber-400 rounded" />
               <span>每次打開 TransitDeck 時在背景自動同步此頻道最新影片</span>
             </label>
-            <button id="btnDisconnectChannel" type="button" class="text-rose-400 hover:underline hidden">解除綁定</button>
+            <button id="btnDisconnectChannel" type="button" class="text-rose-400 hover:underline hidden py-1">解除綁定</button>
           </div>
 
           <div id="ytStatusBox" class="hidden px-3.5 py-2.5 rounded-xl bg-asphalt border border-line text-xs text-muted"></div>
@@ -718,6 +774,7 @@
 
     // 2. STATE & CONSTANTS
     const LOCAL_STORAGE_KEY = 'transitdeck_clips_v1';
+    const FLEET_CACHE_DB_KEY = 'transitdeck_1005_fleet_db_v1';
     const YT_CHANNEL_STORAGE_KEY = 'transitdeck_yt_channel';
     const YT_CHANNEL_NAME_KEY = 'transitdeck_yt_channel_name';
     const YT_AUTO_SYNC_KEY = 'transitdeck_yt_autosync';
@@ -727,6 +784,7 @@
     const BRIDGE_RESULT_KEY = 'transitdeck_thumb_generated_result';
 
     let clips = [];
+    let fleetCacheDb = {};
     let currentStatusFilter = 'all';
     let currentOperatorFilter = 'ALL';
     let currentSearchQuery = '';
@@ -734,20 +792,21 @@
     let viewMode = 'dispatch';
 
     let selectedOperator = 'KMB';
-    let selectedDeck = '上層';
+    let selectedDeck = '上層展望';
     let selectedStatus = 'untransferred';
     let currentCoverDataUrl = '';
     let pendingMarkUploadedId = null;
+    let isTitleManuallyEdited = false;
 
     const OPERATOR_META = {
-      KMB: { name: '九巴', ytTag: '[九巴行車]', badgeBg: 'bg-kmb', badgeText: 'text-white' },
-      CTB: { name: '城巴', ytTag: '[城巴行車]', badgeBg: 'bg-ctb', badgeText: 'text-asphalt' },
-      LWB: { name: '龍運', ytTag: '[龍運行車]', badgeBg: 'bg-lwb', badgeText: 'text-white' },
-      NLB: { name: '嶼巴', ytTag: '[嶼巴行車]', badgeBg: 'bg-nlb', badgeText: 'text-white' },
-      MTR: { name: '港鐵', ytTag: '[港鐵行車]', badgeBg: 'bg-mtr', badgeText: 'text-white' },
-      OMSI: { name: 'OMSI 2', ytTag: '[OMSI 2]', badgeBg: 'bg-omsi', badgeText: 'text-white' },
-      PIDS: { name: '報站機模擬', ytTag: '[報站機模擬]', badgeBg: 'bg-pids', badgeText: 'text-white' },
-      OTHER: { name: '其他', ytTag: '', badgeBg: 'bg-panel', badgeText: 'text-cream' }
+      KMB: { name: '九巴', fullEnTitle: '九巴/KMB ROUTE', badgeBg: 'bg-kmb', badgeText: 'text-white' },
+      CTB: { name: '城巴', fullEnTitle: '城巴/Citybus ROUTE', badgeBg: 'bg-ctb', badgeText: 'text-asphalt' },
+      LWB: { name: '龍運', fullEnTitle: '龍運巴士/ Long Win Bus Route', badgeBg: 'bg-lwb', badgeText: 'text-white' },
+      NLB: { name: '嶼巴', fullEnTitle: '新大嶼山巴士/NLB ROUTE', badgeBg: 'bg-nlb', badgeText: 'text-white' },
+      MTR: { name: '港鐵', fullEnTitle: '港鐵巴士/MTR Bus ROUTE', badgeBg: 'bg-mtr', badgeText: 'text-white' },
+      OMSI: { name: 'OMSI 2', fullEnTitle: 'OMSI 2 模擬路線', badgeBg: 'bg-omsi', badgeText: 'text-white' },
+      PIDS: { name: '報站機模擬', fullEnTitle: '報站機模擬 PIDS ROUTE', badgeBg: 'bg-pids', badgeText: 'text-white' },
+      OTHER: { name: '其他', fullEnTitle: 'ROUTE', badgeBg: 'bg-panel', badgeText: 'text-cream' }
     };
 
     const STATUS_META = {
@@ -759,6 +818,15 @@
 
     const REAL_BUS_MODELS = ['ADL E500MMC', 'Volvo B8L', 'Volvo B9TL', 'MAN A95', 'Wright StreetDeck', 'BYD B12D'];
     const SIM_PRESETS = ['Winsome E500MMC', 'GX7767 Studio', 'HKWestKowloon', 'Citybus ATBBI PIDS', 'KMB 報站機', 'openOMSI'];
+
+    // Global Escape Key Handler for Modals (A11y)
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeClipModal();
+        closeMarkUploadedModal();
+        closeYtModal();
+      }
+    });
 
     // 3. UI HELPERS & TOAST
     let toastTimer = null;
@@ -823,7 +891,107 @@
       }
     }
 
-    // 4. THUMBNAIL STUDIO TWO-WAY BRIDGE
+    // 4. 1005.IDV.HK LOCAL FLEET CACHE DATABASE
+    function loadFleetCacheDb() {
+      try {
+        const raw = localStorage.getItem(FLEET_CACHE_DB_KEY);
+        fleetCacheDb = raw ? JSON.parse(raw) : {};
+      } catch {
+        fleetCacheDb = {};
+      }
+      refreshFleetDbUI();
+    }
+
+    function saveFleetRecordToDb(keyRaw, info) {
+      const normKey = keyRaw.replace(/\s+/g, '').toUpperCase();
+      if (!normKey) return;
+      fleetCacheDb[normKey] = {
+        ...info,
+        updatedAt: Date.now()
+      };
+      if (info.fleetCode) {
+        fleetCacheDb[info.fleetCode.toUpperCase()] = {
+          ...info,
+          plate: normKey,
+          updatedAt: Date.now()
+        };
+      }
+      try {
+        localStorage.setItem(FLEET_CACHE_DB_KEY, JSON.stringify(fleetCacheDb));
+      } catch {}
+      refreshFleetDbUI();
+    }
+
+    function refreshFleetDbUI() {
+      const keys = Object.keys(fleetCacheDb);
+      const badge = document.getElementById('fleetDbCountBadge');
+      if (badge) badge.textContent = `已存 ${keys.length} 部`;
+
+      const datalist = document.getElementById('fleetHistoryDatalist');
+      if (datalist) {
+        datalist.innerHTML = keys.map(k => {
+          const item = fleetCacheDb[k];
+          const label = [item.operator ? OPERATOR_META[item.operator]?.name : '', item.model, item.fleetCode].filter(Boolean).join(' · ');
+          return `<option value="${escapeHtml(k)}">${escapeHtml(label)}</option>`;
+        }).join('');
+      }
+    }
+
+    // 5. FORMULA-BASED YOUTUBE TITLE GENERATOR
+    function buildYouTubeTitle(clip) {
+      const opMeta = OPERATOR_META[clip.operator] || OPERATOR_META.OTHER;
+      const customBracket = (clip.bracketTag || '').trim() || '行車實錄';
+      const deckText = (clip.deck || '上層展望').trim();
+      const routeNum = (clip.route || '').trim().toUpperCase();
+      const originStr = (clip.originBilingual || '').trim();
+      const destStr = (clip.destBilingual || clip.direction || '').trim();
+
+      const headerTag = `[${customBracket}•${deckText}]`;
+      const routeSegment = routeNum ? `${opMeta.fullEnTitle} ${routeNum} 路線` : opMeta.fullEnTitle;
+      const terminiSegment = (originStr && destStr)
+        ? `${originStr} - ${destStr}`
+        : (originStr || destStr);
+
+      return [headerTag, routeSegment, terminiSegment, '行車片段']
+        .filter(Boolean)
+        .join(' ')
+        .replace(/\s{2,}/g, ' ')
+        .trim();
+    }
+
+    function updateAutoGeneratedTitleField() {
+      if (isTitleManuallyEdited) return;
+      const draft = {
+        operator: selectedOperator,
+        deck: selectedDeck,
+        route: document.getElementById('routeInput').value.trim(),
+        bracketTag: document.getElementById('bracketTagInput').value.trim(),
+        originBilingual: document.getElementById('originBilingualInput').value.trim(),
+        destBilingual: document.getElementById('destBilingualInput').value.trim()
+      };
+      document.getElementById('titleInput').value = buildYouTubeTitle(draft);
+    }
+
+    async function copyYouTubeTitleToClipboard(titleStr) {
+      if (!titleStr) {
+        showToast('請先填寫路線號碼或標題資料，才能複製標題', 'error');
+        return;
+      }
+      try {
+        await navigator.clipboard.writeText(titleStr);
+        showToast('已複製 YouTube 標題到剪貼簿！');
+      } catch {
+        const tempInput = document.createElement('textarea');
+        tempInput.value = titleStr;
+        document.body.appendChild(tempInput);
+        tempInput.select();
+        document.execCommand('copy');
+        document.body.removeChild(tempInput);
+        showToast('已複製 YouTube 標題到剪貼簿！');
+      }
+    }
+
+    // 6. THUMBNAIL STUDIO TWO-WAY BRIDGE
     function openThumbnailStudioWithClip(clipObj) {
       if (clipObj) {
         localStorage.setItem(BRIDGE_DRAFT_KEY, JSON.stringify(clipObj));
@@ -854,21 +1022,23 @@
               cover: result.cover,
               updatedAt: Date.now()
             }, true);
-            showToast(`已將新製作的封面圖儲存至「${existing.route}」紀錄！`);
+            showToast(`已將封面圖自動儲存至「${existing.route}」紀錄！`);
             return;
           }
         }
 
-        // Otherwise create a new record ready for upload
         const newClip = {
           id: 'clip_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
           ytVideoId: '',
           operator: result.operator || 'CTB',
           route: result.route || 'NEW',
+          bracketTag: result.bracketTag || '',
+          originBilingual: result.originBilingual || result.location || '',
+          destBilingual: result.destBilingual || result.direction || '',
           direction: result.direction || '',
           model: result.model || '',
-          plate: '',
-          deck: result.deck || '上層',
+          plate: result.plate || '',
+          deck: result.deck || '上層展望',
           date: new Date().toISOString().split('T')[0],
           location: result.location || '',
           status: 'ready',
@@ -884,39 +1054,7 @@
       }
     }
 
-    // 5. YOUTUBE TITLE GENERATOR & CLIPBOARD COPY
-    function buildYouTubeTitle(clip) {
-      if (clip.title && clip.title.trim()) {
-        return clip.title.trim();
-      }
-      const opMeta = OPERATOR_META[clip.operator] || OPERATOR_META.OTHER;
-      const tag = opMeta.ytTag;
-      const routePart = [clip.route, clip.direction].filter(Boolean).join(' ');
-      const specParts = [clip.model, clip.plate ? `(${clip.plate})` : '', clip.deck].filter(Boolean).join(' ');
-      const mainTitle = [tag, routePart].filter(Boolean).join(' ');
-      return specParts ? `${mainTitle} | ${specParts}` : mainTitle;
-    }
-
-    async function copyYouTubeTitleToClipboard(titleStr) {
-      if (!titleStr) {
-        showToast('請先填寫標題名或路線資料', 'error');
-        return;
-      }
-      try {
-        await navigator.clipboard.writeText(titleStr);
-        showToast(`已複製 YouTube 標題到剪貼簿！`);
-      } catch {
-        const tempInput = document.createElement('textarea');
-        tempInput.value = titleStr;
-        document.body.appendChild(tempInput);
-        tempInput.select();
-        document.execCommand('copy');
-        document.body.removeChild(tempInput);
-        showToast(`已複製 YouTube 標題到剪貼簿！`);
-      }
-    }
-
-    // 6. LOCAL CSV EXPORT
+    // 7. LOCAL CSV EXPORT
     function escapeCsvCell(val) {
       const str = val == null ? '' : String(val);
       if (/[",\r\n]/.test(str)) {
@@ -938,15 +1076,15 @@
       }
 
       if (!sourceList || sourceList.length === 0) {
-        showToast('目前沒有可匯出的影片紀錄', 'info');
+        showToast('目前沒有可匯出的影片紀錄，請先新增或同步影片', 'info');
         return;
       }
 
       const headers = [
         '拍攝/錄影日期',
         '營運商/遊戲分類',
-        '路線編號/標題名',
-        '影片標題/副標題',
+        '路線號碼',
+        '影片標題',
         '車型/地圖',
         '車牌/備註',
         '製作狀態',
@@ -958,7 +1096,7 @@
       const rows = sortedForExport.map(clip => {
         const opName = OPERATOR_META[clip.operator]?.name || clip.operator || '';
         const statusName = STATUS_META[clip.status]?.label || clip.status || '';
-        const combinedTitle = [clip.title, clip.direction].filter(Boolean).join(' · ') || buildYouTubeTitle(clip);
+        const finalTitle = (clip.title && clip.title.trim()) ? clip.title.trim() : buildYouTubeTitle(clip);
         const plateAndLocation = [clip.plate, clip.location, clip.deck].filter(Boolean).join(' / ');
         const extractedVid = clip.ytVideoId || extractYouTubeVideoId(clip.ytUrl || '');
 
@@ -966,7 +1104,7 @@
           clip.date || '',
           opName,
           clip.route || '',
-          combinedTitle,
+          finalTitle,
           clip.model || '',
           plateAndLocation,
           statusName,
@@ -988,7 +1126,7 @@
 
     document.getElementById('btnExportCsv').addEventListener('click', exportClipsToCsv);
 
-    // 7. DATA LAYER (FIRESTORE + LOCALSTORAGE)
+    // 8. DATA LAYER (FIRESTORE + LOCALSTORAGE)
     function loadLocalClips() {
       try {
         const raw = localStorage.getItem(LOCAL_STORAGE_KEY);
@@ -1004,7 +1142,7 @@
       try {
         localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(clips));
       } catch {
-        showToast('本機儲存空間已滿，建議登入雲端或減少高解析圖片', 'error');
+        showToast('本機儲存空間已滿，建議登入 Google 雲端同步或減少高解析圖片', 'error');
       }
     }
 
@@ -1016,7 +1154,7 @@
           if (!silent) showToast('已同步儲存至雲端影片庫');
         } catch (err) {
           console.error(err);
-          if (!silent) showToast('雲端儲存失敗，請檢查網絡或 Firestore 規則', 'error');
+          if (!silent) showToast('雲端儲存失敗，請檢查網絡連線或稍後再試', 'error');
         }
       } else {
         const idx = clips.findIndex(c => c.id === clipObj.id);
@@ -1032,15 +1170,15 @@
       if (currentUser && db) {
         try {
           await deleteDoc(doc(db, 'users', currentUser.uid, 'clips', clipId));
-          showToast('已從雲端刪除紀錄');
+          showToast('已從雲端刪除該條影片紀錄');
         } catch {
-          showToast('刪除失敗，請稍後再試', 'error');
+          showToast('刪除失敗，請檢查網絡後再試', 'error');
         }
       } else {
         clips = clips.filter(c => c.id !== clipId);
         saveLocalClips();
         renderAll();
-        showToast('已刪除紀錄');
+        showToast('已刪除該條影片紀錄');
       }
     }
 
@@ -1064,7 +1202,7 @@
       }, (err) => {
         console.error('Firestore listen error:', err);
         document.getElementById('loadingSkeleton').classList.add('hidden');
-        showToast('讀取雲端資料失敗，已切換回本機資料', 'error');
+        showToast('無法讀取雲端資料，已自動切換回本機離線資料', 'error');
         loadLocalClips();
       });
     }
@@ -1091,12 +1229,12 @@
 
     document.getElementById('btnAuthAction').addEventListener('click', async () => {
       if (!isFirebaseConfigured || !auth) {
-        showToast('請先填入 firebaseConfig 設定碼', 'info');
+        showToast('雲端設定尚未啟用，目前為本機儲存模式', 'info');
         return;
       }
       if (currentUser) {
         await signOut(auth);
-        showToast('已登出雲端帳號');
+        showToast('已登出雲端帳號，切換為本機模式');
       } else {
         try {
           const provider = new GoogleAuthProvider();
@@ -1104,12 +1242,12 @@
           showToast('Google 帳號登入成功，正在同步影片庫');
         } catch (err) {
           console.error(err);
-          showToast('登入失敗：請確認 Firebase 已授權目前網域', 'error');
+          showToast('Google 登入未完成，請確認瀏覽器未阻擋彈出視窗', 'error');
         }
       }
     });
 
-    // 8. IMAGE COMPRESSION & YOUTUBE URL EXTRACTOR
+    // 9. IMAGE COMPRESSION & YOUTUBE URL EXTRACTOR
     function extractYouTubeVideoId(url) {
       if (!url) return '';
       const m = url.match(/(?:youtube\.com\/(?:watch\?v=|shorts\/|embed\/)|youtu\.be\/)([\w-]{11})/);
@@ -1175,7 +1313,7 @@
         document.getElementById('coverUrlInput').value = '';
         showToast('封面圖已載入並完成畫質壓縮');
       } catch {
-        showToast('圖片讀取失敗，請嘗試其他相片', 'error');
+        showToast('圖片讀取失敗，請改用 JPG 或 PNG 格式相片', 'error');
       }
     });
 
@@ -1199,7 +1337,7 @@
       setCoverPreview('');
     });
 
-    // 9. CORS PROXY HELPER & 1005.IDV.HK BUS DATA LOOKUP
+    // 10. CORS PROXY HELPER & 1005.IDV.HK BUS DATA LOOKUP + CACHE DB
     async function fetchTextWithCorsFallback(targetUrl) {
       const proxies = [
         (u) => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(u)}`,
@@ -1225,7 +1363,11 @@
 
     async function lookupBusFrom1005(rawQuery) {
       const clean = rawQuery.replace(/\s+/g, '').toUpperCase();
-      if (!clean) throw new Error('請先輸入車牌號碼或車隊編號');
+      if (!clean) throw new Error('請先輸入車牌號碼或車隊編號再查詢');
+
+      if (fleetCacheDb[clean]) {
+        return { ...fleetCacheDb[clean], fromCache: true };
+      }
 
       const candidateUrls = [
         `https://1005.idv.hk/?s=${encodeURIComponent(clean)}`,
@@ -1250,7 +1392,7 @@
       }
 
       if (!fetchedHtml) {
-        throw new Error('暫時未能連接 1005.idv.hk，請手動輸入或稍後再試');
+        throw new Error('暫時無法連接 1005.idv.hk，請直接手動輸入車型');
       }
 
       const plainText = fetchedHtml.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ');
@@ -1295,11 +1437,40 @@
       }
 
       if (!detectedOp && !detectedModel && !fleetCode) {
-        throw new Error(`喺 1005.idv.hk 未搵到「${clean}」的匹配車型紀錄`);
+        throw new Error(`於 1005.idv.hk 找不到「${clean}」的紀錄，請改用車隊編號或手動輸入`);
       }
 
-      return { operator: detectedOp, model: detectedModel, fleetCode };
+      const resultObj = { operator: detectedOp, model: detectedModel, fleetCode };
+      saveFleetRecordToDb(clean, resultObj);
+      return resultObj;
     }
+
+    function applyFleetInfoToForm(rawVal, info) {
+      const plateInput = document.getElementById('plateInput');
+      if (info.operator) {
+        selectedOperator = info.operator;
+        syncFormSelectorsUI();
+        updateAutoGeneratedTitleField();
+      }
+      if (info.model) {
+        document.getElementById('modelInput').value = info.model;
+      }
+      if (info.fleetCode && !plateInput.value.toUpperCase().includes(info.fleetCode)) {
+        plateInput.value = `${rawVal.toUpperCase()} (${info.fleetCode})`;
+      }
+    }
+
+    document.getElementById('plateInput').addEventListener('input', (e) => {
+      const norm = e.target.value.replace(/\s+/g, '').toUpperCase();
+      if (fleetCacheDb[norm]) {
+        const info = fleetCacheDb[norm];
+        applyFleetInfoToForm(e.target.value.trim(), info);
+        const statusEl = document.getElementById('lookup1005Status');
+        statusEl.classList.remove('hidden');
+        statusEl.className = 'text-xs font-mono text-emerald-400 px-1';
+        statusEl.textContent = `已從本地車隊快取庫秒速載入：${[info.operator ? OPERATOR_META[info.operator]?.name : '', info.model, info.fleetCode].filter(Boolean).join(' · ')}`;
+      }
+    });
 
     document.getElementById('btnLookup1005').addEventListener('click', async () => {
       const plateInput = document.getElementById('plateInput');
@@ -1307,37 +1478,28 @@
       const rawVal = plateInput.value.trim();
 
       if (!rawVal) {
-        showToast('請先輸入車牌或車隊編號（例如 XK 7879）', 'error');
+        showToast('請先輸入車牌號碼或車隊編號（例如 XK 7879）', 'error');
         plateInput.focus();
         return;
       }
 
       statusEl.classList.remove('hidden');
-      statusEl.className = 'text-[11px] font-mono text-sky-400 px-1';
+      statusEl.className = 'text-xs font-mono text-sky-400 px-1';
       statusEl.textContent = `正在從 1005.idv.hk 讀取「${rawVal.toUpperCase()}」巴士資料...`;
 
       try {
         const info = await lookupBusFrom1005(rawVal);
-        if (info.operator) {
-          selectedOperator = info.operator;
-          syncFormSelectorsUI();
-        }
-        if (info.model) {
-          document.getElementById('modelInput').value = info.model;
-        }
-        if (info.fleetCode && !plateInput.value.includes(info.fleetCode)) {
-          plateInput.value = `${rawVal.toUpperCase()} (${info.fleetCode})`;
-        }
-        statusEl.className = 'text-[11px] font-mono text-emerald-400 px-1';
-        statusEl.textContent = `已從 1005.idv.hk 讀取：${[info.operator ? OPERATOR_META[info.operator]?.name : '', info.model, info.fleetCode].filter(Boolean).join(' · ')}`;
+        applyFleetInfoToForm(rawVal, info);
+        statusEl.className = 'text-xs font-mono text-emerald-400 px-1';
+        statusEl.textContent = `${info.fromCache ? '快取命中' : '已從 1005.idv.hk 讀取並存入本地資料庫'}：${[info.operator ? OPERATOR_META[info.operator]?.name : '', info.model, info.fleetCode].filter(Boolean).join(' · ')}`;
         showToast('已自動填入 1005.idv.hk 巴士資料');
       } catch (err) {
-        statusEl.className = 'text-[11px] font-mono text-rose-400 px-1';
+        statusEl.className = 'text-xs font-mono text-rose-400 px-1';
         statusEl.textContent = err.message;
       }
     });
 
-    // 10. SORTING & RENDERING VIDEO CARDS
+    // 11. SORTING & RENDERING VIDEO CARDS
     function sortClipsList(list, sortMode) {
       const copy = [...list];
       switch (sortMode) {
@@ -1345,14 +1507,14 @@
           return copy.sort((a, b) => (a.date || '').localeCompare(b.date || '') || (a.updatedAt || 0) - (b.updatedAt || 0));
         case 'title_asc':
           return copy.sort((a, b) => {
-            const nameA = (a.route || a.title || '').toLowerCase();
-            const nameB = (b.route || b.title || '').toLowerCase();
+            const nameA = (a.title || a.route || '').toLowerCase();
+            const nameB = (b.title || b.route || '').toLowerCase();
             return nameA.localeCompare(nameB, 'zh-HK');
           });
         case 'title_desc':
           return copy.sort((a, b) => {
-            const nameA = (a.route || a.title || '').toLowerCase();
-            const nameB = (b.route || b.title || '').toLowerCase();
+            const nameA = (a.title || a.route || '').toLowerCase();
+            const nameB = (b.title || b.route || '').toLowerCase();
             return nameB.localeCompare(nameA, 'zh-HK');
           });
         case 'updated_desc':
@@ -1386,6 +1548,9 @@
           const q = currentSearchQuery.toLowerCase();
           const hay = [
             clip.route,
+            clip.bracketTag,
+            clip.originBilingual,
+            clip.destBilingual,
             clip.direction,
             clip.model,
             clip.plate,
@@ -1419,14 +1584,16 @@
         const op = OPERATOR_META[clip.operator] || OPERATOR_META.OTHER;
         const st = STATUS_META[clip.status] || STATUS_META.untransferred;
         const hasCover = Boolean(clip.cover);
-        const primaryHeadline = clip.title || clip.direction || '未填寫副標題';
-        const secondarySub = clip.title && clip.direction ? clip.direction : '';
+        const displayTitle = (clip.title && clip.title.trim()) ? clip.title.trim() : buildYouTubeTitle(clip);
+        const terminiLine = (clip.originBilingual && clip.destBilingual)
+          ? `${clip.originBilingual} → ${clip.destBilingual}`
+          : (clip.direction || '');
 
         const coverHtml = hasCover
-          ? `<img src="${escapeHtml(clip.cover)}" alt="${escapeHtml(clip.route)}" loading="lazy" class="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-300 ease-dispatch" />`
+          ? `<img src="${escapeHtml(clip.cover)}" alt="${escapeHtml(clip.route)} 封面" loading="lazy" class="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-300 ease-dispatch" />`
           : `<div class="w-full h-full flex flex-col items-center justify-center bg-asphalt text-muted gap-1.5">
                <i class="ph ph-video-camera text-2xl opacity-50"></i>
-               <span class="text-[11px] font-mono">未設封面圖</span>
+               <span class="text-xs font-mono">未設封面圖</span>
              </div>`;
 
         if (viewMode === 'grid') {
@@ -1447,8 +1614,8 @@
                     ${escapeHtml(clip.route || '---')}
                   </div>
                   <div class="min-w-0 flex-1">
-                    <div class="text-sm font-semibold text-cream truncate">${escapeHtml(primaryHeadline)}</div>
-                    <div class="text-xs font-mono text-muted truncate">${escapeHtml([clip.model, clip.plate].filter(Boolean).join(' · ') || secondarySub || '未填車型車牌')}</div>
+                    <div class="text-sm font-semibold text-cream line-clamp-2 leading-snug">${escapeHtml(displayTitle)}</div>
+                    <div class="text-xs font-mono text-muted truncate mt-1">${escapeHtml([clip.model, clip.plate].filter(Boolean).join(' · ') || terminiLine || '未填車型車牌')}</div>
                   </div>
                 </div>
               </div>
@@ -1456,12 +1623,12 @@
               <div class="pt-2.5 border-t border-line flex items-center justify-between gap-2 text-xs text-muted">
                 <span class="font-mono truncate">${escapeHtml([clip.date, clip.location].filter(Boolean).join(' · ') || '未記錄地點')}</span>
                 <div class="flex items-center gap-1 shrink-0">
-                  <button type="button" data-action="makeCover" data-id="${clip.id}" title="用封面生成器製作" class="p-1.5 rounded-lg bg-asphalt hover:bg-panelHover text-led"><i class="ph ph-paint-brush-broad text-sm"></i></button>
-                  <button type="button" data-action="copyTitle" data-id="${clip.id}" title="複製 YouTube 標題" class="p-1.5 rounded-lg bg-asphalt hover:bg-panelHover text-cream"><i class="ph ph-copy text-sm"></i></button>
-                  ${clip.ytUrl ? `<a href="${escapeHtml(clip.ytUrl)}" target="_blank" rel="noopener" title="開啟 YouTube" class="p-1.5 rounded-lg bg-asphalt hover:bg-panelHover text-red-400"><i class="ph ph-youtube-logo text-sm"></i></a>` : ''}
-                  <button type="button" data-action="cycle" data-id="${clip.id}" title="${st.nextLabel}" class="p-1.5 rounded-lg bg-asphalt hover:bg-panelHover text-led"><i class="ph ph-arrow-right text-sm"></i></button>
-                  <button type="button" data-action="edit" data-id="${clip.id}" title="編輯" class="p-1.5 rounded-lg bg-asphalt hover:bg-panelHover text-cream"><i class="ph ph-pencil-simple text-sm"></i></button>
-                  <button type="button" data-action="delete" data-id="${clip.id}" title="刪除" class="p-1.5 rounded-lg bg-asphalt hover:bg-panelHover text-rose-400"><i class="ph ph-trash text-sm"></i></button>
+                  <button type="button" data-action="makeCover" data-id="${clip.id}" aria-label="複製資料去封面生成器" title="複製資料去封面生成器" class="min-w-[36px] min-h-[36px] flex items-center justify-center rounded-lg bg-asphalt hover:bg-panelHover text-led"><i class="ph ph-paint-brush-broad text-sm"></i></button>
+                  <button type="button" data-action="copyTitle" data-id="${clip.id}" aria-label="複製 YouTube 標題" title="複製 YouTube 標題" class="min-w-[36px] min-h-[36px] flex items-center justify-center rounded-lg bg-asphalt hover:bg-panelHover text-cream"><i class="ph ph-copy text-sm"></i></button>
+                  ${clip.ytUrl ? `<a href="${escapeHtml(clip.ytUrl)}" target="_blank" rel="noopener" aria-label="開啟 YouTube 影片" title="開啟 YouTube" class="min-w-[36px] min-h-[36px] flex items-center justify-center rounded-lg bg-asphalt hover:bg-panelHover text-red-400"><i class="ph ph-youtube-logo text-sm"></i></a>` : ''}
+                  <button type="button" data-action="cycle" data-id="${clip.id}" aria-label="${st.nextLabel}" title="${st.nextLabel}" class="min-w-[36px] min-h-[36px] flex items-center justify-center rounded-lg bg-asphalt hover:bg-panelHover text-led"><i class="ph ph-arrow-right text-sm"></i></button>
+                  <button type="button" data-action="edit" data-id="${clip.id}" aria-label="編輯紀錄" title="編輯" class="min-w-[36px] min-h-[36px] flex items-center justify-center rounded-lg bg-asphalt hover:bg-panelHover text-cream"><i class="ph ph-pencil-simple text-sm"></i></button>
+                  <button type="button" data-action="delete" data-id="${clip.id}" aria-label="刪除紀錄" title="刪除" class="min-w-[36px] min-h-[36px] flex items-center justify-center rounded-lg bg-asphalt hover:bg-panelHover text-rose-400"><i class="ph ph-trash text-sm"></i></button>
                 </div>
               </div>
             </article>
@@ -1476,15 +1643,15 @@
             </div>
 
             <div class="flex-1 min-w-0 flex flex-col justify-between gap-3">
-              <div class="flex flex-wrap items-start justify-between gap-2">
-                <div class="flex items-center gap-2.5 min-w-0">
-                  <span class="px-2.5 py-1 rounded-lg text-xs font-bold shrink-0 ${op.badgeBg} ${op.badgeText}">${op.name}</span>
+              <div class="flex items-start justify-between gap-2">
+                <div class="flex items-start gap-2.5 min-w-0">
+                  <span class="px-2.5 py-1 rounded-lg text-xs font-bold shrink-0 mt-0.5 ${op.badgeBg} ${op.badgeText}">${op.name}</span>
                   <div class="led-blind px-3 py-0.5 rounded-lg font-mono text-lg font-bold tracking-wider shrink-0">
                     ${escapeHtml(clip.route || '---')}
                   </div>
                   <div class="min-w-0">
-                    <h3 class="text-base font-semibold text-cream truncate">${escapeHtml(primaryHeadline)}</h3>
-                    ${secondarySub ? `<p class="text-xs text-muted truncate">${escapeHtml(secondarySub)}</p>` : ''}
+                    <h3 class="text-sm sm:text-base font-semibold text-cream leading-snug break-words">${escapeHtml(displayTitle)}</h3>
+                    ${terminiLine ? `<p class="text-xs text-muted truncate mt-0.5">${escapeHtml(terminiLine)}</p>` : ''}
                   </div>
                 </div>
 
@@ -1493,7 +1660,7 @@
                 </span>
               </div>
 
-              <div class="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-line/80">
+              <div class="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-line/80">
                 <div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted">
                   ${clip.model ? `<span class="inline-flex items-center gap-1.5 font-mono text-cream/90"><i class="ph ph-bus text-led"></i>${escapeHtml(clip.model)}</span>` : ''}
                   ${clip.plate ? `<span class="inline-flex items-center gap-1.5 font-mono px-2 py-0.5 rounded bg-asphalt border border-line text-cream">${escapeHtml(clip.plate)}</span>` : ''}
@@ -1501,39 +1668,39 @@
                   ${clip.location ? `<span class="inline-flex items-center gap-1"><i class="ph ph-map-pin"></i>${escapeHtml(clip.location)}</span>` : ''}
                 </div>
 
-                <div class="flex items-center gap-1.5 ml-auto">
-                  <button type="button" data-action="makeCover" data-id="${clip.id}" title="用封面生成器製作封面"
-                    class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-asphalt hover:bg-panelHover border border-line text-xs font-medium text-led transition-colors">
+                <div class="flex flex-wrap items-center gap-1.5 ml-auto">
+                  <button type="button" data-action="makeCover" data-id="${clip.id}" aria-label="複製資料去封面生成器"
+                    class="min-h-[38px] inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-asphalt hover:bg-panelHover border border-line text-xs font-medium text-led transition-colors">
                     <i class="ph ph-paint-brush-broad text-sm"></i>
-                    <span class="hidden md:inline">整封面</span>
+                    <span>整封面</span>
                   </button>
 
-                  <button type="button" data-action="copyTitle" data-id="${clip.id}" title="一鍵複製 YouTube 標題"
-                    class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-asphalt hover:bg-panelHover border border-line text-xs font-medium text-cream transition-colors">
+                  <button type="button" data-action="copyTitle" data-id="${clip.id}" aria-label="複製 YouTube 標題"
+                    class="min-h-[38px] inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-asphalt hover:bg-panelHover border border-line text-xs font-medium text-cream transition-colors">
                     <i class="ph ph-copy text-sm"></i>
-                    <span class="hidden md:inline">複製標題</span>
+                    <span>複製標題</span>
                   </button>
 
                   ${clip.ytUrl ? `
                     <a href="${escapeHtml(clip.ytUrl)}" target="_blank" rel="noopener"
-                      class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-asphalt hover:bg-panelHover border border-line text-xs font-medium text-red-400 transition-colors">
+                      class="min-h-[38px] inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-asphalt hover:bg-panelHover border border-line text-xs font-medium text-red-400 transition-colors">
                       <i class="ph ph-youtube-logo text-sm"></i>
                       <span>觀看</span>
                     </a>` : ''}
 
                   <button type="button" data-action="cycle" data-id="${clip.id}"
-                    class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-asphalt hover:bg-panelHover border border-line text-xs font-medium text-led transition-colors">
+                    class="min-h-[38px] inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-asphalt hover:bg-panelHover border border-line text-xs font-medium text-led transition-colors">
                     <span>${st.nextLabel}</span>
                     <i class="ph ph-arrow-right text-xs"></i>
                   </button>
 
-                  <button type="button" data-action="edit" data-id="${clip.id}" title="編輯紀錄"
-                    class="p-1.5 rounded-lg bg-asphalt hover:bg-panelHover border border-line text-cream transition-colors">
+                  <button type="button" data-action="edit" data-id="${clip.id}" aria-label="編輯紀錄" title="編輯紀錄"
+                    class="min-w-[38px] min-h-[38px] flex items-center justify-center rounded-lg bg-asphalt hover:bg-panelHover border border-line text-cream transition-colors">
                     <i class="ph ph-pencil-simple text-sm"></i>
                   </button>
 
-                  <button type="button" data-action="delete" data-id="${clip.id}" title="刪除紀錄"
-                    class="p-1.5 rounded-lg bg-asphalt hover:bg-panelHover border border-line text-rose-400 transition-colors">
+                  <button type="button" data-action="delete" data-id="${clip.id}" aria-label="刪除紀錄" title="刪除紀錄"
+                    class="min-w-[38px] min-h-[38px] flex items-center justify-center rounded-lg bg-asphalt hover:bg-panelHover border border-line text-rose-400 transition-colors">
                     <i class="ph ph-trash text-sm"></i>
                   </button>
                 </div>
@@ -1553,17 +1720,17 @@
         .replace(/"/g, '&quot;');
     }
 
-    // 11. MODAL, GAME ADAPTIVE FIELDS & STATUS TRANSITION
+    // 12. MODAL, AUTO-TITLE LISTENERS & COVER STUDIO TRANSFER
     function renderQuickModelPills() {
       const container = document.getElementById('quickModelPills');
       const isSim = selectedOperator === 'OMSI' || selectedOperator === 'PIDS';
       const items = isSim ? SIM_PRESETS : REAL_BUS_MODELS;
 
       document.getElementById('modelFieldLabel').textContent = isSim ? '遊戲地圖 / 車包或報站機系統' : '車型';
-      document.getElementById('locationFieldLabel').textContent = isSim ? '遊戲路線 / 場景' : '拍攝地點 / 路段';
+      document.getElementById('locationFieldLabel').textContent = isSim ? '遊戲路線 / 場景' : '途經 / 拍攝地點';
 
       container.innerHTML = items.map(item =>
-        `<button type="button" class="model-pill px-2 py-0.5 rounded-md bg-asphalt hover:bg-panelHover border border-line text-[11px] font-mono text-muted hover:text-cream">${escapeHtml(item)}</button>`
+        `<button type="button" class="model-pill min-h-[30px] px-2.5 py-1 rounded-md bg-asphalt hover:bg-panelHover border border-line text-xs font-mono text-muted hover:text-cream">${escapeHtml(item)}</button>`
       ).join('');
     }
 
@@ -1572,17 +1739,17 @@
         const op = btn.dataset.op;
         const meta = OPERATOR_META[op] || OPERATOR_META.OTHER;
         if (op === selectedOperator) {
-          btn.className = `op-select-btn py-2 px-2 rounded-xl ${meta.badgeBg} ${meta.badgeText} text-xs font-semibold border border-transparent transition-all`;
+          btn.className = `op-select-btn min-h-[38px] py-2 px-2 rounded-xl ${meta.badgeBg} ${meta.badgeText} text-xs font-semibold border border-transparent transition-all`;
         } else {
-          btn.className = 'op-select-btn py-2 px-2 rounded-xl bg-asphalt text-muted hover:text-cream text-xs font-medium border border-line transition-all';
+          btn.className = 'op-select-btn min-h-[38px] py-2 px-2 rounded-xl bg-asphalt text-muted hover:text-cream text-xs font-medium border border-line transition-all';
         }
       });
 
       document.querySelectorAll('.deck-btn').forEach(btn => {
         if (btn.dataset.deck === selectedDeck) {
-          btn.className = 'deck-btn py-2 px-3 rounded-xl bg-led text-asphalt text-xs font-semibold border border-led transition-all';
+          btn.className = 'deck-btn min-h-[38px] py-2 px-3 rounded-xl bg-led text-asphalt text-xs font-semibold border border-led transition-all';
         } else {
-          btn.className = 'deck-btn py-2 px-3 rounded-xl bg-asphalt text-muted hover:text-cream text-xs font-medium border border-line transition-all';
+          btn.className = 'deck-btn min-h-[38px] py-2 px-3 rounded-xl bg-asphalt text-muted hover:text-cream text-xs font-medium border border-line transition-all';
         }
       });
 
@@ -1591,9 +1758,9 @@
 
       document.querySelectorAll('.st-select-btn').forEach(btn => {
         if (btn.dataset.st === selectedStatus) {
-          btn.className = 'st-select-btn py-2 px-2.5 rounded-xl bg-led/20 border border-led text-led text-xs font-semibold transition-all';
+          btn.className = 'st-select-btn min-h-[38px] py-2 px-1.5 rounded-xl bg-led/20 border border-led text-led text-xs font-semibold transition-all';
         } else {
-          btn.className = 'st-select-btn py-2 px-2.5 rounded-xl bg-asphalt border border-line text-muted hover:text-cream text-xs font-medium transition-all';
+          btn.className = 'st-select-btn min-h-[38px] py-2 px-1.5 rounded-xl bg-asphalt border border-line text-muted hover:text-cream text-xs font-medium transition-all';
         }
       });
 
@@ -1616,40 +1783,100 @@
 
       if (clipToEdit) {
         titleEl.textContent = '編輯行車記錄片 / 遊戲片';
+        isTitleManuallyEdited = Boolean(clipToEdit.title);
         document.getElementById('clipId').value = clipToEdit.id;
         document.getElementById('ytVideoIdHidden').value = clipToEdit.ytVideoId || '';
         selectedOperator = clipToEdit.operator || 'KMB';
-        selectedDeck = clipToEdit.deck || '上層';
+        selectedDeck = clipToEdit.deck === '下層' ? '下層展望' : (clipToEdit.deck === '上層' ? '上層展望' : (clipToEdit.deck || '上層展望'));
         selectedStatus = clipToEdit.status || 'untransferred';
         document.getElementById('routeInput').value = clipToEdit.route || '';
-        document.getElementById('directionInput').value = clipToEdit.direction || '';
+        document.getElementById('bracketTagInput').value = clipToEdit.bracketTag || '';
+        document.getElementById('originBilingualInput').value = clipToEdit.originBilingual || '';
+        document.getElementById('destBilingualInput').value = clipToEdit.destBilingual || clipToEdit.direction || '';
         document.getElementById('modelInput').value = clipToEdit.model || '';
         document.getElementById('plateInput').value = clipToEdit.plate || '';
         document.getElementById('dateInput').value = clipToEdit.date || '';
         document.getElementById('locationInput').value = clipToEdit.location || '';
-        document.getElementById('titleInput').value = clipToEdit.title || '';
+        document.getElementById('titleInput').value = clipToEdit.title || buildYouTubeTitle(clipToEdit);
         document.getElementById('ytUrlInput').value = clipToEdit.ytUrl || '';
         document.getElementById('coverUrlInput').value = clipToEdit.cover?.startsWith('http') ? clipToEdit.cover : '';
         setCoverPreview(clipToEdit.cover || '');
       } else {
         titleEl.textContent = '新增行車記錄片 / 遊戲片';
+        isTitleManuallyEdited = false;
         document.getElementById('clipForm').reset();
         document.getElementById('clipId').value = '';
         document.getElementById('ytVideoIdHidden').value = '';
         selectedOperator = 'KMB';
-        selectedDeck = '上層';
+        selectedDeck = '下層展望';
         selectedStatus = 'untransferred';
         document.getElementById('dateInput').value = new Date().toISOString().split('T')[0];
         setCoverPreview('');
+        updateAutoGeneratedTitleField();
       }
 
       syncFormSelectorsUI();
       modal.classList.remove('hidden');
+      setTimeout(() => document.getElementById('routeInput').focus(), 60);
     }
 
     function closeClipModal() {
       document.getElementById('clipModal').classList.add('hidden');
     }
+
+    function collectCurrentFormClipObj() {
+      const existingId = document.getElementById('clipId').value;
+      const ytUrlVal = document.getElementById('ytUrlInput').value.trim();
+      const extractedVid = extractYouTubeVideoId(ytUrlVal) || document.getElementById('ytVideoIdHidden').value || '';
+      const originVal = document.getElementById('originBilingualInput').value.trim();
+      const destVal = document.getElementById('destBilingualInput').value.trim();
+
+      return {
+        id: existingId || ('clip_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6)),
+        ytVideoId: extractedVid,
+        operator: selectedOperator,
+        route: document.getElementById('routeInput').value.trim().toUpperCase(),
+        bracketTag: document.getElementById('bracketTagInput').value.trim(),
+        originBilingual: originVal,
+        destBilingual: destVal,
+        direction: destVal ? `往${destVal}` : '',
+        model: document.getElementById('modelInput').value.trim(),
+        plate: document.getElementById('plateInput').value.trim().toUpperCase(),
+        deck: selectedDeck,
+        date: document.getElementById('dateInput').value,
+        location: document.getElementById('locationInput').value.trim(),
+        status: selectedStatus,
+        title: document.getElementById('titleInput').value.trim(),
+        ytUrl: ytUrlVal,
+        cover: currentCoverDataUrl,
+        updatedAt: Date.now()
+      };
+    }
+
+    ['routeInput', 'bracketTagInput', 'originBilingualInput', 'destBilingualInput'].forEach(fieldId => {
+      document.getElementById(fieldId).addEventListener('input', updateAutoGeneratedTitleField);
+    });
+
+    document.getElementById('titleInput').addEventListener('input', () => {
+      isTitleManuallyEdited = true;
+    });
+
+    document.getElementById('btnRegenerateTitle').addEventListener('click', () => {
+      isTitleManuallyEdited = false;
+      updateAutoGeneratedTitleField();
+      showToast('已按公式重新生成標準 YouTube 標題');
+    });
+
+    document.getElementById('btnSwapTermini').addEventListener('click', () => {
+      const origEl = document.getElementById('originBilingualInput');
+      const destEl = document.getElementById('destBilingualInput');
+      const temp = origEl.value;
+      origEl.value = destEl.value;
+      destEl.value = temp;
+      isTitleManuallyEdited = false;
+      updateAutoGeneratedTitleField();
+      showToast('已對調起點與終點');
+    });
 
     document.getElementById('btnNewClip').addEventListener('click', () => openClipModal());
     document.getElementById('btnEmptyAdd').addEventListener('click', () => openClipModal());
@@ -1657,46 +1884,33 @@
     document.getElementById('btnCancelModal').addEventListener('click', closeClipModal);
 
     document.getElementById('btnDesignCoverInModal').addEventListener('click', () => {
-      const draftClip = {
-        id: document.getElementById('clipId').value || null,
-        operator: selectedOperator,
-        route: document.getElementById('routeInput').value.trim(),
-        direction: document.getElementById('directionInput').value.trim(),
-        model: document.getElementById('modelInput').value.trim(),
-        plate: document.getElementById('plateInput').value.trim().toUpperCase(),
-        deck: selectedDeck,
-        location: document.getElementById('locationInput').value.trim(),
-        title: document.getElementById('titleInput').value.trim(),
-        cover: currentCoverDataUrl
-      };
+      const draftClip = collectCurrentFormClipObj();
       openThumbnailStudioWithClip(draftClip);
     });
 
-    document.getElementById('btnCopyModalYtTitle').addEventListener('click', () => {
-      const draftClip = {
-        operator: selectedOperator,
-        route: document.getElementById('routeInput').value.trim(),
-        direction: document.getElementById('directionInput').value.trim(),
-        model: document.getElementById('modelInput').value.trim(),
-        plate: document.getElementById('plateInput').value.trim().toUpperCase(),
-        deck: selectedDeck,
-        title: document.getElementById('titleInput').value.trim()
-      };
-      const generated = buildYouTubeTitle(draftClip);
-      if (!draftClip.title && generated) {
-        document.getElementById('titleInput').value = generated;
+    document.getElementById('btnSaveAndOpenCover').addEventListener('click', async () => {
+      const routeVal = document.getElementById('routeInput').value.trim();
+      if (!routeVal) {
+        showToast('請先填寫路線號碼再儲存並開啟封面生成器', 'error');
+        document.getElementById('routeInput').focus();
+        return;
       }
-      copyYouTubeTitleToClipboard(generated);
+      const clipObj = collectCurrentFormClipObj();
+      await persistClip(clipObj, true);
+      openThumbnailStudioWithClip(clipObj);
+    });
+
+    document.getElementById('btnCopyModalYtTitle').addEventListener('click', () => {
+      const titleVal = document.getElementById('titleInput').value.trim();
+      copyYouTubeTitleToClipboard(titleVal);
     });
 
     document.getElementById('operatorFormGroup').addEventListener('click', (e) => {
       const btn = e.target.closest('.op-select-btn');
       if (!btn) return;
       selectedOperator = btn.dataset.op;
-      if (selectedOperator === 'PIDS' && selectedDeck === '上層') {
-        selectedDeck = '模擬畫面';
-      }
       syncFormSelectorsUI();
+      updateAutoGeneratedTitleField();
     });
 
     document.getElementById('deckSelector').addEventListener('click', (e) => {
@@ -1704,6 +1918,7 @@
       if (!btn) return;
       selectedDeck = btn.dataset.deck;
       syncFormSelectorsUI();
+      updateAutoGeneratedTitleField();
     });
 
     document.getElementById('statusFormGroup').addEventListener('click', (e) => {
@@ -1724,28 +1939,7 @@
 
     document.getElementById('clipForm').addEventListener('submit', async (e) => {
       e.preventDefault();
-      const existingId = document.getElementById('clipId').value;
-      const ytUrlVal = document.getElementById('ytUrlInput').value.trim();
-      const extractedVid = extractYouTubeVideoId(ytUrlVal) || document.getElementById('ytVideoIdHidden').value || '';
-
-      const clipObj = {
-        id: existingId || ('clip_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6)),
-        ytVideoId: extractedVid,
-        operator: selectedOperator,
-        route: document.getElementById('routeInput').value.trim(),
-        direction: document.getElementById('directionInput').value.trim(),
-        model: document.getElementById('modelInput').value.trim(),
-        plate: document.getElementById('plateInput').value.trim().toUpperCase(),
-        deck: selectedDeck,
-        date: document.getElementById('dateInput').value,
-        location: document.getElementById('locationInput').value.trim(),
-        status: selectedStatus,
-        title: document.getElementById('titleInput').value.trim(),
-        ytUrl: ytUrlVal,
-        cover: currentCoverDataUrl,
-        updatedAt: Date.now()
-      };
-
+      const clipObj = collectCurrentFormClipObj();
       await persistClip(clipObj);
       closeClipModal();
     });
@@ -1806,7 +2000,8 @@
       if (action === 'makeCover') {
         openThumbnailStudioWithClip(clip);
       } else if (action === 'copyTitle') {
-        await copyYouTubeTitleToClipboard(buildYouTubeTitle(clip));
+        const titleToCopy = (clip.title && clip.title.trim()) ? clip.title.trim() : buildYouTubeTitle(clip);
+        await copyYouTubeTitleToClipboard(titleToCopy);
       } else if (action === 'edit') {
         openClipModal(clip);
       } else if (action === 'delete') {
@@ -1821,7 +2016,7 @@
       }
     });
 
-    // 12. FILTERING, SORTING, VIEW TOGGLE & JSON BACKUP
+    // 13. FILTERING, SORTING, VIEW TOGGLE & JSON BACKUP
     document.getElementById('statusFilterList').addEventListener('click', (e) => {
       const btn = e.target.closest('.status-tab');
       if (!btn) return;
@@ -1829,9 +2024,9 @@
 
       document.querySelectorAll('.status-tab').forEach(tab => {
         if (tab.dataset.status === currentStatusFilter) {
-          tab.className = 'status-tab active flex items-center justify-between px-3 py-2.5 rounded-xl bg-panel border border-led/60 text-left text-sm font-medium text-cream transition-all duration-200';
+          tab.className = 'status-tab active min-h-[42px] flex items-center justify-between px-3 py-2.5 rounded-xl bg-panel border border-led/60 text-left text-sm font-medium text-cream transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-led';
         } else {
-          tab.className = 'status-tab flex items-center justify-between px-3 py-2.5 rounded-xl bg-asphalt/60 hover:bg-panel border border-line text-left text-sm font-medium text-muted hover:text-cream transition-all duration-200';
+          tab.className = 'status-tab min-h-[42px] flex items-center justify-between px-3 py-2.5 rounded-xl bg-asphalt/60 hover:bg-panel border border-line text-left text-sm font-medium text-muted hover:text-cream transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-led';
         }
       });
       renderAll();
@@ -1844,9 +2039,9 @@
 
       document.querySelectorAll('.op-filter-btn').forEach(b => {
         if (b.dataset.op === currentOperatorFilter) {
-          b.className = 'op-filter-btn px-2.5 py-1 rounded-lg text-xs font-medium bg-led text-asphalt';
+          b.className = 'op-filter-btn min-h-[34px] px-3 py-1 rounded-lg text-xs font-medium bg-led text-asphalt';
         } else {
-          b.className = 'op-filter-btn px-2.5 py-1 rounded-lg text-xs font-medium bg-asphalt border border-line text-muted hover:text-cream';
+          b.className = 'op-filter-btn min-h-[34px] px-3 py-1 rounded-lg text-xs font-medium bg-asphalt border border-line text-muted hover:text-cream';
         }
       });
       renderAll();
@@ -1864,27 +2059,27 @@
 
     document.getElementById('btnViewDispatch').addEventListener('click', () => {
       viewMode = 'dispatch';
-      document.getElementById('btnViewDispatch').className = 'px-2.5 py-1 rounded-lg text-xs font-medium bg-panel text-cream border border-line';
-      document.getElementById('btnViewGrid').className = 'px-2.5 py-1 rounded-lg text-xs font-medium text-muted hover:text-cream';
+      document.getElementById('btnViewDispatch').className = 'min-w-[34px] min-h-[30px] px-2.5 py-1 rounded-lg text-xs font-medium bg-panel text-cream border border-line';
+      document.getElementById('btnViewGrid').className = 'min-w-[34px] min-h-[30px] px-2.5 py-1 rounded-lg text-xs font-medium text-muted hover:text-cream';
       renderAll();
     });
 
     document.getElementById('btnViewGrid').addEventListener('click', () => {
       viewMode = 'grid';
-      document.getElementById('btnViewGrid').className = 'px-2.5 py-1 rounded-lg text-xs font-medium bg-panel text-cream border border-line';
-      document.getElementById('btnViewDispatch').className = 'px-2.5 py-1 rounded-lg text-xs font-medium text-muted hover:text-cream';
+      document.getElementById('btnViewGrid').className = 'min-w-[34px] min-h-[30px] px-2.5 py-1 rounded-lg text-xs font-medium bg-panel text-cream border border-line';
+      document.getElementById('btnViewDispatch').className = 'min-w-[34px] min-h-[30px] px-2.5 py-1 rounded-lg text-xs font-medium text-muted hover:text-cream';
       renderAll();
     });
 
     document.getElementById('btnExportJson').addEventListener('click', () => {
-      const blob = new Blob([JSON.stringify(clips, null, 2)], { type: 'application/json' });
+      const blob = new Blob([JSON.stringify({ clips, fleetCacheDb }, null, 2)], { type: 'application/json' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
       a.download = `transitdeck-backup-${new Date().toISOString().split('T')[0]}.json`;
       a.click();
       URL.revokeObjectURL(url);
-      showToast('已匯出 JSON 備份檔案');
+      showToast('已匯出影片庫與車隊資料庫 JSON 備份');
     });
 
     document.getElementById('inputImportJson').addEventListener('change', (e) => {
@@ -1893,29 +2088,38 @@
       const reader = new FileReader();
       reader.onload = async (ev) => {
         try {
-          const imported = JSON.parse(ev.target.result);
-          if (!Array.isArray(imported)) throw new Error('Invalid format');
-          for (const item of imported) {
+          const parsed = JSON.parse(ev.target.result);
+          const importedClips = Array.isArray(parsed) ? parsed : (parsed.clips || []);
+          const importedFleet = parsed.fleetCacheDb || {};
+
+          if (Object.keys(importedFleet).length > 0) {
+            fleetCacheDb = { ...fleetCacheDb, ...importedFleet };
+            localStorage.setItem(FLEET_CACHE_DB_KEY, JSON.stringify(fleetCacheDb));
+            refreshFleetDbUI();
+          }
+
+          for (const item of importedClips) {
             if (item.id && item.route) {
               await persistClip(item, true);
             }
           }
-          showToast(`成功匯入 ${imported.length} 條紀錄`);
+          showToast(`成功匯入 ${importedClips.length} 條紀錄`);
         } catch {
-          showToast('匯入失敗：備份檔案格式不正確', 'error');
+          showToast('匯入失敗：請確認選擇正確的 TransitDeck JSON 備份檔', 'error');
         }
       };
       reader.readAsText(file);
     });
 
     // =========================================================================
-    // 13. YOUTUBE FULL ARCHIVE FETCH (UU... PLAYLIST + RSS FALLBACK)
+    // 14. YOUTUBE FULL ARCHIVE FETCH (INNERTUBE API + JINA READER + RSS)
     // =========================================================================
     function openYtModal() {
       const savedChannel = localStorage.getItem(YT_CHANNEL_STORAGE_KEY) || '';
       document.getElementById('ytChannelInput').value = savedChannel;
       document.getElementById('chkAutoSyncOnLoad').checked = localStorage.getItem(YT_AUTO_SYNC_KEY) !== 'false';
       document.getElementById('ytSyncModal').classList.remove('hidden');
+      setTimeout(() => document.getElementById('ytChannelInput').focus(), 60);
     }
 
     function closeYtModal() {
@@ -1997,94 +2201,90 @@
       const uploadsPlaylistId = channelId.startsWith('UC') ? ('UU' + channelId.slice(2)) : channelId;
       const playlistUrl = `https://www.youtube.com/playlist?list=${uploadsPlaylistId}&hl=zh-HK`;
 
-      function extractVideosFromObject(obj, depth = 0) {
-        if (!obj || typeof obj !== 'object' || depth > 25) return;
+      function addVideoItem(vid, titleText, publishedDate) {
+        if (!vid || vid.length !== 11 || seenIds.has(vid)) return;
+        seenIds.add(vid);
+        allVideos.push({
+          videoId: vid,
+          title: (titleText || '未命名影片').trim(),
+          published: publishedDate || new Date().toISOString().split('T')[0],
+          link: `https://www.youtube.com/watch?v=${vid}`,
+          thumb: `https://i.ytimg.com/vi/${vid}/hqdefault.jpg`
+        });
+      }
 
-        if (obj.playlistVideoRenderer && obj.playlistVideoRenderer.videoId) {
-          const r = obj.playlistVideoRenderer;
-          const vid = r.videoId;
-          if (!seenIds.has(vid)) {
-            seenIds.add(vid);
-            const titleText = r.title?.runs?.map(t => t.text).join('') || r.title?.simpleText || '未命名影片';
-            const ownerName = r.shortBylineText?.runs?.[0]?.text;
-            if (ownerName) {
-              localStorage.setItem(YT_CHANNEL_NAME_KEY, ownerName);
-            }
-            const infoRuns = r.videoInfo?.runs || [];
-            const rawDateInfo = infoRuns.map(x => x.text).join('');
-            const exactDateMatch = rawDateInfo.match(/(\d{4})年(\d{1,2})月(\d{1,2})日/);
-            const parsedDate = exactDateMatch
-              ? `${exactDateMatch[1]}-${exactDateMatch[2].padStart(2, '0')}-${exactDateMatch[3].padStart(2, '0')}`
-              : new Date().toISOString().split('T')[0];
-
-            allVideos.push({
-              videoId: vid,
-              title: titleText,
-              published: parsedDate,
-              link: `https://www.youtube.com/watch?v=${vid}`,
-              thumb: `https://i.ytimg.com/vi/${vid}/hqdefault.jpg`
+      // Route 1A: YouTube InnerTube public browse API
+      try {
+        const browseEndpoint = 'https://www.youtube.com/youtubei/v1/browse?prettyPrint=false';
+        const proxies = [
+          (u) => `https://corsproxy.io/?${encodeURIComponent(u)}`,
+          (u) => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(u)}`
+        ];
+        for (const buildProxy of proxies) {
+          try {
+            const res = await fetch(buildProxy(browseEndpoint), {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                context: {
+                  client: { clientName: 'WEB', clientVersion: '2.20260101.00.00', hl: 'zh-HK', gl: 'HK' }
+                },
+                browseId: `VL${uploadsPlaylistId}`
+              })
             });
-          }
-          return;
-        }
+            if (res.ok) {
+              const json = await res.json();
+              const headerOwner = json?.header?.playlistHeaderRenderer?.ownerText?.runs?.[0]?.text ||
+                                  json?.metadata?.playlistMetadataRenderer?.title?.replace(/^Uploads from\s+/i, '');
+              if (headerOwner) localStorage.setItem(YT_CHANNEL_NAME_KEY, headerOwner.trim());
 
-        if (Array.isArray(obj)) {
-          for (const item of obj) extractVideosFromObject(item, depth + 1);
-        } else {
-          for (const key of Object.keys(obj)) extractVideosFromObject(obj[key], depth + 1);
-        }
-      }
-
-      // Route 1: Full Uploads Playlist HTML
-      try {
-        const html = await fetchTextWithCorsFallback(playlistUrl);
-        if (html) {
-          const dataMatch = html.match(/var ytInitialData\s*=\s*(\{.+?\});\s*<\/script>/s) ||
-                            html.match(/window\["ytInitialData"\]\s*=\s*(\{.+?\});/s);
-          if (dataMatch) {
-            const initialData = JSON.parse(dataMatch[1]);
-            const headerTitle = initialData?.metadata?.playlistMetadataRenderer?.title ||
-                                initialData?.header?.playlistHeaderRenderer?.ownerText?.runs?.[0]?.text;
-            if (headerTitle) {
-              const cleanName = headerTitle.replace(/^Uploads from\s+/i, '').trim();
-              if (cleanName) localStorage.setItem(YT_CHANNEL_NAME_KEY, cleanName);
-            }
-            extractVideosFromObject(initialData);
-            if (allVideos.length > 0) {
-              return allVideos;
-            }
-          }
-        }
-      } catch (err) {
-        console.warn('Playlist full fetch fallback triggered:', err);
-      }
-
-      // Route 2: rss2json API fallback
-      const rssUrl = `https://www.youtube.com/feeds/videos.xml?channel_id=${channelId}`;
-      try {
-        const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`;
-        const res = await fetch(apiUrl);
-        if (res.ok) {
-          const data = await res.json();
-          if (data.status === 'ok' && Array.isArray(data.items) && data.items.length > 0) {
-            const channelTitle = data.feed?.title || data.items[0]?.author;
-            if (channelTitle) localStorage.setItem(YT_CHANNEL_NAME_KEY, channelTitle);
-            return data.items.map(item => {
-              const vidMatch = (item.guid || item.link || '').match(/(?:yt:video:|v=|\/)([\w-]{11})/);
-              const videoId = vidMatch ? vidMatch[1] : '';
-              return {
-                videoId,
-                title: item.title || '未命名影片',
-                published: (item.pubDate || '').split(' ')[0],
-                link: videoId ? `https://www.youtube.com/watch?v=${videoId}` : item.link,
-                thumb: videoId ? `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg` : (item.thumbnail || '')
+              const walk = (node, depth = 0) => {
+                if (!node || typeof node !== 'object' || depth > 25) return;
+                if (node.playlistVideoRenderer?.videoId) {
+                  const r = node.playlistVideoRenderer;
+                  const t = r.title?.runs?.map(x => x.text).join('') || r.title?.simpleText || '';
+                  const info = (r.videoInfo?.runs || []).map(x => x.text).join('');
+                  const dm = info.match(/(\d{4})年(\d{1,2})月(\d{1,2})日/);
+                  const pub = dm ? `${dm[1]}-${dm[2].padStart(2, '0')}-${dm[3].padStart(2, '0')}` : '';
+                  addVideoItem(r.videoId, t, pub);
+                  return;
+                }
+                if (Array.isArray(node)) node.forEach(x => walk(x, depth + 1));
+                else Object.keys(node).forEach(k => walk(node[k], depth + 1));
               };
-            });
-          }
+              walk(json);
+              if (allVideos.length > 0) return allVideos;
+            }
+          } catch {}
         }
       } catch {}
 
-      // Route 3: Direct XML RSS fallback
+      // Route 1B: Jina Reader full playlist markdown scraper
+      try {
+        const jinaRes = await fetch(`https://r.jina.ai/${playlistUrl}`);
+        if (jinaRes.ok) {
+          const mdText = await jinaRes.text();
+          const titleMatch = mdText.match(/^Title:\s*(.+)$/m);
+          if (titleMatch) {
+            const cleanChannel = titleMatch[1].replace(/^Uploads from\s+/i, '').replace(/\s*-\s*YouTube$/i, '').trim();
+            if (cleanChannel && !cleanChannel.includes('Playlist')) {
+              localStorage.setItem(YT_CHANNEL_NAME_KEY, cleanChannel);
+            }
+          }
+          const linkRegex = /\[([^\]]{3,150})\]\(https?:\/\/(?:www\.)?youtube\.com\/watch\?v=([\w-]{11})[^)]*\)/g;
+          let m;
+          while ((m = linkRegex.exec(mdText)) !== null) {
+            const rawTitle = m[1].replace(/!\[.*?\]\(.*?\)/g, '').trim();
+            if (rawTitle && !/^\d+:\d+$/.test(rawTitle) && rawTitle !== 'Watch later' && rawTitle !== 'Add to queue') {
+              addVideoItem(m[2], rawTitle, '');
+            }
+          }
+          if (allVideos.length > 0) return allVideos;
+        }
+      } catch {}
+
+      // Route 2: Direct Official XML RSS via CORS proxy (15 videos)
+      const rssUrl = `https://www.youtube.com/feeds/videos.xml?channel_id=${channelId}`;
       const xmlText = await fetchTextWithCorsFallback(rssUrl);
       if (xmlText) {
         const parser = new DOMParser();
@@ -2093,21 +2293,37 @@
         if (entries.length > 0) {
           const authorName = xmlDoc.querySelector('author > name')?.textContent;
           if (authorName) localStorage.setItem(YT_CHANNEL_NAME_KEY, authorName);
-          return entries.map(entry => {
+          entries.forEach(entry => {
             const videoId = entry.querySelector('videoId')?.textContent ||
                             entry.getElementsByTagName('yt:videoId')[0]?.textContent || '';
-            return {
-              videoId,
-              title: entry.querySelector('title')?.textContent || '未命名影片',
-              published: (entry.querySelector('published')?.textContent || '').split('T')[0],
-              link: `https://www.youtube.com/watch?v=${videoId}`,
-              thumb: `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`
-            };
+            const title = entry.querySelector('title')?.textContent || '未命名影片';
+            const pub = (entry.querySelector('published')?.textContent || '').split('T')[0];
+            addVideoItem(videoId, title, pub);
           });
+          if (allVideos.length > 0) return allVideos;
         }
       }
 
-      throw new Error('暫時無法讀取該頻道清單，請確認該頻道有公開影片或稍後再試');
+      // Route 3: rss2json last resort (10 videos)
+      try {
+        const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`;
+        const res = await fetch(apiUrl);
+        if (res.ok) {
+          const data = await res.json();
+          if (data.status === 'ok' && Array.isArray(data.items) && data.items.length > 0) {
+            const channelTitle = data.feed?.title || data.items[0]?.author;
+            if (channelTitle) localStorage.setItem(YT_CHANNEL_NAME_KEY, channelTitle);
+            data.items.forEach(item => {
+              const vidMatch = (item.guid || item.link || '').match(/(?:yt:video:|v=|\/)([\w-]{11})/);
+              const videoId = vidMatch ? vidMatch[1] : '';
+              addVideoItem(videoId, item.title, (item.pubDate || '').split(' ')[0]);
+            });
+            if (allVideos.length > 0) return allVideos;
+          }
+        }
+      } catch {}
+
+      throw new Error('暫時無法讀取該頻道清單，請確認該頻道有公開影片並直接貼上 UC 開頭 ID 再試');
     }
 
     function detectTransitMetadataFromTitle(title) {
@@ -2136,7 +2352,7 @@
 
       if (!silent) {
         statusBox.classList.remove('hidden');
-        statusBox.textContent = '正在連接頻道並截取過往所有公開影片...';
+        statusBox.textContent = '正在連接頻道並透過 InnerTube / 播放清單線路截取過往所有公開影片...';
         resultsList.innerHTML = '';
       }
 
@@ -2179,6 +2395,9 @@
             ytVideoId: video.videoId,
             operator: parsed.operator,
             route: parsed.route,
+            bracketTag: '',
+            originBilingual: '',
+            destBilingual: '',
             direction: '',
             model: '',
             plate: parsed.plate,
@@ -2206,9 +2425,9 @@
             <img src="${escapeHtml(v.thumb)}" alt="${escapeHtml(v.title)}" class="w-24 aspect-video rounded-lg object-cover border border-line shrink-0" />
             <div class="flex-1 min-w-0">
               <div class="text-xs font-medium text-cream truncate">${escapeHtml(v.title)}</div>
-              <div class="text-[11px] font-mono text-muted mt-0.5">${escapeHtml(v.published)} · 已自動儲存至影片庫</div>
+              <div class="text-xs font-mono text-muted mt-0.5">${escapeHtml(v.published)} · 已自動儲存至影片庫</div>
             </div>
-            <span class="px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-300 text-[11px] font-medium shrink-0">已入庫</span>
+            <span class="px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-300 text-xs font-medium shrink-0">已入庫</span>
           </div>
         `).join('');
       }
@@ -2246,7 +2465,8 @@
       }
     });
 
-    // Boot: Check connected YouTube channel and run silent auto-sync if enabled
+    // Boot: Load 1005.idv.hk local fleet cache DB & check connected YouTube channel
+    loadFleetCacheDb();
     updateConnectedChannelUI();
     setTimeout(() => {
       const savedChannel = localStorage.getItem(YT_CHANNEL_STORAGE_KEY);
