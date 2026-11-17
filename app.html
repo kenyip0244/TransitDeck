@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>TransitDeck — 交通影視與模擬素材調度片倉</title>
-  <meta name="description" content="專為巴士迷、鐵路迷及 OMSI 2 / 報站機模擬創作者設計的雲端調度片倉，支援 YouTube 頻道自動同步儲存及多維度排序。" />
+  <title>TransitDeck — 行車記錄片與模擬遊戲片管理庫</title>
+  <meta name="description" content="專為拍巴士、鐵路行車記錄片同 OMSI 2 / 報站機遊戲片的創作者設計的雲端影片庫，支援 YouTube 頻道自動同步儲存及多維度排序。" />
   <meta name="theme-color" content="#0A0B0D" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -130,9 +130,9 @@
       document.head.appendChild(faviconLink);
 
       const manifest = {
-        name: 'TransitDeck — 交通影視與模擬素材片倉',
+        name: 'TransitDeck — 行車記錄片與模擬遊戲片管理庫',
         short_name: 'TransitDeck',
-        description: '記錄未過機、待剪輯與已上載 YouTube 的巴士、鐵路及 OMSI / 報站機模擬影片庫',
+        description: '記錄未傳入電腦、待剪輯與已上載 YouTube 的巴士、鐵路及 OMSI / 報站機遊戲影片庫',
         start_url: './app.html',
         display: 'standalone',
         background_color: '#0A0B0D',
@@ -199,16 +199,16 @@
     </div>
   </header>
 
-  <!-- Main Asymmetric Dispatch Workspace -->
+  <!-- Main Asymmetric Workspace -->
   <main class="flex-1 max-w-7xl w-full mx-auto px-3 sm:px-6 py-5 sm:py-6">
     <div class="flex flex-col lg:flex-row gap-6 items-start">
 
-      <!-- Left Dispatch Control Console -->
+      <!-- Left Control Console -->
       <aside class="w-full lg:w-72 shrink-0 space-y-4 lg:sticky lg:top-22">
-        <!-- Dispatch Status Board -->
+        <!-- Video Progress Board -->
         <section class="p-4 rounded-2xl bg-depot border border-line space-y-3">
           <div class="flex items-center justify-between">
-            <h2 class="text-sm font-semibold text-cream">片倉調度狀態</h2>
+            <h2 class="text-sm font-semibold text-cream">影片處理進度</h2>
             <span id="statTotal" class="font-mono text-xs text-muted font-tabular">共 0 條</span>
           </div>
 
@@ -226,7 +226,7 @@
               class="status-tab flex items-center justify-between px-3 py-2.5 rounded-xl bg-asphalt/60 hover:bg-panel border border-line text-left text-sm font-medium text-muted hover:text-cream transition-all duration-200">
               <span class="flex items-center gap-2">
                 <i class="ph ph-sd-card text-rose-400"></i>
-                <span>未過機</span>
+                <span>未傳入電腦</span>
               </span>
               <span id="countUntransferred" class="font-mono text-xs font-tabular">0</span>
             </button>
@@ -235,7 +235,7 @@
               class="status-tab flex items-center justify-between px-3 py-2.5 rounded-xl bg-asphalt/60 hover:bg-panel border border-line text-left text-sm font-medium text-muted hover:text-cream transition-all duration-200">
               <span class="flex items-center gap-2">
                 <i class="ph ph-hard-drive text-sky-400"></i>
-                <span>已過機待剪</span>
+                <span>已傳入待剪</span>
               </span>
               <span id="countTransferred" class="font-mono text-xs font-tabular">0</span>
             </button>
@@ -269,7 +269,7 @@
           </div>
 
           <div class="space-y-2">
-            <div class="text-xs text-muted">營運商與模擬類別篩選</div>
+            <div class="text-xs text-muted">營運商與遊戲類別篩選</div>
             <div class="flex flex-wrap gap-1.5" id="operatorFilterGroup">
               <button type="button" data-op="ALL" class="op-filter-btn px-2.5 py-1 rounded-lg text-xs font-medium bg-led text-asphalt">全部</button>
               <button type="button" data-op="KMB" class="op-filter-btn px-2.5 py-1 rounded-lg text-xs font-medium bg-asphalt border border-line text-muted hover:text-cream">九巴</button>
@@ -310,12 +310,12 @@
         </section>
       </aside>
 
-      <!-- Right Dispatch Sheet List -->
+      <!-- Right Video List -->
       <section class="flex-1 w-full min-w-0 space-y-4">
         <!-- View & Sort Control Bar -->
         <div class="flex flex-wrap items-center justify-between gap-3 px-1">
           <div class="text-sm text-muted">
-            顯示 <span id="visibleCount" class="font-mono text-cream font-semibold font-tabular">0</span> 項影片與模擬紀錄
+            顯示 <span id="visibleCount" class="font-mono text-cream font-semibold font-tabular">0</span> 項行車記錄片與遊戲片
           </div>
 
           <div class="flex items-center gap-2">
@@ -334,7 +334,7 @@
 
             <!-- View Mode Switch -->
             <div class="flex items-center gap-1 bg-depot p-1 rounded-xl border border-line">
-              <button id="btnViewDispatch" type="button" title="調度單檢視"
+              <button id="btnViewDispatch" type="button" title="列表檢視"
                 class="px-2.5 py-1 rounded-lg text-xs font-medium bg-panel text-cream border border-line">
                 <i class="ph ph-rows text-sm"></i>
               </button>
@@ -364,16 +364,16 @@
             <i class="ph ph-bus text-3xl"></i>
           </div>
           <div class="max-w-md mx-auto space-y-1.5">
-            <h3 class="text-lg font-semibold text-cream">片倉暫時未有符合條件的影片</h3>
+            <h3 class="text-lg font-semibold text-cream">影片庫暫時未有符合條件的紀錄</h3>
             <p class="text-sm text-muted leading-relaxed">
-              用電話影完封面圖並記錄路線、車牌同拍攝地點（支援巴士、鐵路、OMSI 2 及報站機模擬），或連接 YouTube 頻道自動匯入並儲存過往全部公開影片。
+              用電話影完封面圖並記錄路線、車牌同拍攝地點（支援行車記錄片、OMSI 2 及報站機遊戲片），或連接 YouTube 頻道自動匯入並儲存過往全部公開影片。
             </p>
           </div>
           <div class="pt-2 flex flex-wrap items-center justify-center gap-3">
             <button id="btnEmptyAdd" type="button"
               class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-led hover:bg-amber-400 text-sm font-semibold text-asphalt transition-colors">
               <i class="ph ph-plus-bold"></i>
-              <span>建立拍片 / 模擬紀錄</span>
+              <span>建立拍片 / 遊戲片紀錄</span>
             </button>
             <button id="btnEmptyYt" type="button"
               class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-panel hover:bg-panelHover border border-line text-sm font-medium text-cream transition-colors">
@@ -394,7 +394,7 @@
   <footer class="border-t border-line py-6 mt-12">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-muted">
       <div>TransitDeck © 2026 | Powered by SZPTF</div>
-      <div class="font-mono">Bus · Rail · OMSI 2 · PIDS Simulator Dispatch</div>
+      <div class="font-mono">Bus · Rail · OMSI 2 · PIDS Video Manager</div>
     </div>
   </footer>
 
@@ -407,7 +407,7 @@
         <div class="px-5 py-4 border-b border-line flex items-center justify-between">
           <div class="flex items-center gap-2.5">
             <span class="w-2.5 h-2.5 rounded-full bg-led"></span>
-            <h2 id="modalTitle" class="text-base sm:text-lg font-semibold text-cream">新增拍片 / 模擬紀錄</h2>
+            <h2 id="modalTitle" class="text-base sm:text-lg font-semibold text-cream">新增行車記錄片 / 遊戲片</h2>
           </div>
           <button id="btnCloseModal" type="button"
             class="w-8 h-8 rounded-lg bg-panel hover:bg-panelHover border border-line flex items-center justify-center text-muted hover:text-cream transition-colors">
@@ -422,7 +422,7 @@
           <!-- Left / Top Column: Cover Image Upload & Live Preview -->
           <div class="lg:col-span-5 space-y-3">
             <div class="flex items-center justify-between">
-              <label class="text-sm font-medium text-cream">封面圖 / 模擬截圖對照</label>
+              <label class="text-sm font-medium text-cream">封面圖 / 遊戲截圖對照</label>
               <button id="btnClearCover" type="button" class="hidden text-xs text-rose-400 hover:underline">移除圖片</button>
             </div>
 
@@ -433,7 +433,7 @@
                 <div class="w-11 h-11 mx-auto rounded-xl bg-panel border border-line flex items-center justify-center text-led group-hover:scale-105 transition-transform">
                   <i class="ph ph-image-square text-2xl"></i>
                 </div>
-                <p class="text-xs sm:text-sm text-cream font-medium">用電話影完封面圖或上載模擬截圖，方便核對路線與車牌</p>
+                <p class="text-xs sm:text-sm text-cream font-medium">用電話影完封面圖或上載遊戲截圖，方便核對路線與車牌</p>
                 <p class="text-xs text-muted">支援 JPG / PNG / WebP（自動壓縮優化雲端同步）</p>
               </div>
               <input id="coverFileInput" type="file" accept="image/*" class="hidden" />
@@ -455,10 +455,10 @@
             </div>
           </div>
 
-          <!-- Right / Bottom Column: Vehicle / Simulator Fields -->
+          <!-- Right / Bottom Column: Vehicle / Game Fields -->
           <div class="lg:col-span-7 space-y-4">
             <div class="space-y-1.5">
-              <label class="text-xs text-muted">營運商 / 模擬器類別</label>
+              <label class="text-xs text-muted">營運商 / 遊戲類別</label>
               <div class="grid grid-cols-4 gap-1.5" id="operatorFormGroup">
                 <button type="button" data-op="KMB" class="op-select-btn py-2 px-2 rounded-xl bg-kmb text-white text-xs font-semibold border border-transparent transition-all">九巴 KMB</button>
                 <button type="button" data-op="CTB" class="op-select-btn py-2 px-2 rounded-xl bg-asphalt text-muted hover:text-cream text-xs font-medium border border-line transition-all">城巴 CTB</button>
@@ -487,7 +487,7 @@
             <div class="space-y-1.5">
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div class="space-y-1">
-                  <label id="modelFieldLabel" for="modelInput" class="text-xs text-muted">車型 / 模擬地圖或系統</label>
+                  <label id="modelFieldLabel" for="modelInput" class="text-xs text-muted">車型 / 遊戲地圖或系統</label>
                   <input id="modelInput" type="text" placeholder="例如 ADL E500MMC / Winsome E500MMC"
                     class="w-full px-3 py-2 rounded-xl bg-asphalt border border-line text-sm text-cream placeholder:text-muted focus:outline-none focus:border-led" />
                 </div>
@@ -514,10 +514,10 @@
             </div>
 
             <div class="space-y-1.5">
-              <label class="text-xs text-muted">處理進度狀態</label>
+              <label class="text-xs text-muted">影片處理進度</label>
               <div class="grid grid-cols-2 sm:grid-cols-4 gap-2" id="statusFormGroup">
-                <button type="button" data-st="untransferred" class="st-select-btn py-2 px-2.5 rounded-xl bg-rose-500/20 border border-rose-500 text-rose-300 text-xs font-semibold">未過機</button>
-                <button type="button" data-st="transferred" class="st-select-btn py-2 px-2.5 rounded-xl bg-asphalt border border-line text-muted hover:text-cream text-xs font-medium">已過機待剪</button>
+                <button type="button" data-st="untransferred" class="st-select-btn py-2 px-2.5 rounded-xl bg-rose-500/20 border border-rose-500 text-rose-300 text-xs font-semibold">未傳入電腦</button>
+                <button type="button" data-st="transferred" class="st-select-btn py-2 px-2.5 rounded-xl bg-asphalt border border-line text-muted hover:text-cream text-xs font-medium">已傳入待剪</button>
                 <button type="button" data-st="ready" class="st-select-btn py-2 px-2.5 rounded-xl bg-asphalt border border-line text-muted hover:text-cream text-xs font-medium">已剪待上載</button>
                 <button type="button" data-st="uploaded" class="st-select-btn py-2 px-2.5 rounded-xl bg-asphalt border border-line text-muted hover:text-cream text-xs font-medium">已上載 YT</button>
               </div>
@@ -526,7 +526,7 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div class="space-y-1">
                 <label for="titleInput" class="text-xs text-muted">影片名稱 / 備註</label>
-                <input id="titleInput" type="text" placeholder="例如 [OMSI 2] 九巴 42C 模擬駕駛"
+                <input id="titleInput" type="text" placeholder="例如 [OMSI 2] 九巴 42C 遊戲片"
                   class="w-full px-3 py-2 rounded-xl bg-asphalt border border-line text-sm text-cream placeholder:text-muted focus:outline-none focus:border-led" />
               </div>
               <div id="ytUrlFieldWrapper" class="space-y-1">
@@ -612,7 +612,7 @@
 
         <div class="p-5 space-y-4">
           <p class="text-xs sm:text-sm text-muted leading-relaxed">
-            輸入你或朋友的公開 YouTube 頻道 <span class="font-mono text-cream">@Handle</span>（例如 <span class="font-mono text-cream">@szptf</span>）或 <span class="font-mono text-cream">UC...</span> 頻道 ID。系統會自動讀取頻道「所有上傳播放清單（UU...）」截取過往全部公開影片並直接儲存入片倉。
+            輸入你或朋友的公開 YouTube 頻道 <span class="font-mono text-cream">@Handle</span>（例如 <span class="font-mono text-cream">@szptf</span>）或 <span class="font-mono text-cream">UC...</span> 頻道 ID。系統會自動讀取頻道過往全部公開影片並直接儲存入影片庫。
           </p>
 
           <div class="flex flex-col sm:flex-row gap-2.5">
@@ -708,8 +708,8 @@
     };
 
     const STATUS_META = {
-      untransferred: { label: '未過機', pill: 'bg-rose-500/15 text-rose-300 border-rose-500/40', next: 'transferred', nextLabel: '標記已過機' },
-      transferred: { label: '已過機待剪', pill: 'bg-sky-500/15 text-sky-300 border-sky-500/40', next: 'ready', nextLabel: '標記已剪好' },
+      untransferred: { label: '未傳入電腦', pill: 'bg-rose-500/15 text-rose-300 border-rose-500/40', next: 'transferred', nextLabel: '標記已傳入' },
+      transferred: { label: '已傳入待剪', pill: 'bg-sky-500/15 text-sky-300 border-sky-500/40', next: 'ready', nextLabel: '標記已剪好' },
       ready: { label: '已剪待上載', pill: 'bg-amber-500/15 text-amber-300 border-amber-500/40', next: 'uploaded', nextLabel: '標記已上載' },
       uploaded: { label: '已上載 YT', pill: 'bg-emerald-500/15 text-emerald-300 border-emerald-500/40', next: 'untransferred', nextLabel: '重設狀態' }
     };
@@ -804,7 +804,7 @@
         try {
           const ref = doc(db, 'users', currentUser.uid, 'clips', clipObj.id);
           await setDoc(ref, clipObj);
-          if (!silent) showToast('已同步儲存至雲端片倉');
+          if (!silent) showToast('已同步儲存至雲端影片庫');
         } catch (err) {
           console.error(err);
           if (!silent) showToast('雲端儲存失敗，請檢查網絡或 Firestore 規則', 'error');
@@ -815,7 +815,7 @@
         else clips.unshift(clipObj);
         saveLocalClips();
         renderAll();
-        if (!silent) showToast('已儲存至本機片倉');
+        if (!silent) showToast('已儲存至本機影片庫');
       }
     }
 
@@ -887,7 +887,7 @@
         try {
           const provider = new GoogleAuthProvider();
           await signInWithPopup(auth, provider);
-          showToast('Google 帳號登入成功，正在同步片倉');
+          showToast('Google 帳號登入成功，正在同步影片庫');
         } catch (err) {
           console.error(err);
           showToast('登入失敗：請確認 Firebase 已授權目前網域', 'error');
@@ -985,7 +985,7 @@
       setCoverPreview('');
     });
 
-    // 6. SORTING & RENDERING DISPATCH CARDS
+    // 6. SORTING & RENDERING VIDEO CARDS
     function sortClipsList(list, sortMode) {
       const copy = [...list];
       switch (sortMode) {
@@ -1187,14 +1187,14 @@
         .replace(/"/g, '&quot;');
     }
 
-    // 7. MODAL, SIMULATOR ADAPTIVE FIELDS & STATUS TRANSITION
+    // 7. MODAL, GAME ADAPTIVE FIELDS & STATUS TRANSITION
     function renderQuickModelPills() {
       const container = document.getElementById('quickModelPills');
       const isSim = selectedOperator === 'OMSI' || selectedOperator === 'PIDS';
       const items = isSim ? SIM_PRESETS : REAL_BUS_MODELS;
 
-      document.getElementById('modelFieldLabel').textContent = isSim ? '模擬地圖 / 車包或報站機系統' : '車型';
-      document.getElementById('locationFieldLabel').textContent = isSim ? '模擬路線 / 場景' : '拍攝地點 / 路段';
+      document.getElementById('modelFieldLabel').textContent = isSim ? '遊戲地圖 / 車包或報站機系統' : '車型';
+      document.getElementById('locationFieldLabel').textContent = isSim ? '遊戲路線 / 場景' : '拍攝地點 / 路段';
 
       container.innerHTML = items.map(item =>
         `<button type="button" class="model-pill px-2 py-0.5 rounded-md bg-asphalt hover:bg-panelHover border border-line text-[11px] font-mono text-muted hover:text-cream">${escapeHtml(item)}</button>`
@@ -1247,7 +1247,7 @@
       const titleEl = document.getElementById('modalTitle');
 
       if (clipToEdit) {
-        titleEl.textContent = '編輯拍片 / 模擬紀錄';
+        titleEl.textContent = '編輯行車記錄片 / 遊戲片';
         document.getElementById('clipId').value = clipToEdit.id;
         document.getElementById('ytVideoIdHidden').value = clipToEdit.ytVideoId || '';
         selectedOperator = clipToEdit.operator || 'KMB';
@@ -1264,7 +1264,7 @@
         document.getElementById('coverUrlInput').value = clipToEdit.cover?.startsWith('http') ? clipToEdit.cover : '';
         setCoverPreview(clipToEdit.cover || '');
       } else {
-        titleEl.textContent = '新增拍片 / 模擬紀錄';
+        titleEl.textContent = '新增行車記錄片 / 遊戲片';
         document.getElementById('clipForm').reset();
         document.getElementById('clipId').value = '';
         document.getElementById('ytVideoIdHidden').value = '';
@@ -1479,7 +1479,7 @@
       a.download = `transitdeck-backup-${new Date().toISOString().split('T')[0]}.json`;
       a.click();
       URL.revokeObjectURL(url);
-      showToast('已匯出片倉備份檔案');
+      showToast('已匯出影片庫備份檔案');
     });
 
     document.getElementById('inputImportJson').addEventListener('change', (e) => {
@@ -1612,7 +1612,6 @@
       const allVideos = [];
       const seenIds = new Set();
 
-      // Convert UC... channel ID to UU... Uploads Playlist ID (contains ALL public videos)
       const uploadsPlaylistId = channelId.startsWith('UC') ? ('UU' + channelId.slice(2)) : channelId;
       const playlistUrl = `https://www.youtube.com/playlist?list=${uploadsPlaylistId}&hl=zh-HK`;
 
@@ -1825,7 +1824,7 @@
             <img src="${escapeHtml(v.thumb)}" alt="${escapeHtml(v.title)}" class="w-24 aspect-video rounded-lg object-cover border border-line shrink-0" />
             <div class="flex-1 min-w-0">
               <div class="text-xs font-medium text-cream truncate">${escapeHtml(v.title)}</div>
-              <div class="text-[11px] font-mono text-muted mt-0.5">${escapeHtml(v.published)} · 已自動儲存至片倉</div>
+              <div class="text-[11px] font-mono text-muted mt-0.5">${escapeHtml(v.published)} · 已自動儲存至影片庫</div>
             </div>
             <span class="px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-300 text-[11px] font-medium shrink-0">已入庫</span>
           </div>
@@ -1835,7 +1834,7 @@
       if (newSavedCount > 0 || matchedPendingCount > 0) {
         showToast(`YouTube 自動同步：新增 ${newSavedCount} 條，配對 ${matchedPendingCount} 條`);
       } else if (!silent) {
-        showToast('片倉已與 YouTube 頻道保持最新同步', 'info');
+        showToast('影片庫已與 YouTube 頻道保持最新同步', 'info');
       }
     }
 
