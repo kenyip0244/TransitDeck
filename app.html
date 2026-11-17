@@ -158,43 +158,41 @@
     </div>
   </div>
 
-  <!-- Top Navigation Header -->
-  <header class="sticky top-0 z-30 bg-asphalt/90 backdrop-blur-md border-b border-line">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-3">
+  <!-- Top Navigation Header (Mobile-Optimized No-Wrap Layout) -->
+  <header class="sticky top-0 z-30 bg-asphalt/95 backdrop-blur-md border-b border-line">
+    <div class="max-w-7xl mx-auto px-3 sm:px-6 h-16 flex items-center justify-between gap-2">
       <!-- Brand Identity -->
-      <div class="flex items-center gap-3 min-w-0">
-        <a href="./index.html" title="返回介紹頁" class="w-9 h-9 rounded-lg bg-led flex flex-col justify-between p-1.5 shrink-0 hover:opacity-90 transition-opacity">
-          <div class="w-full h-2.5 bg-asphalt rounded-[3px]"></div>
-          <div class="w-full h-2.5 bg-asphalt rounded-[3px]"></div>
+      <div class="flex items-center gap-2 sm:gap-3 min-w-0">
+        <a href="./index.html" title="返回介紹頁" class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-led flex flex-col justify-between p-1.5 shrink-0 hover:opacity-90 transition-opacity">
+          <div class="w-full h-2 bg-asphalt rounded-[3px]"></div>
+          <div class="w-full h-2 bg-asphalt rounded-[3px]"></div>
         </a>
-        <div class="min-w-0">
-          <div class="flex items-center gap-2">
-            <h1 class="text-lg sm:text-xl font-bold tracking-tight text-cream truncate">TransitDeck</h1>
-            <span id="syncModeBadge" class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-xs font-mono bg-depot border border-line text-muted">
-              <span id="syncDot" class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
-              <span id="syncLabel">未登入 (本機)</span>
-            </span>
-          </div>
+        <div class="flex items-center gap-1.5 sm:gap-2 min-w-0">
+          <h1 class="text-base sm:text-xl font-bold tracking-tight text-cream whitespace-nowrap">TransitDeck</h1>
+          <span id="syncModeBadge" class="inline-flex items-center gap-1 px-1.5 sm:px-2 py-0.5 rounded-md text-[11px] sm:text-xs font-mono bg-depot border border-line text-muted whitespace-nowrap shrink-0">
+            <span id="syncDot" class="w-1.5 h-1.5 rounded-full bg-amber-400 shrink-0"></span>
+            <span id="syncLabel">本機</span>
+          </span>
         </div>
       </div>
 
       <!-- Primary Actions -->
-      <div class="flex items-center gap-2 shrink-0">
-        <button id="btnOpenYtSync" type="button"
-          class="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-depot hover:bg-panelHover active:scale-[0.98] border border-line text-sm font-medium text-cream transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-led">
-          <i class="ph ph-youtube-logo text-base text-red-500"></i>
-          <span id="ytHeaderBtnText" class="hidden sm:inline">連接 YouTube</span>
+      <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
+        <button id="btnOpenYtSync" type="button" title="連接 YouTube 頻道"
+          class="inline-flex items-center justify-center gap-1.5 px-2.5 sm:px-3 py-2 rounded-lg bg-depot hover:bg-panelHover active:scale-[0.98] border border-line text-xs sm:text-sm font-medium text-cream transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-led">
+          <i class="ph ph-youtube-logo text-base text-red-500 shrink-0"></i>
+          <span id="ytHeaderBtnText" class="hidden sm:inline max-w-[140px] truncate">連接 YouTube</span>
         </button>
 
-        <button id="btnAuthAction" type="button"
-          class="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-depot hover:bg-panelHover active:scale-[0.98] border border-line text-sm font-medium text-cream transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-led">
-          <i id="authIcon" class="ph ph-cloud-arrow-up text-base text-led"></i>
+        <button id="btnAuthAction" type="button" title="Google 帳號雲端同步"
+          class="inline-flex items-center justify-center gap-1.5 px-2.5 sm:px-3 py-2 rounded-lg bg-depot hover:bg-panelHover active:scale-[0.98] border border-line text-xs sm:text-sm font-medium text-cream transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-led">
+          <i id="authIcon" class="ph ph-cloud-arrow-up text-base text-led shrink-0"></i>
           <span id="authLabel" class="hidden md:inline">登入同步</span>
         </button>
 
         <button id="btnNewClip" type="button"
-          class="inline-flex items-center gap-2 px-3.5 py-2 rounded-lg bg-led hover:bg-amber-400 active:scale-[0.98] text-sm font-semibold text-asphalt transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cream">
-          <i class="ph ph-plus-bold text-base"></i>
+          class="inline-flex items-center justify-center gap-1.5 px-3 sm:px-3.5 py-2 rounded-lg bg-led hover:bg-amber-400 active:scale-[0.98] text-xs sm:text-sm font-semibold text-asphalt transition-all duration-200 whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cream">
+          <i class="ph ph-plus-bold text-sm sm:text-base"></i>
           <span>新增紀錄</span>
         </button>
       </div>
@@ -202,7 +200,7 @@
   </header>
 
   <!-- Main Asymmetric Dispatch Workspace -->
-  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-6">
+  <main class="flex-1 max-w-7xl w-full mx-auto px-3 sm:px-6 py-5 sm:py-6">
     <div class="flex flex-col lg:flex-row gap-6 items-start">
 
       <!-- Left Dispatch Control Console -->
@@ -287,12 +285,12 @@
 
         <!-- Connected YouTube Channel Quick Bar -->
         <section id="connectedChannelCard" class="hidden p-4 rounded-2xl bg-depot border border-line space-y-2.5">
-          <div class="flex items-center justify-between">
-            <span class="inline-flex items-center gap-1.5 text-xs font-semibold text-cream">
-              <i class="ph ph-youtube-logo text-red-500 text-base"></i>
-              <span id="connectedChannelLabel">已連接頻道</span>
+          <div class="flex items-center justify-between gap-2">
+            <span class="inline-flex items-center gap-1.5 text-xs font-semibold text-cream min-w-0">
+              <i class="ph ph-youtube-logo text-red-500 text-base shrink-0"></i>
+              <span id="connectedChannelLabel" class="truncate">已連接頻道</span>
             </span>
-            <button id="btnQuickSyncNow" type="button" class="text-xs text-led hover:underline font-medium">立即同步</button>
+            <button id="btnQuickSyncNow" type="button" class="text-xs text-led hover:underline font-medium shrink-0">立即同步</button>
           </div>
           <p id="lastSyncTimeText" class="text-[11px] font-mono text-muted">尚未執行自動同步</p>
         </section>
@@ -368,7 +366,7 @@
           <div class="max-w-md mx-auto space-y-1.5">
             <h3 class="text-lg font-semibold text-cream">片倉暫時未有符合條件的影片</h3>
             <p class="text-sm text-muted leading-relaxed">
-              用電話影完封面圖並記錄路線、車牌同拍攝地點（支援巴士、鐵路、OMSI 2 及報站機模擬），或連接 YouTube 頻道自動匯入並儲存所有已發佈影片。
+              用電話影完封面圖並記錄路線、車牌同拍攝地點（支援巴士、鐵路、OMSI 2 及報站機模擬），或連接 YouTube 頻道自動匯入並儲存過往全部公開影片。
             </p>
           </div>
           <div class="pt-2 flex flex-wrap items-center justify-center gap-3">
@@ -406,7 +404,6 @@
   <div id="clipModal" class="fixed inset-0 z-40 hidden bg-black/80 backdrop-blur-sm overflow-y-auto">
     <div class="min-h-screen px-3 sm:px-6 py-4 sm:py-8 flex items-center justify-center">
       <div class="w-full max-w-4xl rounded-2xl bg-depot border border-line shadow-2xl overflow-hidden">
-        <!-- Modal Header -->
         <div class="px-5 py-4 border-b border-line flex items-center justify-between">
           <div class="flex items-center gap-2.5">
             <span class="w-2.5 h-2.5 rounded-full bg-led"></span>
@@ -418,7 +415,6 @@
           </button>
         </div>
 
-        <!-- Modal Body -->
         <form id="clipForm" class="p-5 grid grid-cols-1 lg:grid-cols-12 gap-6">
           <input type="hidden" id="clipId" />
           <input type="hidden" id="ytVideoIdHidden" />
@@ -461,7 +457,6 @@
 
           <!-- Right / Bottom Column: Vehicle / Simulator Fields -->
           <div class="lg:col-span-7 space-y-4">
-            <!-- Operator & Simulator Quick Buttons -->
             <div class="space-y-1.5">
               <label class="text-xs text-muted">營運商 / 模擬器類別</label>
               <div class="grid grid-cols-4 gap-1.5" id="operatorFormGroup">
@@ -476,7 +471,6 @@
               </div>
             </div>
 
-            <!-- Route & Direction -->
             <div class="grid grid-cols-1 sm:grid-cols-12 gap-3">
               <div class="sm:col-span-4 space-y-1">
                 <label for="routeInput" class="text-xs text-muted">路線編號 *</label>
@@ -490,7 +484,6 @@
               </div>
             </div>
 
-            <!-- Vehicle Model / Map & Plate -->
             <div class="space-y-1.5">
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div class="space-y-1">
@@ -504,11 +497,9 @@
                     class="w-full px-3 py-2 rounded-xl bg-asphalt border border-line text-sm font-mono uppercase text-cream placeholder:text-muted focus:outline-none focus:border-led" />
                 </div>
               </div>
-              <!-- Dynamic Quick Pills (Updates when switching between Real Bus vs OMSI / PIDS) -->
               <div id="quickModelPills" class="flex flex-wrap gap-1.5 pt-0.5"></div>
             </div>
 
-            <!-- Date & Location -->
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div class="space-y-1">
                 <label for="dateInput" class="text-xs text-muted">拍攝 / 錄製日期</label>
@@ -522,7 +513,6 @@
               </div>
             </div>
 
-            <!-- Workflow Status -->
             <div class="space-y-1.5">
               <label class="text-xs text-muted">處理進度狀態</label>
               <div class="grid grid-cols-2 sm:grid-cols-4 gap-2" id="statusFormGroup">
@@ -533,7 +523,6 @@
               </div>
             </div>
 
-            <!-- Video Title & YouTube URL (Highlighted when status = uploaded) -->
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div class="space-y-1">
                 <label for="titleInput" class="text-xs text-muted">影片名稱 / 備註</label>
@@ -550,7 +539,6 @@
               </div>
             </div>
 
-            <!-- Form Footer Buttons -->
             <div class="pt-3 border-t border-line flex items-center justify-end gap-2.5">
               <button id="btnCancelModal" type="button"
                 class="px-4 py-2 rounded-xl bg-panel hover:bg-panelHover border border-line text-sm font-medium text-cream transition-colors">
@@ -606,7 +594,7 @@
   </div>
 
   <!-- ===================================================================== -->
-  <!-- MODAL 3: YOUTUBE CHANNEL AUTO-SYNC & SAVE ALL                         -->
+  <!-- MODAL 3: YOUTUBE CHANNEL FULL ARCHIVE SYNC & SAVE ALL                 -->
   <!-- ===================================================================== -->
   <div id="ytSyncModal" class="fixed inset-0 z-40 hidden bg-black/80 backdrop-blur-sm overflow-y-auto">
     <div class="min-h-screen px-3 sm:px-6 py-4 sm:py-8 flex items-center justify-center">
@@ -614,7 +602,7 @@
         <div class="px-5 py-4 border-b border-line flex items-center justify-between">
           <div class="flex items-center gap-2.5">
             <i class="ph ph-youtube-logo text-xl text-red-500"></i>
-            <h2 class="text-base sm:text-lg font-semibold text-cream">連接 YouTube 頻道並自動儲存所有影片</h2>
+            <h2 class="text-base sm:text-lg font-semibold text-cream">連接 YouTube 頻道並截取過往所有影片</h2>
           </div>
           <button id="btnCloseYtModal" type="button"
             class="w-8 h-8 rounded-lg bg-panel hover:bg-panelHover border border-line flex items-center justify-center text-muted hover:text-cream">
@@ -624,7 +612,7 @@
 
         <div class="p-5 space-y-4">
           <p class="text-xs sm:text-sm text-muted leading-relaxed">
-            輸入你或朋友的公開 YouTube 頻道 <span class="font-mono text-cream">@Handle</span>（例如 <span class="font-mono text-cream">@szptf</span>）或 <span class="font-mono text-cream">UC...</span> 頻道 ID。連接後系統會自動讀取頻道所有公開影片，自動辨識巴士、鐵路、OMSI 2 或報站機模擬分類，並直接儲存至你的片倉（已存在影片不會重複匯入）。
+            輸入你或朋友的公開 YouTube 頻道 <span class="font-mono text-cream">@Handle</span>（例如 <span class="font-mono text-cream">@szptf</span>）或 <span class="font-mono text-cream">UC...</span> 頻道 ID。系統會自動讀取頻道「所有上傳播放清單（UU...）」截取過往全部公開影片並直接儲存入片倉。
           </p>
 
           <div class="flex flex-col sm:flex-row gap-2.5">
@@ -633,7 +621,7 @@
             <button id="btnFetchYtFeed" type="button"
               class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-red-600 hover:bg-red-500 active:scale-[0.98] text-sm font-semibold text-white transition-all shrink-0">
               <i class="ph ph-arrows-clockwise text-base"></i>
-              <span>連接並自動儲存全部</span>
+              <span>連接並抓取過往全部影片</span>
             </button>
           </div>
 
@@ -660,7 +648,7 @@
     import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
     import { getFirestore, collection, doc, setDoc, deleteDoc, onSnapshot, query } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
 
-    // 1. FIREBASE CONFIGURATION (Configured for transitdeck)
+    // 1. FIREBASE CONFIGURATION
     const firebaseConfig = {
       apiKey: "AIzaSyBPVmgUi21Zv1unAdQlwZgCKan_w_Pybmc",
       authDomain: "transitdeck.firebaseapp.com",
@@ -671,7 +659,7 @@
       measurementId: "G-GY93HXKZ5M"
     };
 
-    const isFirebaseConfigured = firebaseConfig.apiKey && firebaseConfig.apiKey !== "YOUR_API_KEY";
+    const isFirebaseConfigured = Boolean(firebaseConfig.apiKey && firebaseConfig.apiKey !== "YOUR_API_KEY");
     let auth = null;
     let db = null;
     let currentUser = null;
@@ -690,11 +678,10 @@
     // 2. STATE & CONSTANTS
     const LOCAL_STORAGE_KEY = 'transitdeck_clips_v1';
     const YT_CHANNEL_STORAGE_KEY = 'transitdeck_yt_channel';
+    const YT_CHANNEL_NAME_KEY = 'transitdeck_yt_channel_name';
     const YT_AUTO_SYNC_KEY = 'transitdeck_yt_autosync';
     const YT_LAST_SYNC_KEY = 'transitdeck_yt_lastsync';
     const YT_RESOLVED_CACHE_KEY = 'transitdeck_yt_resolved_ids';
-	const YT_CHANNEL_STORAGE_KEY = 'transitdeck_yt_channel';
-    const YT_CHANNEL_NAME_KEY = 'transitdeck_yt_channel_name';
 
     let clips = [];
     let currentStatusFilter = 'all';
@@ -760,38 +747,38 @@
       const authIcon = document.getElementById('authIcon');
 
       if (mode === 'cloud') {
-        dot.className = 'w-1.5 h-1.5 rounded-full bg-emerald-400';
-        label.textContent = '雲端同步中';
+        dot.className = 'w-1.5 h-1.5 rounded-full bg-emerald-400 shrink-0';
+        label.textContent = '雲端同步';
         authLabel.textContent = userEmail ? userEmail.split('@')[0] : '已登入';
-        authIcon.className = 'ph ph-sign-out text-base text-emerald-400';
+        authIcon.className = 'ph ph-sign-out text-base text-emerald-400 shrink-0';
       } else {
-        dot.className = 'w-1.5 h-1.5 rounded-full bg-amber-400';
-        label.textContent = isFirebaseConfigured ? '未登入 (本機)' : '本機離線模式';
-        authLabel.textContent = isFirebaseConfigured ? '登入同步' : '雲端設定';
-        authIcon.className = 'ph ph-cloud-arrow-up text-base text-led';
+        dot.className = 'w-1.5 h-1.5 rounded-full bg-amber-400 shrink-0';
+        label.textContent = '本機';
+        authLabel.textContent = '登入同步';
+        authIcon.className = 'ph ph-cloud-arrow-up text-base text-led shrink-0';
       }
     }
 
     function updateConnectedChannelUI() {
-  const saved = localStorage.getItem(YT_CHANNEL_STORAGE_KEY) || '';
-  const savedName = localStorage.getItem(YT_CHANNEL_NAME_KEY) || saved;
-  const lastSync = localStorage.getItem(YT_LAST_SYNC_KEY) || '';
-  const card = document.getElementById('connectedChannelCard');
-  const headerText = document.getElementById('ytHeaderBtnText');
-  const disconnectBtn = document.getElementById('btnDisconnectChannel');
+      const saved = localStorage.getItem(YT_CHANNEL_STORAGE_KEY) || '';
+      const savedName = localStorage.getItem(YT_CHANNEL_NAME_KEY) || saved;
+      const lastSync = localStorage.getItem(YT_LAST_SYNC_KEY) || '';
+      const card = document.getElementById('connectedChannelCard');
+      const headerText = document.getElementById('ytHeaderBtnText');
+      const disconnectBtn = document.getElementById('btnDisconnectChannel');
 
-  if (saved) {
-    card.classList.remove('hidden');
-    document.getElementById('connectedChannelLabel').textContent = `已連接：${savedName}`;
-    document.getElementById('lastSyncTimeText').textContent = lastSync ? `上次自動同步：${lastSync}` : '已啟用自動讀取與儲存';
-    headerText.textContent = savedName;
-    disconnectBtn.classList.remove('hidden');
-  } else {
-    card.classList.add('hidden');
-    headerText.textContent = '連接 YouTube';
-    disconnectBtn.classList.add('hidden');
-  }
-}
+      if (saved) {
+        card.classList.remove('hidden');
+        document.getElementById('connectedChannelLabel').textContent = `已連接：${savedName}`;
+        document.getElementById('lastSyncTimeText').textContent = lastSync ? `上次自動同步：${lastSync}` : '已啟用自動讀取與儲存';
+        headerText.textContent = savedName;
+        disconnectBtn.classList.remove('hidden');
+      } else {
+        card.classList.add('hidden');
+        headerText.textContent = '連接 YouTube';
+        disconnectBtn.classList.add('hidden');
+      }
+    }
 
     // 4. DATA LAYER (FIRESTORE + LOCALSTORAGE)
     function loadLocalClips() {
@@ -1517,7 +1504,7 @@
     });
 
     // =========================================================================
-    // 9. YOUTUBE CHANNEL AUTO-FETCH, SMART CLASSIFIER & AUTO-SAVE ALL
+    // 9. YOUTUBE FULL ARCHIVE FETCH (UU... PLAYLIST + RSS FALLBACK)
     // =========================================================================
     function openYtModal() {
       const savedChannel = localStorage.getItem(YT_CHANNEL_STORAGE_KEY) || '';
@@ -1540,6 +1527,7 @@
 
     document.getElementById('btnDisconnectChannel').addEventListener('click', () => {
       localStorage.removeItem(YT_CHANNEL_STORAGE_KEY);
+      localStorage.removeItem(YT_CHANNEL_NAME_KEY);
       localStorage.removeItem(YT_LAST_SYNC_KEY);
       document.getElementById('ytChannelInput').value = '';
       document.getElementById('ytResultsList').innerHTML = '';
@@ -1556,7 +1544,7 @@
       ];
       for (const buildProxy of proxies) {
         const controller = new AbortController();
-        const timer = setTimeout(() => controller.abort(), 7000);
+        const timer = setTimeout(() => controller.abort(), 8000);
         try {
           const res = await fetch(buildProxy(targetUrl), { signal: controller.signal });
           clearTimeout(timer);
@@ -1621,15 +1609,84 @@
     }
 
     async function fetchYouTubeFeedEntries(channelId) {
-      const rssUrl = `https://www.youtube.com/feeds/videos.xml?channel_id=${channelId}`;
+      const allVideos = [];
+      const seenIds = new Set();
 
+      // Convert UC... channel ID to UU... Uploads Playlist ID (contains ALL public videos)
+      const uploadsPlaylistId = channelId.startsWith('UC') ? ('UU' + channelId.slice(2)) : channelId;
+      const playlistUrl = `https://www.youtube.com/playlist?list=${uploadsPlaylistId}&hl=zh-HK`;
+
+      function extractVideosFromObject(obj, depth = 0) {
+        if (!obj || typeof obj !== 'object' || depth > 25) return;
+
+        if (obj.playlistVideoRenderer && obj.playlistVideoRenderer.videoId) {
+          const r = obj.playlistVideoRenderer;
+          const vid = r.videoId;
+          if (!seenIds.has(vid)) {
+            seenIds.add(vid);
+            const titleText = r.title?.runs?.map(t => t.text).join('') || r.title?.simpleText || '未命名影片';
+            const ownerName = r.shortBylineText?.runs?.[0]?.text;
+            if (ownerName) {
+              localStorage.setItem(YT_CHANNEL_NAME_KEY, ownerName);
+            }
+            const infoRuns = r.videoInfo?.runs || [];
+            const rawDateInfo = infoRuns.map(x => x.text).join('');
+            const exactDateMatch = rawDateInfo.match(/(\d{4})年(\d{1,2})月(\d{1,2})日/);
+            const parsedDate = exactDateMatch
+              ? `${exactDateMatch[1]}-${exactDateMatch[2].padStart(2, '0')}-${exactDateMatch[3].padStart(2, '0')}`
+              : new Date().toISOString().split('T')[0];
+
+            allVideos.push({
+              videoId: vid,
+              title: titleText,
+              published: parsedDate,
+              link: `https://www.youtube.com/watch?v=${vid}`,
+              thumb: `https://i.ytimg.com/vi/${vid}/hqdefault.jpg`
+            });
+          }
+          return;
+        }
+
+        if (Array.isArray(obj)) {
+          for (const item of obj) extractVideosFromObject(item, depth + 1);
+        } else {
+          for (const key of Object.keys(obj)) extractVideosFromObject(obj[key], depth + 1);
+        }
+      }
+
+      // Route 1: Full Uploads Playlist HTML (fetches up to 100+ historical videos)
+      try {
+        const html = await fetchTextWithCorsFallback(playlistUrl);
+        if (html) {
+          const dataMatch = html.match(/var ytInitialData\s*=\s*(\{.+?\});\s*<\/script>/s) ||
+                            html.match(/window\["ytInitialData"\]\s*=\s*(\{.+?\});/s);
+          if (dataMatch) {
+            const initialData = JSON.parse(dataMatch[1]);
+            const headerTitle = initialData?.metadata?.playlistMetadataRenderer?.title ||
+                                initialData?.header?.playlistHeaderRenderer?.ownerText?.runs?.[0]?.text;
+            if (headerTitle) {
+              const cleanName = headerTitle.replace(/^Uploads from\s+/i, '').trim();
+              if (cleanName) localStorage.setItem(YT_CHANNEL_NAME_KEY, cleanName);
+            }
+            extractVideosFromObject(initialData);
+            if (allVideos.length > 0) {
+              return allVideos;
+            }
+          }
+        }
+      } catch (err) {
+        console.warn('Playlist full fetch fallback triggered:', err);
+      }
+
+      // Route 2: rss2json API fallback
+      const rssUrl = `https://www.youtube.com/feeds/videos.xml?channel_id=${channelId}`;
       try {
         const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`;
         const res = await fetch(apiUrl);
         if (res.ok) {
           const data = await res.json();
           if (data.status === 'ok' && Array.isArray(data.items) && data.items.length > 0) {
-		  const channelTitle = data.feed?.title || data.items[0]?.author;
+            const channelTitle = data.feed?.title || data.items[0]?.author;
             if (channelTitle) localStorage.setItem(YT_CHANNEL_NAME_KEY, channelTitle);
             return data.items.map(item => {
               const vidMatch = (item.guid || item.link || '').match(/(?:yt:video:|v=|\/)([\w-]{11})/);
@@ -1646,6 +1703,7 @@
         }
       } catch {}
 
+      // Route 3: Direct XML RSS fallback
       const xmlText = await fetchTextWithCorsFallback(rssUrl);
       if (xmlText) {
         const parser = new DOMParser();
@@ -1697,7 +1755,7 @@
 
       if (!silent) {
         statusBox.classList.remove('hidden');
-        statusBox.textContent = '正在連接頻道並自動讀取及儲存所有公開影片...';
+        statusBox.textContent = '正在連接頻道並截取過往所有公開影片...';
         resultsList.innerHTML = '';
       }
 
@@ -1711,14 +1769,12 @@
       for (const video of videos) {
         const parsed = detectTransitMetadataFromTitle(video.title);
 
-        // 1. Check if already saved in deck by ytVideoId or ytUrl
         const alreadyExists = clips.some(c =>
           (video.videoId && c.ytVideoId === video.videoId) ||
-          (c.ytUrl && c.ytUrl.includes(video.videoId))
+          (c.ytUrl && video.videoId && c.ytUrl.includes(video.videoId))
         );
         if (alreadyExists) continue;
 
-        // 2. Check if matches a pending un-uploaded clip in deck
         const matchedPending = clips.find(c =>
           c.status !== 'uploaded' &&
           ((parsed.plate && c.plate === parsed.plate) || (parsed.route !== 'YT' && parsed.route !== 'OMSI' && parsed.route !== 'PIDS' && c.route === parsed.route))
@@ -1736,7 +1792,6 @@
           }, true);
           matchedPendingCount++;
         } else {
-          // 3. Auto-save as new uploaded record in deck
           const deterministicId = video.videoId ? `yt_${video.videoId}` : ('clip_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6));
           await persistClip({
             id: deterministicId,
@@ -1764,7 +1819,7 @@
       updateConnectedChannelUI();
 
       if (!silent) {
-        statusBox.textContent = `同步完成！共讀取 ${videos.length} 條影片：自動新增儲存 ${newSavedCount} 條，自動配對待上載紀錄 ${matchedPendingCount} 條。`;
+        statusBox.textContent = `同步完成！共讀取 ${videos.length} 條過往影片：自動新增儲存 ${newSavedCount} 條，自動配對待上載紀錄 ${matchedPendingCount} 條。`;
         resultsList.innerHTML = videos.map(v => `
           <div class="p-2.5 rounded-xl bg-asphalt border border-line flex items-center gap-3">
             <img src="${escapeHtml(v.thumb)}" alt="${escapeHtml(v.title)}" class="w-24 aspect-video rounded-lg object-cover border border-line shrink-0" />
