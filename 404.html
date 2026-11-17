@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="zh-HK" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>404 · 此班次路線不存在 — TransitDeck</title>
+  <meta name="theme-color" content="#000000" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@500;600&family=Geist:wght@500;600;700&family=Noto+Sans+TC:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  <style>
+    body {
+      background-color: #000000;
+      color: #F4F4F0;
+      font-family: "Geist", "Noto Sans TC", system-ui, sans-serif;
+    }
+    .led-display {
+      background-color: #090A0C;
+      border: 1px solid #3A2B0A;
+      box-shadow: inset 0 0 16px rgba(232, 168, 23, 0.16);
+      color: #E8A817;
+      text-shadow: 0 0 10px rgba(232, 168, 23, 0.5);
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-center p-4 selection:bg-[#E8A817] selection:text-black">
+  <main class="w-full max-w-md rounded-2xl bg-[#181818] border border-[#313131] p-6 sm:p-8 text-center space-y-5 shadow-2xl">
+    <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl led-display font-mono text-sm font-semibold tracking-wider">
+      <i class="ph ph-warning-circle text-base"></i>
+      <span>ERROR 404 · ROUTE NOT IN SERVICE</span>
+    </div>
+
+    <div class="space-y-2">
+      <h1 class="text-2xl font-bold text-[#F4F4F0]">此班次路線不存在或已收車</h1>
+      <p class="text-sm text-[#A1A1AA] leading-relaxed">
+        你輸入的網址路徑已經更改或不存在，請返回 TransitDeck 介紹頁或直接進入調度片倉。
+      </p>
+    </div>
+
+    <div class="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
+      <a href="/TransitDeck/app.html"
+        class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-[#E8A817] hover:bg-amber-400 text-sm font-semibold text-black transition-colors">
+        <i class="ph ph-bus text-base"></i>
+        <span>進入調度片倉</span>
+      </a>
+      <a href="/TransitDeck/"
+        class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-[#1F1F1F] hover:bg-[#272727] border border-[#313131] text-sm font-medium text-[#F4F4F0] transition-colors">
+        <span>返回首頁介紹</span>
+      </a>
+    </div>
+  </main>
+</body>
+</html>
