@@ -178,29 +178,48 @@
 
       <!-- Primary Actions -->
       <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
+        <button id="btnMobileRefreshData" type="button" aria-label="立即更新數據"
+          class="min-h-[40px] inline-flex items-center justify-center gap-1.5 px-2.5 sm:px-3 py-2 rounded-lg bg-panel hover:bg-panelHover active:scale-[0.98] border border-led/50 text-xs sm:text-sm font-semibold text-led transition-all duration-200 whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-led">
+          <i id="refreshDataIcon" class="ph ph-arrows-clockwise text-base shrink-0"></i>
+          <span>更新數據</span>
+        </button>
+
         <a href="./thumbnail.html" id="btnOpenThumbnailStudio" aria-label="打開巴士前面展望封面生成器"
-          class="min-h-[40px] inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg bg-depot hover:bg-panelHover active:scale-[0.98] border border-line text-xs sm:text-sm font-medium text-cream transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-led">
+          class="min-h-[40px] inline-flex items-center justify-center gap-1.5 px-2.5 sm:px-3 py-2 rounded-lg bg-depot hover:bg-panelHover active:scale-[0.98] border border-line text-xs sm:text-sm font-medium text-cream transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-led">
           <i class="ph ph-paint-brush-broad text-base text-led shrink-0"></i>
           <span class="hidden md:inline">封面生成器</span>
         </a>
 
         <button id="btnOpenYtSync" type="button" aria-label="連接 YouTube 頻道"
-          class="min-h-[40px] inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg bg-depot hover:bg-panelHover active:scale-[0.98] border border-line text-xs sm:text-sm font-medium text-cream transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-led">
+          class="min-h-[40px] inline-flex items-center justify-center gap-1.5 px-2.5 sm:px-3 py-2 rounded-lg bg-depot hover:bg-panelHover active:scale-[0.98] border border-line text-xs sm:text-sm font-medium text-cream transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-led">
           <i class="ph ph-youtube-logo text-base text-red-500 shrink-0"></i>
-          <span id="ytHeaderBtnText" class="hidden sm:inline max-w-[140px] truncate">連接 YouTube</span>
+          <span id="ytHeaderBtnText" class="hidden sm:inline max-w-[130px] truncate">連接 YouTube</span>
         </button>
 
         <button id="btnAuthAction" type="button" aria-label="Google 帳號雲端同步"
-          class="min-h-[40px] inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg bg-depot hover:bg-panelHover active:scale-[0.98] border border-line text-xs sm:text-sm font-medium text-cream transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-led">
+          class="min-h-[40px] inline-flex items-center justify-center gap-1.5 px-2.5 sm:px-3 py-2 rounded-lg bg-depot hover:bg-panelHover active:scale-[0.98] border border-line text-xs sm:text-sm font-medium text-cream transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-led">
           <i id="authIcon" class="ph ph-cloud-arrow-up text-base text-led shrink-0"></i>
           <span id="authLabel" class="hidden lg:inline">登入同步</span>
         </button>
 
         <button id="btnNewClip" type="button"
-          class="min-h-[40px] inline-flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-lg bg-led hover:bg-amber-400 active:scale-[0.98] text-xs sm:text-sm font-semibold text-asphalt transition-all duration-200 whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cream">
+          class="min-h-[40px] inline-flex items-center justify-center gap-1.5 px-3 sm:px-3.5 py-2 rounded-lg bg-led hover:bg-amber-400 active:scale-[0.98] text-xs sm:text-sm font-semibold text-asphalt transition-all duration-200 whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cream">
           <i class="ph ph-plus-bold text-sm sm:text-base"></i>
-          <span>新增紀錄</span>
+          <span>新增</span>
         </button>
+      </div>
+    </div>
+
+    <!-- Real-Time YouTube Sync Progress Bar -->
+    <div id="ytGlobalProgressWrapper" class="hidden bg-depot border-t border-line px-3 sm:px-6 py-2">
+      <div class="max-w-7xl mx-auto space-y-1.5">
+        <div class="flex items-center justify-between text-xs font-mono">
+          <span id="ytGlobalProgressLabel" class="text-led font-medium truncate">正在連接 YouTube 頻道...</span>
+          <span id="ytGlobalProgressPercent" class="text-cream font-semibold font-tabular shrink-0 ml-2">0%</span>
+        </div>
+        <div class="w-full h-1.5 bg-asphalt rounded-full overflow-hidden border border-line/60">
+          <div id="ytGlobalProgressBar" class="h-full bg-gradient-to-r from-red-500 via-amber-400 to-led rounded-full transition-all duration-300 ease-dispatch" style="width: 0%;"></div>
+        </div>
       </div>
     </div>
   </header>
@@ -779,6 +798,7 @@
     const YT_CHANNEL_NAME_KEY = 'transitdeck_yt_channel_name';
     const YT_AUTO_SYNC_KEY = 'transitdeck_yt_autosync';
     const YT_LAST_SYNC_KEY = 'transitdeck_yt_lastsync';
+    const YT_LAST_SYNC_TS_KEY = 'transitdeck_yt_lastsync_ts';
     const YT_RESOLVED_CACHE_KEY = 'transitdeck_yt_resolved_ids';
     const BRIDGE_DRAFT_KEY = 'transitdeck_thumb_draft_clip';
     const BRIDGE_RESULT_KEY = 'transitdeck_thumb_generated_result';
@@ -797,6 +817,7 @@
     let currentCoverDataUrl = '';
     let pendingMarkUploadedId = null;
     let isTitleManuallyEdited = false;
+    let isSyncInProgress = false;
 
     const OPERATOR_META = {
       KMB: { name: '九巴', fullEnTitle: '九巴/KMB ROUTE', badgeBg: 'bg-kmb', badgeText: 'text-white' },
@@ -828,7 +849,7 @@
       }
     });
 
-    // 3. UI HELPERS & TOAST
+    // 3. UI HELPERS, TOAST & GLOBAL SYNC PROGRESS BAR
     let toastTimer = null;
     function showToast(message, type = 'success') {
       const banner = document.getElementById('toastBanner');
@@ -849,6 +870,36 @@
       toastTimer = setTimeout(() => {
         banner.classList.add('hidden');
       }, 3400);
+    }
+
+    let progressHideTimer = null;
+    function setYtSyncProgress(percent, labelText) {
+      const wrapper = document.getElementById('ytGlobalProgressWrapper');
+      const bar = document.getElementById('ytGlobalProgressBar');
+      const label = document.getElementById('ytGlobalProgressLabel');
+      const pctText = document.getElementById('ytGlobalProgressPercent');
+      if (!wrapper || !bar) return;
+
+      clearTimeout(progressHideTimer);
+      wrapper.classList.remove('hidden');
+      const clamped = Math.max(0, Math.min(100, Math.round(percent)));
+      bar.style.width = `${clamped}%`;
+      if (pctText) pctText.textContent = `${clamped}%`;
+      if (label && labelText) label.textContent = labelText;
+
+      if (clamped >= 100) {
+        progressHideTimer = setTimeout(() => {
+          wrapper.classList.add('hidden');
+          bar.style.width = '0%';
+        }, 2200);
+      }
+    }
+
+    function hideYtSyncProgress() {
+      const wrapper = document.getElementById('ytGlobalProgressWrapper');
+      const bar = document.getElementById('ytGlobalProgressBar');
+      if (wrapper) wrapper.classList.add('hidden');
+      if (bar) bar.style.width = '0%';
     }
 
     function updateSyncStatusUI(mode, userEmail = '') {
@@ -1136,6 +1187,7 @@
       }
       renderAll();
       consumeGeneratedThumbnailResult();
+      triggerAutoSyncIfEnabled();
     }
 
     function saveLocalClips() {
@@ -1198,6 +1250,7 @@
         if (!firstSnapshotHandled) {
           firstSnapshotHandled = true;
           consumeGeneratedThumbnailResult();
+          triggerAutoSyncIfEnabled();
         }
       }, (err) => {
         console.error('Firestore listen error:', err);
@@ -2112,7 +2165,7 @@
     });
 
     // =========================================================================
-    // 14. YOUTUBE FAST ARCHIVE FETCH (RSS + JINA PLAYLIST SCRAPER, NO 403 SPAM)
+    // 14. YOUTUBE FAST ARCHIVE FETCH WITH REAL-TIME PROGRESS BAR
     // =========================================================================
     function openYtModal() {
       const savedChannel = localStorage.getItem(YT_CHANNEL_STORAGE_KEY) || '';
@@ -2138,6 +2191,7 @@
       localStorage.removeItem(YT_CHANNEL_STORAGE_KEY);
       localStorage.removeItem(YT_CHANNEL_NAME_KEY);
       localStorage.removeItem(YT_LAST_SYNC_KEY);
+      localStorage.removeItem(YT_LAST_SYNC_TS_KEY);
       document.getElementById('ytChannelInput').value = '';
       document.getElementById('ytResultsList').innerHTML = '';
       document.getElementById('ytStatusBox').classList.add('hidden');
@@ -2199,17 +2253,14 @@
       if (!rawText) return '';
       const str = String(rawText).trim();
 
-      // 1. ISO date (e.g. 2026-10-04T12:30:00+00:00)
       const isoMatch = str.match(/(\d{4}-\d{2}-\d{2})/);
       if (isoMatch) return isoMatch[1];
 
-      // 2. Chinese exact date (e.g. 2026年10月4日)
       const zhExact = str.match(/(\d{4})\s*年\s*(\d{1,2})\s*月\s*(\d{1,2})\s*日/);
       if (zhExact) {
         return `${zhExact[1]}-${zhExact[2].padStart(2, '0')}-${zhExact[3].padStart(2, '0')}`;
       }
 
-      // 3. Relative time calculation (Traditional Chinese & English)
       const now = new Date();
       const relMatch = str.match(/(\d+)\s*(秒|分鐘|小時|天|日|週|星期|個?月|年|second|minute|hour|day|week|month|year)s?\s*(前|ago)/i);
       if (relMatch) {
@@ -2259,6 +2310,7 @@
       }
 
       // Step 1: Official XML RSS (exact YYYY-MM-DD publish dates for latest 15 videos)
+      setYtSyncProgress(25, '步驟 2/4：正在讀取官方 RSS 最新發佈日期...');
       const rssUrl = `https://www.youtube.com/feeds/videos.xml?channel_id=${channelId}`;
       try {
         const xmlText = await fetchTextWithCorsFallback(rssUrl);
@@ -2280,7 +2332,8 @@
         }
       } catch {}
 
-      // Step 2: Jina Reader full playlist markdown scraper (single fast request, zero 403 errors)
+      // Step 2: Jina Reader full playlist markdown scraper
+      setYtSyncProgress(42, '步驟 3/4：正在掃描總上傳播放清單過往影片...');
       try {
         const jinaRes = await fetch(`https://r.jina.ai/${playlistUrl}`);
         if (jinaRes.ok) {
@@ -2313,7 +2366,7 @@
         }
       } catch {}
 
-      // Step 3: rss2json fallback if both above failed
+      // Step 3: rss2json fallback
       if (videoMap.size === 0) {
         try {
           const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`;
@@ -2364,108 +2417,162 @@
       const statusBox = document.getElementById('ytStatusBox');
       const resultsList = document.getElementById('ytResultsList');
 
+      setYtSyncProgress(10, '步驟 1/4：正在解析 YouTube 頻道 ID...');
       if (!silent) {
         statusBox.classList.remove('hidden');
         statusBox.textContent = '正在讀取頻道所有公開影片及其發佈日期...';
         resultsList.innerHTML = '';
       }
 
-      const channelId = await resolveChannelId(rawInput);
-      localStorage.setItem(YT_CHANNEL_STORAGE_KEY, rawInput);
+      try {
+        const channelId = await resolveChannelId(rawInput);
+        localStorage.setItem(YT_CHANNEL_STORAGE_KEY, rawInput);
 
-      const videos = await fetchYouTubeFeedEntries(channelId);
-      const todayStr = new Date().toISOString().split('T')[0];
-      let newSavedCount = 0;
-      let updatedDateCount = 0;
-      let matchedPendingCount = 0;
+        const videos = await fetchYouTubeFeedEntries(channelId);
+        const totalCount = videos.length;
+        setYtSyncProgress(55, `步驟 4/4：已讀取 ${totalCount} 條影片，正在比對與寫入資料庫...`);
 
-      for (const video of videos) {
-        const parsed = detectTransitMetadataFromTitle(video.title);
-        const publishDate = video.published || todayStr;
+        const todayStr = new Date().toISOString().split('T')[0];
+        let newSavedCount = 0;
+        let updatedDateCount = 0;
+        let matchedPendingCount = 0;
 
-        const existingClip = clips.find(c =>
-          (video.videoId && c.ytVideoId === video.videoId) ||
-          (c.ytUrl && video.videoId && c.ytUrl.includes(video.videoId))
-        );
+        for (let i = 0; i < totalCount; i++) {
+          const video = videos[i];
+          const stepPercent = 55 + Math.round(((i + 1) / Math.max(1, totalCount)) * 40);
+          if (i % 5 === 0 || i === totalCount - 1) {
+            setYtSyncProgress(stepPercent, `步驟 4/4：正在同步影片資料 (${i + 1} / ${totalCount})...`);
+          }
 
-        if (existingClip) {
-          if (video.published && existingClip.date !== video.published && (existingClip.date === todayStr || !existingClip.date)) {
+          const parsed = detectTransitMetadataFromTitle(video.title);
+          const publishDate = video.published || todayStr;
+
+          const existingClip = clips.find(c =>
+            (video.videoId && c.ytVideoId === video.videoId) ||
+            (c.ytUrl && video.videoId && c.ytUrl.includes(video.videoId))
+          );
+
+          if (existingClip) {
+            if (video.published && existingClip.date !== video.published && (existingClip.date === todayStr || !existingClip.date)) {
+              await persistClip({
+                ...existingClip,
+                date: video.published,
+                updatedAt: Date.now()
+              }, true);
+              updatedDateCount++;
+            }
+            continue;
+          }
+
+          const matchedPending = clips.find(c =>
+            c.status !== 'uploaded' &&
+            ((parsed.plate && c.plate === parsed.plate) || (parsed.route !== 'YT' && parsed.route !== 'OMSI' && parsed.route !== 'PIDS' && c.route === parsed.route))
+          );
+
+          if (matchedPending) {
             await persistClip({
-              ...existingClip,
-              date: video.published,
+              ...matchedPending,
+              status: 'uploaded',
+              date: publishDate,
+              ytVideoId: video.videoId,
+              ytUrl: video.link,
+              title: matchedPending.title || video.title,
+              cover: matchedPending.cover || video.thumb,
               updatedAt: Date.now()
             }, true);
-            updatedDateCount++;
+            matchedPendingCount++;
+          } else {
+            const deterministicId = video.videoId ? `yt_${video.videoId}` : ('clip_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6));
+            await persistClip({
+              id: deterministicId,
+              ytVideoId: video.videoId,
+              operator: parsed.operator,
+              route: parsed.route,
+              bracketTag: '',
+              originBilingual: '',
+              destBilingual: '',
+              direction: '',
+              model: '',
+              plate: parsed.plate,
+              deck: parsed.operator === 'PIDS' ? '模擬畫面' : '',
+              date: publishDate,
+              location: '',
+              status: 'uploaded',
+              title: video.title,
+              ytUrl: video.link,
+              cover: video.thumb,
+              updatedAt: Date.now()
+            }, true);
+            newSavedCount++;
           }
-          continue;
         }
 
-        const matchedPending = clips.find(c =>
-          c.status !== 'uploaded' &&
-          ((parsed.plate && c.plate === parsed.plate) || (parsed.route !== 'YT' && parsed.route !== 'OMSI' && parsed.route !== 'PIDS' && c.route === parsed.route))
-        );
+        const nowStr = new Date().toLocaleTimeString('zh-HK', { hour: '2-digit', minute: '2-digit' });
+        localStorage.setItem(YT_LAST_SYNC_KEY, nowStr);
+        updateConnectedChannelUI();
 
-        if (matchedPending) {
-          await persistClip({
-            ...matchedPending,
-            status: 'uploaded',
-            date: publishDate,
-            ytVideoId: video.videoId,
-            ytUrl: video.link,
-            title: matchedPending.title || video.title,
-            cover: matchedPending.cover || video.thumb,
-            updatedAt: Date.now()
-          }, true);
-          matchedPendingCount++;
-        } else {
-          const deterministicId = video.videoId ? `yt_${video.videoId}` : ('clip_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6));
-          await persistClip({
-            id: deterministicId,
-            ytVideoId: video.videoId,
-            operator: parsed.operator,
-            route: parsed.route,
-            bracketTag: '',
-            originBilingual: '',
-            destBilingual: '',
-            direction: '',
-            model: '',
-            plate: parsed.plate,
-            deck: parsed.operator === 'PIDS' ? '模擬畫面' : '',
-            date: publishDate,
-            location: '',
-            status: 'uploaded',
-            title: video.title,
-            ytUrl: video.link,
-            cover: video.thumb,
-            updatedAt: Date.now()
-          }, true);
-          newSavedCount++;
-        }
-      }
+        setYtSyncProgress(100, `同步完成！共掃描 ${totalCount} 條影片（新增 ${newSavedCount} 條）`);
 
-      const nowStr = new Date().toLocaleTimeString('zh-HK', { hour: '2-digit', minute: '2-digit' });
-      localStorage.setItem(YT_LAST_SYNC_KEY, nowStr);
-      updateConnectedChannelUI();
-
-      if (!silent) {
-        statusBox.textContent = `同步完成！共讀取 ${videos.length} 條影片：新增 ${newSavedCount} 條，修正發佈日期 ${updatedDateCount} 條，配對待上載 ${matchedPendingCount} 條。`;
-        resultsList.innerHTML = videos.map(v => `
-          <div class="p-2.5 rounded-xl bg-asphalt border border-line flex items-center gap-3">
-            <img src="${escapeHtml(v.thumb)}" alt="${escapeHtml(v.title)}" class="w-24 aspect-video rounded-lg object-cover border border-line shrink-0" />
-            <div class="flex-1 min-w-0">
-              <div class="text-xs font-medium text-cream truncate">${escapeHtml(v.title)}</div>
-              <div class="text-xs font-mono text-muted mt-0.5">發佈日期：${escapeHtml(v.published || todayStr)} · 已儲存至影片庫</div>
+        if (!silent) {
+          statusBox.textContent = `同步完成！共讀取 ${totalCount} 條影片：新增 ${newSavedCount} 條，修正發佈日期 ${updatedDateCount} 條，配對待上載 ${matchedPendingCount} 條。`;
+          resultsList.innerHTML = videos.map(v => `
+            <div class="p-2.5 rounded-xl bg-asphalt border border-line flex items-center gap-3">
+              <img src="${escapeHtml(v.thumb)}" alt="${escapeHtml(v.title)}" class="w-24 aspect-video rounded-lg object-cover border border-line shrink-0" />
+              <div class="flex-1 min-w-0">
+                <div class="text-xs font-medium text-cream truncate">${escapeHtml(v.title)}</div>
+                <div class="text-xs font-mono text-muted mt-0.5">發佈日期：${escapeHtml(v.published || todayStr)} · 已儲存至影片庫</div>
+              </div>
+              <span class="px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-300 text-xs font-medium shrink-0">已入庫</span>
             </div>
-            <span class="px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-300 text-xs font-medium shrink-0">已入庫</span>
-          </div>
-        `).join('');
+          `).join('');
+        }
+
+        if (newSavedCount > 0 || updatedDateCount > 0 || matchedPendingCount > 0) {
+          showToast(`YouTube 同步完成：新增 ${newSavedCount} 條，更新發佈日 ${updatedDateCount} 條`);
+        } else if (!silent) {
+          showToast('所有影片日期已與 YouTube 發佈日保持一致', 'info');
+        }
+      } catch (err) {
+        hideYtSyncProgress();
+        throw err;
+      }
+    }
+
+    async function runManualOrAutoDataRefresh(silent = false) {
+      const savedChannel = localStorage.getItem(YT_CHANNEL_STORAGE_KEY);
+      if (!savedChannel) {
+        if (!silent) {
+          showToast('請先設定要同步的 YouTube 頻道', 'info');
+          openYtModal();
+        }
+        return;
       }
 
-      if (newSavedCount > 0 || updatedDateCount > 0 || matchedPendingCount > 0) {
-        showToast(`YouTube 同步完成：新增 ${newSavedCount} 條，更新發佈日 ${updatedDateCount} 條`);
-      } else if (!silent) {
-        showToast('所有影片日期已與 YouTube 發佈日保持一致', 'info');
+      if (isSyncInProgress) return;
+      isSyncInProgress = true;
+
+      const refreshIcon = document.getElementById('refreshDataIcon');
+      if (refreshIcon) refreshIcon.classList.add('animate-spin');
+      if (!silent) showToast('正在更新 YouTube 影片與日期數據...', 'info');
+
+      try {
+        await syncAndSaveChannelVideos(savedChannel, true);
+        localStorage.setItem(YT_LAST_SYNC_TS_KEY, String(Date.now()));
+        if (!silent) showToast('數據更新完成！');
+      } catch (err) {
+        if (!silent) showToast(`更新失敗：${err.message}`, 'error');
+      } finally {
+        isSyncInProgress = false;
+        if (refreshIcon) refreshIcon.classList.remove('animate-spin');
       }
+    }
+
+    function triggerAutoSyncIfEnabled() {
+      const savedChannel = localStorage.getItem(YT_CHANNEL_STORAGE_KEY);
+      const autoSyncEnabled = localStorage.getItem(YT_AUTO_SYNC_KEY) !== 'false';
+      if (!savedChannel || !autoSyncEnabled) return;
+
+      runManualOrAutoDataRefresh(true);
     }
 
     document.getElementById('btnFetchYtFeed').addEventListener('click', async () => {
@@ -2475,35 +2582,43 @@
         showToast('請先輸入 YouTube 頻道 @Handle 或 UC... ID', 'error');
         return;
       }
+      if (isSyncInProgress) return;
+      isSyncInProgress = true;
+      const refreshIcon = document.getElementById('refreshDataIcon');
+      if (refreshIcon) refreshIcon.classList.add('animate-spin');
       try {
         await syncAndSaveChannelVideos(rawInput, false);
+        localStorage.setItem(YT_LAST_SYNC_TS_KEY, String(Date.now()));
       } catch (err) {
         statusBox.classList.remove('hidden');
         statusBox.textContent = `讀取失敗：${err.message}`;
+      } finally {
+        isSyncInProgress = false;
+        if (refreshIcon) refreshIcon.classList.remove('animate-spin');
       }
     });
 
-    document.getElementById('btnQuickSyncNow').addEventListener('click', async () => {
-      const saved = localStorage.getItem(YT_CHANNEL_STORAGE_KEY);
-      if (!saved) return;
-      showToast('正在背景同步最新 YouTube 影片...', 'info');
-      try {
-        await syncAndSaveChannelVideos(saved, true);
-      } catch (err) {
-        showToast(err.message, 'error');
+    document.getElementById('btnMobileRefreshData').addEventListener('click', () => {
+      runManualOrAutoDataRefresh(false);
+    });
+
+    document.getElementById('btnQuickSyncNow').addEventListener('click', () => {
+      runManualOrAutoDataRefresh(false);
+    });
+
+    // Auto-refresh when returning to the PWA/tab on mobile if > 3 minutes since last sync
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible') {
+        const lastTs = parseInt(localStorage.getItem(YT_LAST_SYNC_TS_KEY) || '0', 10);
+        if (Date.now() - lastTs > 3 * 60 * 1000) {
+          triggerAutoSyncIfEnabled();
+        }
       }
     });
 
     // Boot: Load 1005.idv.hk local fleet cache DB & check connected YouTube channel
     loadFleetCacheDb();
     updateConnectedChannelUI();
-    setTimeout(() => {
-      const savedChannel = localStorage.getItem(YT_CHANNEL_STORAGE_KEY);
-      const autoSyncEnabled = localStorage.getItem(YT_AUTO_SYNC_KEY) !== 'false';
-      if (savedChannel && autoSyncEnabled) {
-        syncAndSaveChannelVideos(savedChannel, true).catch(() => {});
-      }
-    }, 1800);
   </script>
 </body>
 </html>
