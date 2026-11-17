@@ -693,6 +693,8 @@
     const YT_AUTO_SYNC_KEY = 'transitdeck_yt_autosync';
     const YT_LAST_SYNC_KEY = 'transitdeck_yt_lastsync';
     const YT_RESOLVED_CACHE_KEY = 'transitdeck_yt_resolved_ids';
+	const YT_CHANNEL_STORAGE_KEY = 'transitdeck_yt_channel';
+    const YT_CHANNEL_NAME_KEY = 'transitdeck_yt_channel_name';
 
     let clips = [];
     let currentStatusFilter = 'all';
@@ -771,24 +773,25 @@
     }
 
     function updateConnectedChannelUI() {
-      const saved = localStorage.getItem(YT_CHANNEL_STORAGE_KEY) || '';
-      const lastSync = localStorage.getItem(YT_LAST_SYNC_KEY) || '';
-      const card = document.getElementById('connectedChannelCard');
-      const headerText = document.getElementById('ytHeaderBtnText');
-      const disconnectBtn = document.getElementById('btnDisconnectChannel');
+  const saved = localStorage.getItem(YT_CHANNEL_STORAGE_KEY) || '';
+  const savedName = localStorage.getItem(YT_CHANNEL_NAME_KEY) || saved;
+  const lastSync = localStorage.getItem(YT_LAST_SYNC_KEY) || '';
+  const card = document.getElementById('connectedChannelCard');
+  const headerText = document.getElementById('ytHeaderBtnText');
+  const disconnectBtn = document.getElementById('btnDisconnectChannel');
 
-      if (saved) {
-        card.classList.remove('hidden');
-        document.getElementById('connectedChannelLabel').textContent = `已連接：${saved}`;
-        document.getElementById('lastSyncTimeText').textContent = lastSync ? `上次自動同步：${lastSync}` : '已啟用自動讀取與儲存';
-        headerText.textContent = saved;
-        disconnectBtn.classList.remove('hidden');
-      } else {
-        card.classList.add('hidden');
-        headerText.textContent = '連接 YouTube';
-        disconnectBtn.classList.add('hidden');
-      }
-    }
+  if (saved) {
+    card.classList.remove('hidden');
+    document.getElementById('connectedChannelLabel').textContent = `已連接：${savedName}`;
+    document.getElementById('lastSyncTimeText').textContent = lastSync ? `上次自動同步：${lastSync}` : '已啟用自動讀取與儲存';
+    headerText.textContent = savedName;
+    disconnectBtn.classList.remove('hidden');
+  } else {
+    card.classList.add('hidden');
+    headerText.textContent = '連接 YouTube';
+    disconnectBtn.classList.add('hidden');
+  }
+}
 
     // 4. DATA LAYER (FIRESTORE + LOCALSTORAGE)
     function loadLocalClips() {
@@ -1626,6 +1629,8 @@
         if (res.ok) {
           const data = await res.json();
           if (data.status === 'ok' && Array.isArray(data.items) && data.items.length > 0) {
+		  const channelTitle = data.feed?.title || data.items[0]?.author;
+            if (channelTitle) localStorage.setItem(YT_CHANNEL_NAME_KEY, channelTitle);
             return data.items.map(item => {
               const vidMatch = (item.guid || item.link || '').match(/(?:yt:video:|v=|\/)([\w-]{11})/);
               const videoId = vidMatch ? vidMatch[1] : '';
@@ -1647,6 +1652,8 @@
         const xmlDoc = parser.parseFromString(xmlText, 'text/xml');
         const entries = Array.from(xmlDoc.querySelectorAll('entry'));
         if (entries.length > 0) {
+          const authorName = xmlDoc.querySelector('author > name')?.textContent;
+          if (authorName) localStorage.setItem(YT_CHANNEL_NAME_KEY, authorName);
           return entries.map(entry => {
             const videoId = entry.querySelector('videoId')?.textContent ||
                             entry.getElementsByTagName('yt:videoId')[0]?.textContent || '';
