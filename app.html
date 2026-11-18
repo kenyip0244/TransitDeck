@@ -2165,7 +2165,7 @@
     });
 
     // =========================================================================
-    // 14. YOUTUBE FAST ARCHIVE FETCH WITH EXACT DATE OVERWRITE & PROGRESS BAR
+    // 14. YOUTUBE ARCHIVE FETCH (CLEAN XML RSS + /VIDEOS RELATIVE + BACKFILL)
     // =========================================================================
     function openYtModal() {
       const savedChannel = localStorage.getItem(YT_CHANNEL_STORAGE_KEY) || '';
@@ -2284,11 +2284,14 @@
 
     async function fetchYouTubeFeedEntries(channelId) {
       const videoMap = new Map();
+      const orderedIds = [];
       const uploadsPlaylistId = channelId.startsWith('UC') ? ('UU' + channelId.slice(2)) : channelId;
-      const playlistUrl = `https://www.youtube.com/playlist?list=${uploadsPlaylistId}&hl=zh-HK`;
+      const playlistUrl = `https://www.youtube.com/playlist?list=${uploadsPlaylistId}`;
+      const channelVideosUrl = `https://www.youtube.com/channel/${channelId}/videos`;
 
       function upsertVideoItem(vid, titleText, publishedDate, isExact = false) {
         if (!vid || vid.length !== 11) return;
+        if (!videoMap.has(vid)) orderedIds.push(vid);
         const cleanTitle = (titleText || '').trim();
         const existing = videoMap.get(vid);
         if (!existing) {
@@ -2309,12 +2312,16 @@
         }
       }
 
-      // Step 1: Official XML RSS with cache-buster (exact YYYY-MM-DD publish dates for latest 15 videos)
-      setYtSyncProgress(25, '步驟 2/4：正在讀取官方 RSS 精確發佈日期...');
-      const rssUrl = `https://www.youtube.com/feeds/videos.xml?channel_id=${channelId}&_t=${Date.now()}`;
+      // Step 1: Official XML RSS (clean URL without extra query params -> exact YYYY-MM-DD for latest 15 videos)
+      setYtSyncProgress(20, '步驟 2/4：正在讀取官方 RSS 精確發佈日期...');
+      const cleanRssUrl = `https://www.youtube.com/feeds/videos.xml?channel_id=${channelId}`;
       try {
-        const xmlText = await fetchTextWithCorsFallback(rssUrl);
-        if (xmlText) {
+        let xmlText = await fetchTextWithCorsFallback(cleanRssUrl);
+        if (!xmlText || !xmlText.includes('<entry>')) {
+          const jinaRss = await fetch(`https://r.jina.ai/${cleanRssUrl}`);
+          if (jinaRss.ok) xmlText = await jinaRss.text();
+        }
+        if (xmlText && xmlText.includes('<entry>')) {
           const parser = new DOMParser();
           const xmlDoc = parser.parseFromString(xmlText, 'text/xml');
           const entries = Array.from(xmlDoc.querySelectorAll('entry'));
@@ -2332,8 +2339,35 @@
         }
       } catch {}
 
-      // Step 2: Jina Reader full playlist markdown scraper
-      setYtSyncProgress(42, '步驟 3/4：正在掃描總上傳播放清單過往影片日期...');
+      // Step 2: Channel /videos tab via Jina Reader (contains "X days/weeks/months ago" relative dates)
+      setYtSyncProgress(35, '步驟 3/4：正在讀取頻道主頁發佈時間...');
+      try {
+        const jinaVideosRes = await fetch(`https://r.jina.ai/${channelVideosUrl}`);
+        if (jinaVideosRes.ok) {
+          const mdVideos = await jinaVideosRes.text();
+          const lines = mdVideos.split('\n');
+          for (let i = 0; i < lines.length; i++) {
+            const m = lines[i].match(/\[([^\]]{3,150})\]\(https?:\/\/(?:www\.)?youtube\.com\/watch\?v=([\w-]{11})[^)]*\)/);
+            if (m) {
+              const rawTitle = m[1].replace(/!\[.*?\]\(.*?\)/g, '').trim();
+              if (rawTitle && !/^\d+:\d+$/.test(rawTitle)) {
+                const contextChunk = [
+                  lines[i],
+                  lines[i + 1] || '',
+                  lines[i + 2] || '',
+                  lines[i + 3] || '',
+                  lines[i + 4] || ''
+                ].join(' ');
+                const relDate = parseYouTubePublishDate(contextChunk);
+                upsertVideoItem(m[2], rawTitle, relDate, false);
+              }
+            }
+          }
+        }
+      } catch {}
+
+      // Step 3: Full Uploads Playlist via Jina Reader (captures all remaining historical videos)
+      setYtSyncProgress(48, '步驟 3/4：正在掃描總上傳播放清單過往影片...');
       try {
         const jinaRes = await fetch(`https://r.jina.ai/${playlistUrl}`);
         if (jinaRes.ok) {
@@ -2351,13 +2385,7 @@
             if (m) {
               const rawTitle = m[1].replace(/!\[.*?\]\(.*?\)/g, '').trim();
               if (rawTitle && !/^\d+:\d+$/.test(rawTitle) && rawTitle !== 'Watch later' && rawTitle !== 'Add to queue') {
-                const contextChunk = [
-                  lines[i],
-                  lines[i + 1] || '',
-                  lines[i + 2] || '',
-                  lines[i + 3] || '',
-                  lines[i + 4] || ''
-                ].join(' ');
+                const contextChunk = [lines[i], lines[i + 1] || '', lines[i + 2] || ''].join(' ');
                 const nearbyDate = parseYouTubePublishDate(contextChunk);
                 upsertVideoItem(m[2], rawTitle, nearbyDate, false);
               }
@@ -2366,32 +2394,23 @@
         }
       } catch {}
 
-      // Step 3: rss2json fallback
-      if (videoMap.size === 0) {
-        try {
-          const cleanRss = `https://www.youtube.com/feeds/videos.xml?channel_id=${channelId}`;
-          const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(cleanRss)}`;
-          const res = await fetch(apiUrl);
-          if (res.ok) {
-            const data = await res.json();
-            if (data.status === 'ok' && Array.isArray(data.items) && data.items.length > 0) {
-              const channelTitle = data.feed?.title || data.items[0]?.author;
-              if (channelTitle) localStorage.setItem(YT_CHANNEL_NAME_KEY, channelTitle);
-              data.items.forEach(item => {
-                const vidMatch = (item.guid || item.link || '').match(/(?:yt:video:|v=|\/)([\w-]{11})/);
-                const videoId = vidMatch ? vidMatch[1] : '';
-                upsertVideoItem(videoId, item.title, parseYouTubePublishDate(item.pubDate), true);
-              });
-            }
-          }
-        } catch {}
-      }
-
       if (videoMap.size === 0) {
         throw new Error('暫時無法讀取該頻道清單，請稍後再試');
       }
 
-      return Array.from(videoMap.values());
+      // Step 4: Backfill chronological dates for deep archive videos without visible relative labels
+      let anchorDate = new Date();
+      for (const vid of orderedIds) {
+        const item = videoMap.get(vid);
+        if (item && item.published) {
+          anchorDate = new Date(item.published + 'T00:00:00');
+        } else if (item && !item.published) {
+          anchorDate.setDate(anchorDate.getDate() - 4);
+          item.published = anchorDate.toISOString().split('T')[0];
+        }
+      }
+
+      return orderedIds.map(vid => videoMap.get(vid));
     }
 
     function detectTransitMetadataFromTitle(title) {
