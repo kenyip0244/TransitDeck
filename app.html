@@ -553,7 +553,7 @@
               </div>
               <div class="sm:col-span-8 space-y-1">
                 <label for="bracketTagInput" class="text-xs text-muted">［ ］亮點內容（自定）</label>
-                <input id="bracketTagInput" type="text" placeholder="例如 車手劈上水廠復古 / 車手爽飛青公 / 荃城新一頁"
+                <input id="bracketTagInput" type="text" placeholder="例如 車手劈上水廠復古 / 車手爽飛青公 / 青衣大巡遊"
                   class="w-full min-h-[40px] px-3 py-2 rounded-xl bg-asphalt border border-line text-sm text-cream placeholder:text-muted focus:outline-none focus:border-led" />
               </div>
             </div>
@@ -994,7 +994,7 @@
       }
     }
 
-    // 5. FORMULA-BASED YOUTUBE TITLE GENERATOR & SMART REVERSE PARSER
+    // 5. FORMULA-BASED YOUTUBE TITLE GENERATOR & SMART AUTO-MARK PARSER
     function buildYouTubeTitle(clip) {
       const opMeta = OPERATOR_META[clip.operator] || OPERATOR_META.OTHER;
       const customBracket = (clip.bracketTag || '').trim() || '行車實錄';
@@ -1022,7 +1022,7 @@
         .trim();
     }
 
-    // Smart Reverse Parser: extracts Operator, BracketTag, Deck, Route, Origin, Dest, and Plate from any title
+    // Auto-Mark & Reverse Parser: extracts Operator, BracketTag, Deck (上層/下層/前面/車頭展望), Route, Origin, Dest, and Plate
     function parseExistingTitleToFields(rawTitle, operatorHint = '') {
       const result = {
         operator: operatorHint || '',
@@ -1035,7 +1035,7 @@
       };
       if (!rawTitle) return result;
 
-      // 1. Detect Operator from title keywords if not specified
+      // 1. Detect Operator from title keywords
       if (/OMSI/i.test(rawTitle)) result.operator = 'OMSI';
       else if (/報站|PIDS|ATBBI|報站機/i.test(rawTitle)) result.operator = 'PIDS';
       else if (/龍運|Long Win|LWB/i.test(rawTitle)) result.operator = 'LWB';
@@ -1044,13 +1044,21 @@
       else if (/港鐵|MTR|荃灣綫|屯馬綫|東鐵綫|觀塘綫|港島綫|Tsuen Wan Line|Tuen Ma Line/i.test(rawTitle)) result.operator = 'MTR';
       else if (/九巴|KMB/i.test(rawTitle)) result.operator = 'KMB';
 
-      // 2. Extract License Plate or Fleet Number if present
+      // 2. Global keyword auto-detection for deck/perspective anywhere in the title
+      if (/下層展望|下層/.test(rawTitle)) result.deck = '下層展望';
+      else if (/上層展望|上層/.test(rawTitle)) result.deck = '上層展望';
+      else if (/前面展望|前瞻/.test(rawTitle)) result.deck = '前面展望';
+      else if (/車頭展望/.test(rawTitle)) result.deck = '車頭展望';
+      else if (/車廂內/.test(rawTitle)) result.deck = '車廂內';
+      else if (/車外站台/.test(rawTitle)) result.deck = '車外站台';
+
+      // 3. Extract License Plate or Fleet Number if present
       const plateMatch = rawTitle.match(/\b([A-Z]{2}\s?\d{3,4}|ATENU\d+|3ATENU\d+|V6B\d+|V6X\d+|E6X\d+|E6M\d+|AVBWU\d+|UE6X\d+)\b/i);
       if (plateMatch) {
         result.plate = plateMatch[1].toUpperCase();
       }
 
-      // 3. Parse [亮點•展望視角] or ［亮點•展望視角］
+      // 4. Parse [亮點•展望視角] or ［亮點•展望視角］
       const bracketMatch = rawTitle.match(/^[\[［]([^\]］]+)[\]］]\s*(.*)$/);
       let remainder = rawTitle;
       if (bracketMatch) {
@@ -1059,20 +1067,19 @@
         const parts = inside.split(/[•·|｜]/).map(s => s.trim()).filter(Boolean);
         if (parts.length >= 2) {
           result.bracketTag = parts[0];
-          result.deck = parts[1];
+          if (!result.deck) result.deck = parts[1];
         } else if (parts.length === 1) {
-          if (/展望|車廂|站台/.test(parts[0])) result.deck = parts[0];
-          else result.bracketTag = parts[0];
+          if (!/^(上層展望|下層展望|前面展望|車頭展望|車廂內|車外站台)$/.test(parts[0])) {
+            result.bracketTag = parts[0];
+          }
         }
       }
 
-      // 4. Strip trailing "行車片段" / "模擬駕駛片段"
+      // 5. Strip trailing "行車片段" / "模擬駕駛片段"
       remainder = remainder.replace(/\s*(行車片段|模擬駕駛片段|行車實錄|模擬片段)\s*$/i, '').trim();
 
-      // Helper to split origin - destination safely (respecting parentheses)
       function splitOriginDest(terminiStr) {
         if (!terminiStr) return ['', ''];
-        // Prefer arrow or spaced hyphen first, then fallback to hyphen between CJK/English words
         const arrowSplit = terminiStr.split(/\s*[➔→➡]\s*/);
         if (arrowSplit.length >= 2) {
           return [arrowSplit[0].trim(), arrowSplit.slice(1).join(' - ').trim()];
@@ -1081,7 +1088,6 @@
         if (spacedDash.length >= 2) {
           return [spacedDash[0].trim(), spacedDash.slice(1).join(' - ').trim()];
         }
-        // Match hyphen before Chinese character (e.g. "Tsuen Wan- 中環 Central" or "粉嶺（華明）-會展站")
         const zhDash = terminiStr.match(/^(.+?)\s*[-–—]\s*([\u4e00-\u9fa5（(].+)$/);
         if (zhDash) {
           return [zhDash[1].trim(), zhDash[2].trim()];
@@ -1089,7 +1095,7 @@
         return [terminiStr.trim(), ''];
       }
 
-      // 5. Parse MTR format: 港鐵/MTR A605/A606 Tsuen Wan Line 荃灣 Tsuen Wan - 中環 Central
+      // 6. Parse MTR format: 港鐵/MTR A605/A606 Tsuen Wan Line 荃灣 Tsuen Wan - 中環 Central
       if (result.operator === 'MTR' || /港鐵|MTR/i.test(remainder)) {
         const mtrLineMatch = remainder.match(/^(?:港鐵\/MTR|港鐵|MTR)\s+(.+?Line)\s+(.+)$/i);
         if (mtrLineMatch) {
@@ -1109,8 +1115,8 @@
         }
       }
 
-      // 6. Parse Bus / Sim format: 九巴/KMB ROUTE B10 路線 葵芳 葵翠邨 Kwai Fong - 皇崗口岸 Huanggang Port
-      const busMatch = remainder.match(/^(?:九巴\/KMB|城巴\/Citybus|龍運巴士\/\s*Long Win Bus|龍運\/LWB|新大嶼山巴士\/NLB|嶼巴\/NLB|港鐵巴士\/MTR Bus|OMSI\s*2\s*(?:九巴|城巴|龍運|嶼巴|模擬路線)?|九巴|城巴|龍運巴士|龍運|嶼巴|港鐵巴士)?\s*(?:ROUTE|Route)?\s*([A-Z]?\d{1,3}[A-Z]{0,2})\s*(?:路線|線)?\s*(.*)$/i);
+      // 7. Parse Bus / Sim format
+      const busMatch = remainder.match(/^(?:九巴\/KMB|城巴\/Citybus|城巴機場快線\/CTB Cityflyer|龍運巴士\/\s*Long Win Bus|龍運\/LWB|新大嶼山巴士\/NLB|嶼巴\/NLB|港鐵巴士\/MTR Bus|OMSI\s*2\s*(?:九巴|城巴|龍運|嶼巴|模擬路線)?|九巴|城巴機場快線|城巴|龍運巴士|龍運|嶼巴|港鐵巴士)?\s*(?:ROUTE|Route)?\s*([A-Z]?\d{1,3}[A-Z]{0,2})\s*(?:路線|線)?\s*(.*)$/i);
       if (busMatch) {
         result.route = busMatch[1].toUpperCase();
         const [orig, dest] = splitOriginDest(busMatch[2]);
@@ -1127,7 +1133,7 @@
         selectedOperator = parsed.operator;
       }
       if (parsed.deck) {
-        selectedDeck = parsed.deck === '下層' ? '下層展望' : (parsed.deck === '上層' ? '上層展望' : parsed.deck);
+        selectedDeck = parsed.deck;
       }
       if (parsed.route) {
         document.getElementById('routeInput').value = parsed.route;
@@ -1182,7 +1188,6 @@
     // 6. THUMBNAIL STUDIO TWO-WAY BRIDGE
     function openThumbnailStudioWithClip(clipObj) {
       if (clipObj) {
-        // Ensure parsed fields are populated even if user clicked "整封面" directly on an imported card
         const parsed = parseExistingTitleToFields(clipObj.title || '', clipObj.operator);
         const enriched = {
           ...clipObj,
@@ -1297,7 +1302,8 @@
         const opName = OPERATOR_META[clip.operator]?.name || clip.operator || '';
         const statusName = STATUS_META[clip.status]?.label || clip.status || '';
         const finalTitle = (clip.title && clip.title.trim()) ? clip.title.trim() : buildYouTubeTitle(clip);
-        const plateAndLocation = [clip.plate, clip.location, clip.deck].filter(Boolean).join(' / ');
+        const autoDeck = clip.deck || parseExistingTitleToFields(finalTitle, clip.operator).deck;
+        const plateAndLocation = [clip.plate, clip.location, autoDeck].filter(Boolean).join(' / ');
         const extractedVid = clip.ytVideoId || extractYouTubeVideoId(clip.ytUrl || '');
 
         return [
@@ -1701,7 +1707,7 @@
       }
     });
 
-    // 11. SORTING & RENDERING VIDEO CARDS
+    // 11. SORTING & RENDERING VIDEO CARDS (With Instant Auto-Mark Badge Detection)
     function sortClipsList(list, sortMode) {
       const copy = [...list];
       switch (sortMode) {
@@ -1783,16 +1789,25 @@
         : 'space-y-3';
 
       container.innerHTML = sorted.map(clip => {
-        const op = OPERATOR_META[clip.operator] || OPERATOR_META.OTHER;
+        const displayTitle = (clip.title && clip.title.trim()) ? clip.title.trim() : buildYouTubeTitle(clip);
+        const autoParsed = parseExistingTitleToFields(displayTitle, clip.operator);
+
+        const resolvedOp = (clip.operator && clip.operator !== 'OTHER') ? clip.operator : (autoParsed.operator || clip.operator || 'OTHER');
+        const op = OPERATOR_META[resolvedOp] || OPERATOR_META.OTHER;
         const st = STATUS_META[clip.status] || STATUS_META.untransferred;
         const hasCover = Boolean(clip.cover);
-        const displayTitle = (clip.title && clip.title.trim()) ? clip.title.trim() : buildYouTubeTitle(clip);
-        const terminiLine = (clip.originBilingual && clip.destBilingual)
-          ? `${clip.originBilingual} → ${clip.destBilingual}`
+
+        // Auto-mark deck badge even for older records where clip.deck was originally empty
+        const resolvedDeck = clip.deck || autoParsed.deck || '';
+        const resolvedRoute = (clip.route && clip.route !== 'YT') ? clip.route : (autoParsed.route || clip.route || '---');
+        const resolvedOrigin = clip.originBilingual || autoParsed.originBilingual;
+        const resolvedDest = clip.destBilingual || autoParsed.destBilingual;
+        const terminiLine = (resolvedOrigin && resolvedDest)
+          ? `${resolvedOrigin} → ${resolvedDest}`
           : (clip.direction || '');
 
         const coverHtml = hasCover
-          ? `<img src="${escapeHtml(clip.cover)}" alt="${escapeHtml(clip.route)} 封面" loading="lazy" class="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-300 ease-dispatch" />`
+          ? `<img src="${escapeHtml(clip.cover)}" alt="${escapeHtml(resolvedRoute)} 封面" loading="lazy" class="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-300 ease-dispatch" />`
           : `<div class="w-full h-full flex flex-col items-center justify-center bg-asphalt text-muted gap-1.5">
                <i class="ph ph-video-camera text-2xl opacity-50"></i>
                <span class="text-xs font-mono">未設封面圖</span>
@@ -1806,14 +1821,14 @@
                   ${coverHtml}
                   <div class="absolute top-2 left-2 flex items-center gap-1.5">
                     <span class="px-2 py-0.5 rounded-md text-xs font-bold ${op.badgeBg} ${op.badgeText}">${op.name}</span>
-                    ${clip.deck ? `<span class="px-2 py-0.5 rounded-md text-xs font-medium bg-black/75 backdrop-blur-sm text-cream border border-white/10">${escapeHtml(clip.deck)}</span>` : ''}
+                    ${resolvedDeck ? `<span class="px-2 py-0.5 rounded-md text-xs font-medium bg-black/75 backdrop-blur-sm text-cream border border-white/10">${escapeHtml(resolvedDeck)}</span>` : ''}
                   </div>
                   <span class="absolute bottom-2 right-2 px-2 py-0.5 rounded-md text-xs font-medium border backdrop-blur-md ${st.pill}">${st.label}</span>
                 </div>
 
                 <div class="flex items-start justify-between gap-2">
                   <div class="led-blind px-2.5 py-1 rounded-lg font-mono text-base font-bold tracking-wider shrink-0">
-                    ${escapeHtml(clip.route || '---')}
+                    ${escapeHtml(resolvedRoute)}
                   </div>
                   <div class="min-w-0 flex-1">
                     <div class="text-sm font-semibold text-cream line-clamp-2 leading-snug">${escapeHtml(displayTitle)}</div>
@@ -1841,7 +1856,7 @@
           <article class="group rounded-2xl bg-depot border border-line hover:border-led/50 p-3 flex flex-col sm:flex-row gap-4 transition-colors">
             <div class="relative w-full sm:w-56 aspect-video rounded-xl overflow-hidden bg-asphalt border border-line shrink-0">
               ${coverHtml}
-              ${clip.deck ? `<span class="absolute top-2 left-2 px-2 py-0.5 rounded-md text-xs font-medium bg-black/75 backdrop-blur-sm text-cream border border-white/10">${escapeHtml(clip.deck)}</span>` : ''}
+              ${resolvedDeck ? `<span class="absolute top-2 left-2 px-2 py-0.5 rounded-md text-xs font-medium bg-black/75 backdrop-blur-sm text-cream border border-white/10">${escapeHtml(resolvedDeck)}</span>` : ''}
             </div>
 
             <div class="flex-1 min-w-0 flex flex-col justify-between gap-3">
@@ -1849,7 +1864,7 @@
                 <div class="flex items-start gap-2.5 min-w-0">
                   <span class="px-2.5 py-1 rounded-lg text-xs font-bold shrink-0 mt-0.5 ${op.badgeBg} ${op.badgeText}">${op.name}</span>
                   <div class="led-blind px-3 py-0.5 rounded-lg font-mono text-lg font-bold tracking-wider shrink-0">
-                    ${escapeHtml(clip.route || '---')}
+                    ${escapeHtml(resolvedRoute)}
                   </div>
                   <div class="min-w-0">
                     <h3 class="text-sm sm:text-base font-semibold text-cream leading-snug break-words">${escapeHtml(displayTitle)}</h3>
@@ -2085,7 +2100,6 @@
       isTitleManuallyEdited = true;
     });
 
-    // Auto-parse pasted title when user pastes a full YouTube title into titleInput
     document.getElementById('titleInput').addEventListener('paste', () => {
       setTimeout(() => {
         const pastedVal = document.getElementById('titleInput').value.trim();
@@ -2357,7 +2371,7 @@
     });
 
     // =========================================================================
-    // 14. YOUTUBE ARCHIVE FETCH (CLEAN XML RSS + /VIDEOS RELATIVE + BACKFILL)
+    // 14. YOUTUBE ARCHIVE FETCH & AUTO-MARK ENRICHMENT
     // =========================================================================
     function openYtModal() {
       const savedChannel = localStorage.getItem(YT_CHANNEL_STORAGE_KEY) || '';
@@ -2503,7 +2517,6 @@
         }
       }
 
-      // Step 1: Official XML RSS (clean URL without extra query params -> exact YYYY-MM-DD for latest 15 videos)
       setYtSyncProgress(20, '步驟 2/4：正在讀取官方 RSS 精確發佈日期...');
       const cleanRssUrl = `https://www.youtube.com/feeds/videos.xml?channel_id=${channelId}`;
       try {
@@ -2530,7 +2543,6 @@
         }
       } catch {}
 
-      // Step 2: Channel /videos tab via Jina Reader (contains "X days/weeks/months ago" relative dates)
       setYtSyncProgress(35, '步驟 3/4：正在讀取頻道主頁發佈時間...');
       try {
         const jinaVideosRes = await fetch(`https://r.jina.ai/${channelVideosUrl}`);
@@ -2557,7 +2569,6 @@
         }
       } catch {}
 
-      // Step 3: Full Uploads Playlist via Jina Reader (captures all remaining historical videos)
       setYtSyncProgress(48, '步驟 3/4：正在掃描總上傳播放清單過往影片...');
       try {
         const jinaRes = await fetch(`https://r.jina.ai/${playlistUrl}`);
@@ -2589,7 +2600,6 @@
         throw new Error('暫時無法讀取該頻道清單，請稍後再試');
       }
 
-      // Step 4: Backfill chronological dates for deep archive videos without visible relative labels
       let anchorDate = new Date();
       for (const vid of orderedIds) {
         const item = videoMap.get(vid);
@@ -2627,7 +2637,7 @@
       setYtSyncProgress(10, '步驟 1/4：正在解析 YouTube 頻道 ID...');
       if (!silent) {
         statusBox.classList.remove('hidden');
-        statusBox.textContent = '正在讀取頻道所有公開影片及其發佈日期...';
+        statusBox.textContent = '正在讀取頻道所有公開影片並自動標記展望與欄位...';
         resultsList.innerHTML = '';
       }
 
@@ -2637,7 +2647,7 @@
 
         const videos = await fetchYouTubeFeedEntries(channelId);
         const totalCount = videos.length;
-        setYtSyncProgress(55, `步驟 4/4：已讀取 ${totalCount} 條影片，正在更新發佈日期與欄位...`);
+        setYtSyncProgress(55, `步驟 4/4：已讀取 ${totalCount} 條影片，正在自動標記欄位...`);
 
         const todayStr = new Date().toISOString().split('T')[0];
         let newSavedCount = 0;
@@ -2648,7 +2658,7 @@
           const video = videos[i];
           const stepPercent = 55 + Math.round(((i + 1) / Math.max(1, totalCount)) * 40);
           if (i % 5 === 0 || i === totalCount - 1) {
-            setYtSyncProgress(stepPercent, `步驟 4/4：正在同步影片資料 (${i + 1} / ${totalCount})...`);
+            setYtSyncProgress(stepPercent, `步驟 4/4：正在自動標記影片資料 (${i + 1} / ${totalCount})...`);
           }
 
           const parsed = detectTransitMetadataFromTitle(video.title);
@@ -2661,6 +2671,7 @@
 
           if (existingClip) {
             const needsUpdate = (video.published && existingClip.date !== video.published) ||
+                                (!existingClip.deck && parsed.deck) ||
                                 (!existingClip.bracketTag && parsed.bracketTag) ||
                                 (!existingClip.originBilingual && parsed.originBilingual);
             if (needsUpdate) {
@@ -2691,6 +2702,7 @@
               ...matchedPending,
               status: 'uploaded',
               date: publishDate,
+              deck: matchedPending.deck || parsed.deck,
               ytVideoId: video.videoId,
               ytUrl: video.link,
               title: matchedPending.title || video.title,
@@ -2728,16 +2740,16 @@
         localStorage.setItem(YT_LAST_SYNC_KEY, nowStr);
         updateConnectedChannelUI();
 
-        setYtSyncProgress(100, `同步完成！新增 ${newSavedCount} 條，更新 ${updatedDateCount} 條紀錄`);
+        setYtSyncProgress(100, `同步完成！新增 ${newSavedCount} 條，自動標記更新 ${updatedDateCount} 條紀錄`);
 
         if (!silent) {
-          statusBox.textContent = `同步完成！共讀取 ${totalCount} 條影片：新增 ${newSavedCount} 條，更新日期與欄位 ${updatedDateCount} 條，配對待上載 ${matchedPendingCount} 條。`;
+          statusBox.textContent = `同步完成！共讀取 ${totalCount} 條影片：新增 ${newSavedCount} 條，自動標記更新 ${updatedDateCount} 條，配對待上載 ${matchedPendingCount} 條。`;
           resultsList.innerHTML = videos.map(v => `
             <div class="p-2.5 rounded-xl bg-asphalt border border-line flex items-center gap-3">
               <img src="${escapeHtml(v.thumb)}" alt="${escapeHtml(v.title)}" class="w-24 aspect-video rounded-lg object-cover border border-line shrink-0" />
               <div class="flex-1 min-w-0">
                 <div class="text-xs font-medium text-cream truncate">${escapeHtml(v.title)}</div>
-                <div class="text-xs font-mono text-muted mt-0.5">發佈日期：${escapeHtml(v.published || todayStr)} · 已儲存至影片庫</div>
+                <div class="text-xs font-mono text-muted mt-0.5">發佈日期：${escapeHtml(v.published || todayStr)} · 已自動標記並入庫</div>
               </div>
               <span class="px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-300 text-xs font-medium shrink-0">已入庫</span>
             </div>
@@ -2745,9 +2757,9 @@
         }
 
         if (newSavedCount > 0 || updatedDateCount > 0 || matchedPendingCount > 0) {
-          showToast(`YouTube 同步完成：新增 ${newSavedCount} 條，更新 ${updatedDateCount} 條`);
+          showToast(`YouTube 同步完成：新增 ${newSavedCount} 條，自動標記 ${updatedDateCount} 條`);
         } else if (!silent) {
-          showToast('所有影片日期與欄位已與 YouTube 保持一致', 'info');
+          showToast('所有影片日期與展望標記已保持最新', 'info');
         }
       } catch (err) {
         hideYtSyncProgress();
@@ -2770,12 +2782,12 @@
 
       const refreshIcon = document.getElementById('refreshDataIcon');
       if (refreshIcon) refreshIcon.classList.add('animate-spin');
-      if (!silent) showToast('正在更新 YouTube 影片與日期數據...', 'info');
+      if (!silent) showToast('正在更新 YouTube 影片並自動標記欄位...', 'info');
 
       try {
         await syncAndSaveChannelVideos(savedChannel, true);
         localStorage.setItem(YT_LAST_SYNC_TS_KEY, String(Date.now()));
-        if (!silent) showToast('數據更新完成！');
+        if (!silent) showToast('數據更新與自動標記完成！');
       } catch (err) {
         if (!silent) showToast(`更新失敗：${err.message}`, 'error');
       } finally {
