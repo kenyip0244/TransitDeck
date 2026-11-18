@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>TransitDeck — 行車記錄片與模擬遊戲片管理庫</title>
-  <meta name="description" content="專為拍巴士、鐵路行車記錄片同 OMSI 2 / 報站機遊戲片的創作者設計的雲端影片庫，支援 1005.idv.hk 車牌查詢、自動標題生成、封面生成器及 YouTube 頻道全量同步。" />
+  <meta name="description" content="專為拍巴士、鐵路行車記錄片同 OMSI 2 / 報站機遊戲片的創作者設計的雲端影片庫，支援 1005.idv.hk 車牌查詢、自動標題生成與反向分析、封面生成器及 YouTube 頻道全量同步。" />
   <meta name="theme-color" content="#0A0B0D" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -414,7 +414,7 @@
           <div class="max-w-md mx-auto space-y-1.5">
             <h3 class="text-lg font-semibold text-cream">影片庫暫時未有符合條件的紀錄</h3>
             <p class="text-sm text-muted leading-relaxed">
-              填寫路線號碼、公司名同起終點中英文即可自動生成標準 YouTube 標題，並一鍵帶去封面生成器製作封面！
+              填寫路線號碼、公司名同起終點中英文即可自動生成標準 YouTube 標題，或貼上現有標題自動分析拆解所有欄位！
             </p>
           </div>
           <div class="pt-2 flex flex-wrap items-center justify-center gap-3">
@@ -452,7 +452,7 @@
   </footer>
 
   <!-- ===================================================================== -->
-  <!-- MODAL 1: ADD / EDIT CLIP                                              -->
+  <!-- MODAL 1: ADD / EDIT CLIP (With Smart Title Parser & Generator)        -->
   <!-- ===================================================================== -->
   <div id="clipModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" class="fixed inset-0 z-40 hidden bg-black/80 backdrop-blur-sm overflow-y-auto">
     <div class="min-h-screen px-3 sm:px-6 py-4 sm:py-8 flex items-center justify-center">
@@ -547,13 +547,13 @@
             <!-- Route Number + Custom [ ] Tag -->
             <div class="grid grid-cols-1 sm:grid-cols-12 gap-3">
               <div class="sm:col-span-4 space-y-1">
-                <label for="routeInput" class="text-xs text-muted">路線號碼 *</label>
+                <label id="routeFieldLabel" for="routeInput" class="text-xs text-muted">路線號碼 *</label>
                 <input id="routeInput" type="text" required placeholder="例如 B10 / A38 / 948"
                   class="w-full min-h-[40px] px-3 py-2 rounded-xl bg-asphalt border border-line text-sm font-mono font-semibold text-led placeholder:text-muted/60 focus:outline-none focus:border-led" />
               </div>
               <div class="sm:col-span-8 space-y-1">
                 <label for="bracketTagInput" class="text-xs text-muted">［ ］亮點內容（自定）</label>
-                <input id="bracketTagInput" type="text" placeholder="例如 車手劈上水廠復古 / 車手爽飛青公 / 青衣大巡遊"
+                <input id="bracketTagInput" type="text" placeholder="例如 車手劈上水廠復古 / 車手爽飛青公 / 荃城新一頁"
                   class="w-full min-h-[40px] px-3 py-2 rounded-xl bg-asphalt border border-line text-sm text-cream placeholder:text-muted focus:outline-none focus:border-led" />
               </div>
             </div>
@@ -581,12 +581,17 @@
               </div>
             </div>
 
-            <!-- Auto-Generated YouTube Title Live Preview & Edit -->
+            <!-- Auto-Generated YouTube Title Live Preview, Reverse Parser & Copy -->
             <div class="p-3 rounded-xl bg-asphalt border border-led/40 space-y-1.5">
-              <div class="flex items-center justify-between gap-2">
-                <label for="titleInput" class="text-xs font-semibold text-led">自動生成 YouTube 標題（可直接微調）</label>
-                <div class="flex items-center gap-2">
-                  <button id="btnRegenerateTitle" type="button" class="text-xs text-muted hover:text-cream underline py-0.5">重設公式</button>
+              <div class="flex flex-wrap items-center justify-between gap-2">
+                <label for="titleInput" class="text-xs font-semibold text-led">YouTube 完整標題（自動生成或貼上標題反向分析）</label>
+                <div class="flex items-center gap-1.5">
+                  <button id="btnParseTitleToFields" type="button" title="從上方標題自動拆解公司、路線、起終點與展望視角填入欄位"
+                    class="inline-flex items-center gap-1 px-2 py-1 rounded bg-sky-500/20 text-xs text-sky-300 hover:bg-sky-500/30 font-semibold">
+                    <i class="ph ph-magic-wand text-xs"></i>
+                    <span>分析標題填入</span>
+                  </button>
+                  <button id="btnRegenerateTitle" type="button" class="text-xs text-muted hover:text-cream underline px-1 py-0.5">重設公式</button>
                   <button id="btnCopyModalYtTitle" type="button" class="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-led/20 text-xs text-led hover:bg-led/30 font-semibold">
                     <i class="ph ph-copy text-xs"></i>
                     <span>複製標題</span>
@@ -601,13 +606,13 @@
             <div class="space-y-1.5">
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div class="space-y-1">
-                  <label id="modelFieldLabel" for="modelInput" class="text-xs text-muted">車型 / 遊戲地圖或系統</label>
+                  <label id="modelFieldLabel" for="modelInput" class="text-xs text-muted">車型 / 列車型號或地圖</label>
                   <input id="modelInput" type="text" placeholder="例如 ADL E500MMC / Volvo B8L"
                     class="w-full min-h-[40px] px-3 py-2 rounded-xl bg-asphalt border border-line text-sm text-cream placeholder:text-muted focus:outline-none focus:border-led" />
                 </div>
                 <div class="space-y-1">
                   <label for="plateInput" class="text-xs text-muted flex items-center justify-between">
-                    <span>車牌 / 車隊編號（查 1005.idv.hk）</span>
+                    <span id="plateFieldLabel">車牌 / 車隊編號（查 1005.idv.hk）</span>
                     <a href="https://1005.idv.hk/" target="_blank" rel="noopener" class="text-xs text-muted hover:text-led underline">1005.idv.hk</a>
                   </label>
                   <div class="flex gap-1.5">
@@ -824,7 +829,7 @@
       CTB: { name: '城巴', fullEnTitle: '城巴/Citybus ROUTE', badgeBg: 'bg-ctb', badgeText: 'text-asphalt' },
       LWB: { name: '龍運', fullEnTitle: '龍運巴士/ Long Win Bus Route', badgeBg: 'bg-lwb', badgeText: 'text-white' },
       NLB: { name: '嶼巴', fullEnTitle: '新大嶼山巴士/NLB ROUTE', badgeBg: 'bg-nlb', badgeText: 'text-white' },
-      MTR: { name: '港鐵', fullEnTitle: '港鐵巴士/MTR Bus ROUTE', badgeBg: 'bg-mtr', badgeText: 'text-white' },
+      MTR: { name: '港鐵', fullEnTitle: '港鐵/MTR', badgeBg: 'bg-mtr', badgeText: 'text-white' },
       OMSI: { name: 'OMSI 2', fullEnTitle: 'OMSI 2 模擬路線', badgeBg: 'bg-omsi', badgeText: 'text-white' },
       PIDS: { name: '報站機模擬', fullEnTitle: '報站機模擬 PIDS ROUTE', badgeBg: 'bg-pids', badgeText: 'text-white' },
       OTHER: { name: '其他', fullEnTitle: 'ROUTE', badgeBg: 'bg-panel', badgeText: 'text-cream' }
@@ -838,6 +843,7 @@
     };
 
     const REAL_BUS_MODELS = ['ADL E500MMC', 'Volvo B8L', 'Volvo B9TL', 'MAN A95', 'Wright StreetDeck', 'BYD B12D'];
+    const MTR_TRAIN_MODELS = ['Q-Train (A605/A606)', 'M-Train 現代化列車', 'C-Train 中車長客', 'CAF 機場/東涌列車', 'SP1900 千九列車', 'R-Train 屯馬線'];
     const SIM_PRESETS = ['Winsome E500MMC', 'GX7767 Studio', 'HKWestKowloon', 'Citybus ATBBI PIDS', 'KMB 報站機', 'openOMSI'];
 
     // Global Escape Key Handler for Modals (A11y)
@@ -988,17 +994,23 @@
       }
     }
 
-    // 5. FORMULA-BASED YOUTUBE TITLE GENERATOR
+    // 5. FORMULA-BASED YOUTUBE TITLE GENERATOR & SMART REVERSE PARSER
     function buildYouTubeTitle(clip) {
       const opMeta = OPERATOR_META[clip.operator] || OPERATOR_META.OTHER;
       const customBracket = (clip.bracketTag || '').trim() || '行車實錄';
-      const deckText = (clip.deck || '上層展望').trim();
-      const routeNum = (clip.route || '').trim().toUpperCase();
+      const deckText = (clip.deck || (clip.operator === 'MTR' ? '車頭展望' : '上層展望')).trim();
+      const routeNum = (clip.route || '').trim();
       const originStr = (clip.originBilingual || '').trim();
       const destStr = (clip.destBilingual || clip.direction || '').trim();
 
       const headerTag = `[${customBracket}•${deckText}]`;
-      const routeSegment = routeNum ? `${opMeta.fullEnTitle} ${routeNum} 路線` : opMeta.fullEnTitle;
+      let routeSegment = '';
+      if (clip.operator === 'MTR') {
+        routeSegment = routeNum ? `港鐵/MTR ${routeNum}` : '港鐵/MTR';
+      } else {
+        routeSegment = routeNum ? `${opMeta.fullEnTitle} ${routeNum.toUpperCase()} 路線` : opMeta.fullEnTitle;
+      }
+
       const terminiSegment = (originStr && destStr)
         ? `${originStr} - ${destStr}`
         : (originStr || destStr);
@@ -1008,6 +1020,131 @@
         .join(' ')
         .replace(/\s{2,}/g, ' ')
         .trim();
+    }
+
+    // Smart Reverse Parser: extracts Operator, BracketTag, Deck, Route, Origin, Dest, and Plate from any title
+    function parseExistingTitleToFields(rawTitle, operatorHint = '') {
+      const result = {
+        operator: operatorHint || '',
+        bracketTag: '',
+        deck: '',
+        route: '',
+        originBilingual: '',
+        destBilingual: '',
+        plate: ''
+      };
+      if (!rawTitle) return result;
+
+      // 1. Detect Operator from title keywords if not specified
+      if (/OMSI/i.test(rawTitle)) result.operator = 'OMSI';
+      else if (/報站|PIDS|ATBBI|報站機/i.test(rawTitle)) result.operator = 'PIDS';
+      else if (/龍運|Long Win|LWB/i.test(rawTitle)) result.operator = 'LWB';
+      else if (/城巴|Citybus|CTB/i.test(rawTitle)) result.operator = 'CTB';
+      else if (/嶼巴|新大嶼山|NLB/i.test(rawTitle)) result.operator = 'NLB';
+      else if (/港鐵|MTR|荃灣綫|屯馬綫|東鐵綫|觀塘綫|港島綫|Tsuen Wan Line|Tuen Ma Line/i.test(rawTitle)) result.operator = 'MTR';
+      else if (/九巴|KMB/i.test(rawTitle)) result.operator = 'KMB';
+
+      // 2. Extract License Plate or Fleet Number if present
+      const plateMatch = rawTitle.match(/\b([A-Z]{2}\s?\d{3,4}|ATENU\d+|3ATENU\d+|V6B\d+|V6X\d+|E6X\d+|E6M\d+|AVBWU\d+|UE6X\d+)\b/i);
+      if (plateMatch) {
+        result.plate = plateMatch[1].toUpperCase();
+      }
+
+      // 3. Parse [亮點•展望視角] or ［亮點•展望視角］
+      const bracketMatch = rawTitle.match(/^[\[［]([^\]］]+)[\]］]\s*(.*)$/);
+      let remainder = rawTitle;
+      if (bracketMatch) {
+        const inside = bracketMatch[1];
+        remainder = bracketMatch[2].trim();
+        const parts = inside.split(/[•·|｜]/).map(s => s.trim()).filter(Boolean);
+        if (parts.length >= 2) {
+          result.bracketTag = parts[0];
+          result.deck = parts[1];
+        } else if (parts.length === 1) {
+          if (/展望|車廂|站台/.test(parts[0])) result.deck = parts[0];
+          else result.bracketTag = parts[0];
+        }
+      }
+
+      // 4. Strip trailing "行車片段" / "模擬駕駛片段"
+      remainder = remainder.replace(/\s*(行車片段|模擬駕駛片段|行車實錄|模擬片段)\s*$/i, '').trim();
+
+      // Helper to split origin - destination safely (respecting parentheses)
+      function splitOriginDest(terminiStr) {
+        if (!terminiStr) return ['', ''];
+        // Prefer arrow or spaced hyphen first, then fallback to hyphen between CJK/English words
+        const arrowSplit = terminiStr.split(/\s*[➔→➡]\s*/);
+        if (arrowSplit.length >= 2) {
+          return [arrowSplit[0].trim(), arrowSplit.slice(1).join(' - ').trim()];
+        }
+        const spacedDash = terminiStr.split(/\s+[-–—]\s+/);
+        if (spacedDash.length >= 2) {
+          return [spacedDash[0].trim(), spacedDash.slice(1).join(' - ').trim()];
+        }
+        // Match hyphen before Chinese character (e.g. "Tsuen Wan- 中環 Central" or "粉嶺（華明）-會展站")
+        const zhDash = terminiStr.match(/^(.+?)\s*[-–—]\s*([\u4e00-\u9fa5（(].+)$/);
+        if (zhDash) {
+          return [zhDash[1].trim(), zhDash[2].trim()];
+        }
+        return [terminiStr.trim(), ''];
+      }
+
+      // 5. Parse MTR format: 港鐵/MTR A605/A606 Tsuen Wan Line 荃灣 Tsuen Wan - 中環 Central
+      if (result.operator === 'MTR' || /港鐵|MTR/i.test(remainder)) {
+        const mtrLineMatch = remainder.match(/^(?:港鐵\/MTR|港鐵|MTR)\s+(.+?Line)\s+(.+)$/i);
+        if (mtrLineMatch) {
+          result.route = mtrLineMatch[1].trim();
+          const [orig, dest] = splitOriginDest(mtrLineMatch[2]);
+          result.originBilingual = orig;
+          result.destBilingual = dest;
+          return result;
+        }
+        const mtrSimple = remainder.match(/^(?:港鐵\/MTR|港鐵|MTR)\s+([^\s]+)\s*(.*)$/i);
+        if (mtrSimple) {
+          result.route = mtrSimple[1].trim();
+          const [orig, dest] = splitOriginDest(mtrSimple[2]);
+          result.originBilingual = orig;
+          result.destBilingual = dest;
+          return result;
+        }
+      }
+
+      // 6. Parse Bus / Sim format: 九巴/KMB ROUTE B10 路線 葵芳 葵翠邨 Kwai Fong - 皇崗口岸 Huanggang Port
+      const busMatch = remainder.match(/^(?:九巴\/KMB|城巴\/Citybus|龍運巴士\/\s*Long Win Bus|龍運\/LWB|新大嶼山巴士\/NLB|嶼巴\/NLB|港鐵巴士\/MTR Bus|OMSI\s*2\s*(?:九巴|城巴|龍運|嶼巴|模擬路線)?|九巴|城巴|龍運巴士|龍運|嶼巴|港鐵巴士)?\s*(?:ROUTE|Route)?\s*([A-Z]?\d{1,3}[A-Z]{0,2})\s*(?:路線|線)?\s*(.*)$/i);
+      if (busMatch) {
+        result.route = busMatch[1].toUpperCase();
+        const [orig, dest] = splitOriginDest(busMatch[2]);
+        result.originBilingual = orig;
+        result.destBilingual = dest;
+      }
+
+      return result;
+    }
+
+    function applyParsedTitleToForm(rawTitle) {
+      const parsed = parseExistingTitleToFields(rawTitle, selectedOperator);
+      if (parsed.operator) {
+        selectedOperator = parsed.operator;
+      }
+      if (parsed.deck) {
+        selectedDeck = parsed.deck === '下層' ? '下層展望' : (parsed.deck === '上層' ? '上層展望' : parsed.deck);
+      }
+      if (parsed.route) {
+        document.getElementById('routeInput').value = parsed.route;
+      }
+      if (parsed.bracketTag) {
+        document.getElementById('bracketTagInput').value = parsed.bracketTag;
+      }
+      if (parsed.originBilingual) {
+        document.getElementById('originBilingualInput').value = parsed.originBilingual;
+      }
+      if (parsed.destBilingual) {
+        document.getElementById('destBilingualInput').value = parsed.destBilingual;
+      }
+      if (parsed.plate && !document.getElementById('plateInput').value.trim()) {
+        document.getElementById('plateInput').value = parsed.plate;
+      }
+      syncFormSelectorsUI();
     }
 
     function updateAutoGeneratedTitleField() {
@@ -1045,7 +1182,19 @@
     // 6. THUMBNAIL STUDIO TWO-WAY BRIDGE
     function openThumbnailStudioWithClip(clipObj) {
       if (clipObj) {
-        localStorage.setItem(BRIDGE_DRAFT_KEY, JSON.stringify(clipObj));
+        // Ensure parsed fields are populated even if user clicked "整封面" directly on an imported card
+        const parsed = parseExistingTitleToFields(clipObj.title || '', clipObj.operator);
+        const enriched = {
+          ...clipObj,
+          operator: clipObj.operator && clipObj.operator !== 'OTHER' ? clipObj.operator : (parsed.operator || clipObj.operator),
+          route: (clipObj.route && clipObj.route !== 'YT') ? clipObj.route : (parsed.route || clipObj.route),
+          bracketTag: clipObj.bracketTag || parsed.bracketTag,
+          deck: clipObj.deck || parsed.deck || '上層展望',
+          originBilingual: clipObj.originBilingual || parsed.originBilingual,
+          destBilingual: clipObj.destBilingual || parsed.destBilingual || clipObj.direction,
+          plate: clipObj.plate || parsed.plate
+        };
+        localStorage.setItem(BRIDGE_DRAFT_KEY, JSON.stringify(enriched));
       } else {
         localStorage.removeItem(BRIDGE_DRAFT_KEY);
       }
@@ -1777,14 +1926,34 @@
     function renderQuickModelPills() {
       const container = document.getElementById('quickModelPills');
       const isSim = selectedOperator === 'OMSI' || selectedOperator === 'PIDS';
-      const items = isSim ? SIM_PRESETS : REAL_BUS_MODELS;
+      const isMtr = selectedOperator === 'MTR';
+      const items = isSim ? SIM_PRESETS : (isMtr ? MTR_TRAIN_MODELS : REAL_BUS_MODELS);
 
-      document.getElementById('modelFieldLabel').textContent = isSim ? '遊戲地圖 / 車包或報站機系統' : '車型';
+      document.getElementById('modelFieldLabel').textContent = isSim ? '遊戲地圖 / 車包或報站機系統' : (isMtr ? '列車型號 / 編組' : '車型');
       document.getElementById('locationFieldLabel').textContent = isSim ? '遊戲路線 / 場景' : '途經 / 拍攝地點';
+      document.getElementById('routeFieldLabel').textContent = isMtr ? '列車編組 / 路線 *' : '路線號碼 *';
 
       container.innerHTML = items.map(item =>
         `<button type="button" class="model-pill min-h-[30px] px-2.5 py-1 rounded-md bg-asphalt hover:bg-panelHover border border-line text-xs font-mono text-muted hover:text-cream">${escapeHtml(item)}</button>`
       ).join('');
+    }
+
+    function renderDeckSelectorButtons() {
+      const selector = document.getElementById('deckSelector');
+      const isMtr = selectedOperator === 'MTR';
+      const options = isMtr ? ['車頭展望', '車廂內', '車外站台'] : ['上層展望', '下層展望', '前面展望'];
+
+      if (!options.includes(selectedDeck)) {
+        selectedDeck = options[0];
+      }
+
+      selector.innerHTML = options.map(opt => {
+        const isActive = opt === selectedDeck;
+        const cls = isActive
+          ? 'deck-btn min-h-[38px] py-2 px-3 rounded-xl bg-led text-asphalt text-xs font-semibold border border-led transition-all'
+          : 'deck-btn min-h-[38px] py-2 px-3 rounded-xl bg-asphalt text-muted hover:text-cream text-xs font-medium border border-line transition-all';
+        return `<button type="button" data-deck="${opt}" class="${cls}">${opt}</button>`;
+      }).join('');
     }
 
     function syncFormSelectorsUI() {
@@ -1798,13 +1967,7 @@
         }
       });
 
-      document.querySelectorAll('.deck-btn').forEach(btn => {
-        if (btn.dataset.deck === selectedDeck) {
-          btn.className = 'deck-btn min-h-[38px] py-2 px-3 rounded-xl bg-led text-asphalt text-xs font-semibold border border-led transition-all';
-        } else {
-          btn.className = 'deck-btn min-h-[38px] py-2 px-3 rounded-xl bg-asphalt text-muted hover:text-cream text-xs font-medium border border-line transition-all';
-        }
-      });
+      renderDeckSelectorButtons();
 
       const ytInput = document.getElementById('ytUrlInput');
       const ytHint = document.getElementById('ytUrlHintBadge');
@@ -1840,14 +2003,21 @@
         document.getElementById('clipId').value = clipToEdit.id;
         document.getElementById('ytVideoIdHidden').value = clipToEdit.ytVideoId || '';
         selectedOperator = clipToEdit.operator || 'KMB';
-        selectedDeck = clipToEdit.deck === '下層' ? '下層展望' : (clipToEdit.deck === '上層' ? '上層展望' : (clipToEdit.deck || '上層展望'));
+
+        const parsedFromTitle = parseExistingTitleToFields(clipToEdit.title || '', selectedOperator);
+        if (parsedFromTitle.operator && selectedOperator === 'OTHER') {
+          selectedOperator = parsedFromTitle.operator;
+        }
+        const resolvedDeck = clipToEdit.deck || parsedFromTitle.deck || (selectedOperator === 'MTR' ? '車頭展望' : '上層展望');
+        selectedDeck = resolvedDeck === '下層' ? '下層展望' : (resolvedDeck === '上層' ? '上層展望' : resolvedDeck);
         selectedStatus = clipToEdit.status || 'untransferred';
-        document.getElementById('routeInput').value = clipToEdit.route || '';
-        document.getElementById('bracketTagInput').value = clipToEdit.bracketTag || '';
-        document.getElementById('originBilingualInput').value = clipToEdit.originBilingual || '';
-        document.getElementById('destBilingualInput').value = clipToEdit.destBilingual || clipToEdit.direction || '';
+
+        document.getElementById('routeInput').value = parsedFromTitle.route || clipToEdit.route || '';
+        document.getElementById('bracketTagInput').value = clipToEdit.bracketTag || parsedFromTitle.bracketTag || '';
+        document.getElementById('originBilingualInput').value = clipToEdit.originBilingual || parsedFromTitle.originBilingual || '';
+        document.getElementById('destBilingualInput').value = clipToEdit.destBilingual || parsedFromTitle.destBilingual || clipToEdit.direction || '';
         document.getElementById('modelInput').value = clipToEdit.model || '';
-        document.getElementById('plateInput').value = clipToEdit.plate || '';
+        document.getElementById('plateInput').value = clipToEdit.plate || parsedFromTitle.plate || '';
         document.getElementById('dateInput').value = clipToEdit.date || '';
         document.getElementById('locationInput').value = clipToEdit.location || '';
         document.getElementById('titleInput').value = clipToEdit.title || buildYouTubeTitle(clipToEdit);
@@ -1883,12 +2053,13 @@
       const extractedVid = extractYouTubeVideoId(ytUrlVal) || document.getElementById('ytVideoIdHidden').value || '';
       const originVal = document.getElementById('originBilingualInput').value.trim();
       const destVal = document.getElementById('destBilingualInput').value.trim();
+      const rawRoute = document.getElementById('routeInput').value.trim();
 
       return {
         id: existingId || ('clip_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6)),
         ytVideoId: extractedVid,
         operator: selectedOperator,
-        route: document.getElementById('routeInput').value.trim().toUpperCase(),
+        route: selectedOperator === 'MTR' ? rawRoute : rawRoute.toUpperCase(),
         bracketTag: document.getElementById('bracketTagInput').value.trim(),
         originBilingual: originVal,
         destBilingual: destVal,
@@ -1912,6 +2083,27 @@
 
     document.getElementById('titleInput').addEventListener('input', () => {
       isTitleManuallyEdited = true;
+    });
+
+    // Auto-parse pasted title when user pastes a full YouTube title into titleInput
+    document.getElementById('titleInput').addEventListener('paste', () => {
+      setTimeout(() => {
+        const pastedVal = document.getElementById('titleInput').value.trim();
+        if (pastedVal.length > 8) {
+          applyParsedTitleToForm(pastedVal);
+          showToast('已自動分析標題並填入公司、路線與起終點欄位');
+        }
+      }, 30);
+    });
+
+    document.getElementById('btnParseTitleToFields').addEventListener('click', () => {
+      const currentTitle = document.getElementById('titleInput').value.trim();
+      if (!currentTitle) {
+        showToast('請先在標題框輸入或貼上標題文字', 'error');
+        return;
+      }
+      applyParsedTitleToForm(currentTitle);
+      showToast('已從標題自動分析並填入所有欄位！');
     });
 
     document.getElementById('btnRegenerateTitle').addEventListener('click', () => {
@@ -2248,7 +2440,6 @@
       } catch {}
     }
 
-    // Parse exact or relative YouTube publish date into YYYY-MM-DD
     function parseYouTubePublishDate(rawText) {
       if (!rawText) return '';
       const str = String(rawText).trim();
@@ -2414,22 +2605,18 @@
     }
 
     function detectTransitMetadataFromTitle(title) {
-      let operator = 'OTHER';
-      if (/OMSI/i.test(title)) operator = 'OMSI';
-      else if (/報站|PIDS|ATBBI|報站機/i.test(title)) operator = 'PIDS';
-      else if (/九巴|KMB/i.test(title)) operator = 'KMB';
-      else if (/城巴|CTB/i.test(title)) operator = 'CTB';
-      else if (/龍運|LWB/i.test(title)) operator = 'LWB';
-      else if (/嶼巴|新大嶼山|NLB/i.test(title)) operator = 'NLB';
-      else if (/港鐵|MTR|屯馬|東鐵|觀塘|荃灣|港島/i.test(title)) operator = 'MTR';
-
+      const parsedFields = parseExistingTitleToFields(title);
+      const operator = parsedFields.operator || 'OTHER';
       const routeMatch = title.match(/\b([A-Z]?\d{1,3}[A-Z]{0,2})\b/i);
-      const plateMatch = title.match(/\b([A-Z]{2}\d{3,4}|ATENU\d+|V6B\d+|E6X\d+|3ATENU\d+)\b/i);
 
       return {
         operator,
-        route: routeMatch ? routeMatch[1].toUpperCase() : (operator === 'PIDS' ? 'PIDS' : (operator === 'OMSI' ? 'OMSI' : 'YT')),
-        plate: plateMatch ? plateMatch[1].toUpperCase() : ''
+        route: parsedFields.route || (routeMatch ? routeMatch[1].toUpperCase() : (operator === 'PIDS' ? 'PIDS' : (operator === 'OMSI' ? 'OMSI' : 'YT'))),
+        bracketTag: parsedFields.bracketTag || '',
+        deck: parsedFields.deck || (operator === 'PIDS' ? '模擬畫面' : ''),
+        originBilingual: parsedFields.originBilingual || '',
+        destBilingual: parsedFields.destBilingual || '',
+        plate: parsedFields.plate || ''
       };
     }
 
@@ -2450,7 +2637,7 @@
 
         const videos = await fetchYouTubeFeedEntries(channelId);
         const totalCount = videos.length;
-        setYtSyncProgress(55, `步驟 4/4：已讀取 ${totalCount} 條影片，正在更新發佈日期...`);
+        setYtSyncProgress(55, `步驟 4/4：已讀取 ${totalCount} 條影片，正在更新發佈日期與欄位...`);
 
         const todayStr = new Date().toISOString().split('T')[0];
         let newSavedCount = 0;
@@ -2473,10 +2660,20 @@
           );
 
           if (existingClip) {
-            if (video.published && existingClip.date !== video.published) {
+            const needsUpdate = (video.published && existingClip.date !== video.published) ||
+                                (!existingClip.bracketTag && parsed.bracketTag) ||
+                                (!existingClip.originBilingual && parsed.originBilingual);
+            if (needsUpdate) {
               await persistClip({
                 ...existingClip,
-                date: video.published,
+                date: video.published || existingClip.date,
+                operator: (existingClip.operator && existingClip.operator !== 'OTHER') ? existingClip.operator : parsed.operator,
+                route: (existingClip.route && existingClip.route !== 'YT') ? existingClip.route : parsed.route,
+                bracketTag: existingClip.bracketTag || parsed.bracketTag,
+                deck: existingClip.deck || parsed.deck,
+                originBilingual: existingClip.originBilingual || parsed.originBilingual,
+                destBilingual: existingClip.destBilingual || parsed.destBilingual,
+                plate: existingClip.plate || parsed.plate,
                 updatedAt: Date.now()
               }, true);
               updatedDateCount++;
@@ -2508,13 +2705,13 @@
               ytVideoId: video.videoId,
               operator: parsed.operator,
               route: parsed.route,
-              bracketTag: '',
-              originBilingual: '',
-              destBilingual: '',
-              direction: '',
+              bracketTag: parsed.bracketTag,
+              originBilingual: parsed.originBilingual,
+              destBilingual: parsed.destBilingual,
+              direction: parsed.destBilingual ? `往${parsed.destBilingual}` : '',
               model: '',
               plate: parsed.plate,
-              deck: parsed.operator === 'PIDS' ? '模擬畫面' : '',
+              deck: parsed.deck,
               date: publishDate,
               location: '',
               status: 'uploaded',
@@ -2531,10 +2728,10 @@
         localStorage.setItem(YT_LAST_SYNC_KEY, nowStr);
         updateConnectedChannelUI();
 
-        setYtSyncProgress(100, `同步完成！新增 ${newSavedCount} 條，修正發佈日期 ${updatedDateCount} 條`);
+        setYtSyncProgress(100, `同步完成！新增 ${newSavedCount} 條，更新 ${updatedDateCount} 條紀錄`);
 
         if (!silent) {
-          statusBox.textContent = `同步完成！共讀取 ${totalCount} 條影片：新增 ${newSavedCount} 條，修正發佈日期 ${updatedDateCount} 條，配對待上載 ${matchedPendingCount} 條。`;
+          statusBox.textContent = `同步完成！共讀取 ${totalCount} 條影片：新增 ${newSavedCount} 條，更新日期與欄位 ${updatedDateCount} 條，配對待上載 ${matchedPendingCount} 條。`;
           resultsList.innerHTML = videos.map(v => `
             <div class="p-2.5 rounded-xl bg-asphalt border border-line flex items-center gap-3">
               <img src="${escapeHtml(v.thumb)}" alt="${escapeHtml(v.title)}" class="w-24 aspect-video rounded-lg object-cover border border-line shrink-0" />
@@ -2548,9 +2745,9 @@
         }
 
         if (newSavedCount > 0 || updatedDateCount > 0 || matchedPendingCount > 0) {
-          showToast(`YouTube 同步完成：新增 ${newSavedCount} 條，修正發佈日 ${updatedDateCount} 條`);
+          showToast(`YouTube 同步完成：新增 ${newSavedCount} 條，更新 ${updatedDateCount} 條`);
         } else if (!silent) {
-          showToast('所有影片日期已與 YouTube 發佈日保持一致', 'info');
+          showToast('所有影片日期與欄位已與 YouTube 保持一致', 'info');
         }
       } catch (err) {
         hideYtSyncProgress();
