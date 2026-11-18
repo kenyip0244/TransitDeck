@@ -2165,7 +2165,7 @@
     });
 
     // =========================================================================
-    // 14. YOUTUBE FAST ARCHIVE FETCH WITH REAL-TIME PROGRESS BAR
+    // 14. YOUTUBE FAST ARCHIVE FETCH WITH EXACT DATE OVERWRITE & PROGRESS BAR
     // =========================================================================
     function openYtModal() {
       const savedChannel = localStorage.getItem(YT_CHANNEL_STORAGE_KEY) || '';
@@ -2309,9 +2309,9 @@
         }
       }
 
-      // Step 1: Official XML RSS (exact YYYY-MM-DD publish dates for latest 15 videos)
-      setYtSyncProgress(25, '步驟 2/4：正在讀取官方 RSS 最新發佈日期...');
-      const rssUrl = `https://www.youtube.com/feeds/videos.xml?channel_id=${channelId}`;
+      // Step 1: Official XML RSS with cache-buster (exact YYYY-MM-DD publish dates for latest 15 videos)
+      setYtSyncProgress(25, '步驟 2/4：正在讀取官方 RSS 精確發佈日期...');
+      const rssUrl = `https://www.youtube.com/feeds/videos.xml?channel_id=${channelId}&_t=${Date.now()}`;
       try {
         const xmlText = await fetchTextWithCorsFallback(rssUrl);
         if (xmlText) {
@@ -2333,7 +2333,7 @@
       } catch {}
 
       // Step 2: Jina Reader full playlist markdown scraper
-      setYtSyncProgress(42, '步驟 3/4：正在掃描總上傳播放清單過往影片...');
+      setYtSyncProgress(42, '步驟 3/4：正在掃描總上傳播放清單過往影片日期...');
       try {
         const jinaRes = await fetch(`https://r.jina.ai/${playlistUrl}`);
         if (jinaRes.ok) {
@@ -2369,7 +2369,8 @@
       // Step 3: rss2json fallback
       if (videoMap.size === 0) {
         try {
-          const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`;
+          const cleanRss = `https://www.youtube.com/feeds/videos.xml?channel_id=${channelId}`;
+          const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(cleanRss)}`;
           const res = await fetch(apiUrl);
           if (res.ok) {
             const data = await res.json();
@@ -2430,7 +2431,7 @@
 
         const videos = await fetchYouTubeFeedEntries(channelId);
         const totalCount = videos.length;
-        setYtSyncProgress(55, `步驟 4/4：已讀取 ${totalCount} 條影片，正在比對與寫入資料庫...`);
+        setYtSyncProgress(55, `步驟 4/4：已讀取 ${totalCount} 條影片，正在更新發佈日期...`);
 
         const todayStr = new Date().toISOString().split('T')[0];
         let newSavedCount = 0;
@@ -2453,7 +2454,7 @@
           );
 
           if (existingClip) {
-            if (video.published && existingClip.date !== video.published && (existingClip.date === todayStr || !existingClip.date)) {
+            if (video.published && existingClip.date !== video.published) {
               await persistClip({
                 ...existingClip,
                 date: video.published,
@@ -2511,7 +2512,7 @@
         localStorage.setItem(YT_LAST_SYNC_KEY, nowStr);
         updateConnectedChannelUI();
 
-        setYtSyncProgress(100, `同步完成！共掃描 ${totalCount} 條影片（新增 ${newSavedCount} 條）`);
+        setYtSyncProgress(100, `同步完成！新增 ${newSavedCount} 條，修正發佈日期 ${updatedDateCount} 條`);
 
         if (!silent) {
           statusBox.textContent = `同步完成！共讀取 ${totalCount} 條影片：新增 ${newSavedCount} 條，修正發佈日期 ${updatedDateCount} 條，配對待上載 ${matchedPendingCount} 條。`;
@@ -2528,7 +2529,7 @@
         }
 
         if (newSavedCount > 0 || updatedDateCount > 0 || matchedPendingCount > 0) {
-          showToast(`YouTube 同步完成：新增 ${newSavedCount} 條，更新發佈日 ${updatedDateCount} 條`);
+          showToast(`YouTube 同步完成：新增 ${newSavedCount} 條，修正發佈日 ${updatedDateCount} 條`);
         } else if (!silent) {
           showToast('所有影片日期已與 YouTube 發佈日保持一致', 'info');
         }
